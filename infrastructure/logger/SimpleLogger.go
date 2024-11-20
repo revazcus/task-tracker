@@ -18,10 +18,10 @@ func NewSimpleLogger() *SimpleLogger {
 	}
 }
 
-func (r *SimpleLogger) LogInfo(method string, path string) {
-	r.infoLogger.Printf("%s | Method: %s | Path: %s", time.Now().Format(time.RFC3339), method, path)
+func (r *SimpleLogger) LogInfo(method string, path string, requestBody string) {
+	r.infoLogger.Printf("%s | Method: %s | Path: %s | Body:\n%s", time.Now().Format(time.RFC3339), method, path, requestBody)
 }
 
-func (r *SimpleLogger) LogError(err error, method string, path string) {
-	r.errorLogger.Printf("%s | Method: %s | Path: %s | Error: %v", time.Now().Format(time.RFC3339), method, path, err)
+func (r *SimpleLogger) LogError(err error, method string, path string, requestBody string) {
+	r.errorLogger.Printf("%s | Method: %s | Path: %s | Error: %v | Body:%s", time.Now().Format(time.RFC3339), method, path, err, requestBody)
 }

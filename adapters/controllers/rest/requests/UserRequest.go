@@ -2,9 +2,10 @@ package userRestRequest
 
 import "task-tracker/boundary/dto"
 
-// CreateUserRequest структура входящего запроса по стандарту https://jsonapi.org/
-type CreateUserRequest struct {
+// UserRequest структура входящего запроса по стандарту https://jsonapi.org/
+type UserRequest struct {
 	Data struct {
+		Id         int `json:"id"`
 		Attributes struct {
 			Username string `json:"username"`
 			Email    string `json:"email"`
@@ -13,9 +14,10 @@ type CreateUserRequest struct {
 	} `json:"data"`
 }
 
-// CreateUserDto маппинг данных входящего запроса в dto
-func (r *CreateUserRequest) CreateUserDto() *dto.CreateUserDto {
-	return &dto.CreateUserDto{
+// CreateUserDto маппит данные из UserRequest
+func (r *UserRequest) CreateUserDto() *dto.UserDto {
+	return &dto.UserDto{
+		Id:       r.Data.Id,
 		Username: r.Data.Attributes.Username,
 		Email:    r.Data.Attributes.Email,
 		Password: r.Data.Attributes.Password,

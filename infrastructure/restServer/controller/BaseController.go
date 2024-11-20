@@ -2,8 +2,8 @@ package restServerController
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	userRestRequest "task-tracker/adapters/controllers/rest/requests"
 )
 
 type BaseController struct {
@@ -13,7 +13,9 @@ func NewBaseController() *BaseController {
 	return &BaseController{}
 }
 
-func (bc BaseController) FillReqModel(r *http.Request) {
-	requestBody := json.NewDecoder(r.Body)
-	fmt.Println(requestBody)
+// FillReqModel преобразует данные из входящего запроса в json и далее в модель UserRequest
+func (bc BaseController) FillReqModel(r *http.Request, requestData *userRestRequest.UserRequest) error {
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	return decoder.Decode(requestData)
 }

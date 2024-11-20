@@ -29,7 +29,10 @@ func (r *ErrorMiddleware) Handler() gin.HandlerFunc {
 				code = http.StatusBadRequest
 			}
 
-			r.logger.LogError(err, context.Request.URL.Path, context.Request.Method)
+			// Читаем и сохраняем тело запроса для логирования
+			bodyBytes, _ := context.GetRawData()
+
+			r.logger.LogError(err, context.Request.Method, context.Request.URL.Path, string(bodyBytes))
 
 			context.JSON(code, gin.H{
 				"error": err.Error(),

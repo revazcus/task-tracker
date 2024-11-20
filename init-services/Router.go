@@ -1,4 +1,4 @@
-package init_services
+package initServices
 
 import (
 	"net/http"
@@ -23,6 +23,9 @@ func NewUserRouter(server restServerInterface.Server, controller *userRest.UserC
 }
 
 func (r *UserRouter) RegisterRoutes() {
+	r.server.RegisterPublicRoute(http.MethodGet, "v1/user", r.controller.GetUserById)
 	r.server.RegisterPublicRoute(http.MethodPost, "v1/user/create", r.controller.CreateUser)
-	r.server.RegisterPublicRoute(http.MethodGet, "/", r.controller.GetUser)
+	r.server.RegisterPublicRoute(http.MethodPut, "v1/user/update", r.controller.UpdateUser)
+	r.server.RegisterPublicRoute(http.MethodDelete, "v1/user", r.controller.DeleteUserById)
+
 }

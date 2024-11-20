@@ -21,6 +21,14 @@ func NewGinServer(logger loggerInterface.Logger) restServerInterface.Server {
 		middleware.NewRequestMiddleware(logger).Handler(),
 		middleware.NewErrorMiddleware(logger).Handler())
 
+	// Кастомный обработчик при отсутствии ресурса по переданному маршруту
+	server.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error":   "Упс, ничего не найдено",
+			"message": "Когда-нибудь тут обязательно что-то появится :)",
+		})
+	})
+
 	return &GinServer{
 		server: server,
 		logger: logger,

@@ -9,17 +9,41 @@ import (
 type UserUseCase struct {
 }
 
-func (u UserUseCase) Create(createDto *dto.CreateUserDto) (*dto.CreateUserDto, error) {
-	if createDto.Username == "" {
-		return nil, errors.New("username is empty")
+func (u UserUseCase) GetById(id int) (*dto.UserDto, error) {
+	// заглушка с возвратом предустановленных данных
+	userDto := dto.UserDto{
+		Id:       id,
+		Username: "Гранд-адмирал Залупкинс",
+		Email:    "pro100vasya@narod.ru",
+		Password: "1488",
 	}
-	if createDto.Email == "" {
-		return nil, errors.New("email is empty")
-	}
-	if createDto.Password == "" {
-		return nil, errors.New("password is empty")
-	}
-	return createDto, nil // заглушка с возвратом входящих данных
+
+	return &userDto, nil
 }
 
-// TODO докинуть GET | UPDATE | DELETE
+func (u UserUseCase) Create(userDto *dto.UserDto) (*dto.UserDto, error) {
+	if userDto.Username == "" {
+		return nil, errors.New("username is empty")
+	}
+	if userDto.Email == "" {
+		return nil, errors.New("email is empty")
+	}
+	if userDto.Password == "" {
+		return nil, errors.New("password is empty")
+	}
+
+	// заглушка с возвратом входящих данных + id
+	userDto.Id = 1
+	return userDto, nil
+}
+
+func (u UserUseCase) Update(userDto *dto.UserDto) (*dto.UserDto, error) {
+	if userDto.Id <= 0 {
+		return nil, errors.New("invalid id")
+	}
+	return userDto, nil // заглушка с возвратом входящих данных
+}
+
+func (u UserUseCase) Delete(id int) error {
+	return nil
+}
