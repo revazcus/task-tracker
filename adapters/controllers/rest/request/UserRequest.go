@@ -1,4 +1,4 @@
-package userRestRequest
+package restRequest
 
 import "task-tracker/boundary/dto"
 

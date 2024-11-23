@@ -1,21 +1,21 @@
-package userRest
+package rest
 
 import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	userRestRequest "task-tracker/adapters/controllers/rest/requests"
+	"task-tracker/adapters/controllers/rest/request"
 	"task-tracker/adapters/controllers/rest/serializer"
-	usecaseInterface "task-tracker/boundary/domain/usecase"
-	restServerController "task-tracker/infrastructure/restServer/controller"
+	"task-tracker/boundary/domain/usecase"
+	"task-tracker/infrastructure/restServer/controller"
 )
 
 type UserController struct {
 	*restServerController.BaseController
-	userUseCase usecaseInterface.UserUseCaseInterface
+	userUseCase usecase.UserUseCaseInterface
 }
 
-func NewUserController(controller *restServerController.BaseController, userUseCase usecaseInterface.UserUseCaseInterface) *UserController {
+func NewUserController(controller *restServerController.BaseController, userUseCase usecase.UserUseCaseInterface) *UserController {
 	return &UserController{BaseController: controller, userUseCase: userUseCase}
 }
 
@@ -51,7 +51,7 @@ func (c *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
-	requestData := &userRestRequest.UserRequest{}
+	requestData := &restRequest.UserRequest{}
 
 	if err := c.FillReqModel(r, requestData); err != nil {
 		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
@@ -76,7 +76,7 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	requestData := &userRestRequest.UserRequest{}
+	requestData := &restRequest.UserRequest{}
 
 	if err := c.FillReqModel(r, requestData); err != nil {
 		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)

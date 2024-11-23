@@ -1,4 +1,4 @@
-package usecaseInterface
+package usecase
 
 import (
 	"task-tracker/boundary/dto"

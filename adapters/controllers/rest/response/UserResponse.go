@@ -1,4 +1,4 @@
-package responses
+package restResponse
 
 // UserResponse структура ответа по стандарту https://jsonapi.org/
 type UserResponse struct {

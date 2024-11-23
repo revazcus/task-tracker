@@ -1,13 +1,13 @@
 package serializer
 
 import (
-	"task-tracker/adapters/controllers/rest/responses"
+	restResponse "task-tracker/adapters/controllers/rest/response"
 	"task-tracker/boundary/dto"
 )
 
-func SerializeUser(user *dto.UserDto) (*responses.UserResponse, error) {
+func SerializeUser(user *dto.UserDto) (*restResponse.UserResponse, error) {
 
-	return &responses.UserResponse{
+	return &restResponse.UserResponse{
 		Data: struct {
 			Id         int `json:"id"`
 			Attributes struct {

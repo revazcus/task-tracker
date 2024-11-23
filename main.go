@@ -1,12 +1,13 @@
 package main
 
 import (
-	userRest "task-tracker/adapters/controllers/rest"
+	"task-tracker/adapters/controllers/rest"
 	"task-tracker/domain/usecase"
-	logger "task-tracker/infrastructure/logger"
+	"task-tracker/infrastructure/logger"
 	"task-tracker/infrastructure/restServer"
-	restServerController "task-tracker/infrastructure/restServer/controller"
-	initservices "task-tracker/init-services"
+	"task-tracker/infrastructure/restServer/controller"
+	"task-tracker/init-services"
+	"task-tracker/init-services/routers"
 )
 
 func main() {
@@ -17,13 +18,69 @@ func main() {
 
 	baseController := restServerController.NewBaseController()
 
+	// Lifecycle
+	lifecycleUseCase := &usecase.LifecycleUseCase{}
+	lifecycleController := rest.NewLifeCycleController(baseController, lifecycleUseCase)
+	lifecycleRouter := router.NewLifecycleRouter(lifecycleController)
+
+	// Notification
+	notificationUseCase := &usecase.NotificationUseCase{}
+	notificationController := rest.NewNotificationController(baseController, notificationUseCase)
+	notificationRouter := router.NewNotificationRouter(notificationController)
+
+	// Permission
+	permissionUseCase := &usecase.PermissionUseCase{}
+	permissionController := rest.NewPermissionController(baseController, permissionUseCase)
+	permissionRouter := router.NewPermissionRouter(permissionController)
+
+	// Project
+	projectUseCase := &usecase.ProjectUseCase{}
+	projectController := rest.NewProjectController(baseController, projectUseCase)
+	projectRouter := router.NewProjectRouter(projectController)
+
+	// Report
+	reportUseCase := &usecase.ReportUseCase{}
+	reportController := rest.NewReportController(baseController, reportUseCase)
+	reportRouter := router.NewReportRouter(reportController)
+
+	// Role
+	roleUseCase := &usecase.RoleUseCase{}
+	roleController := rest.NewRoleController(baseController, roleUseCase)
+	roleRouter := router.NewRoleRouter(roleController)
+
+	// Rule
+	ruleUseCase := &usecase.RuleUseCase{}
+	ruleController := rest.NewRuleController(baseController, ruleUseCase)
+	ruleRouter := router.NewRuleRouter(ruleController)
+
+	// Task
+	taskUseCase := &usecase.TaskUseCase{}
+	taskController := rest.NewTaskController(baseController, taskUseCase)
+	taskRouter := router.NewTaskRouter(taskController)
+
+	// Team
+	teamUseCase := &usecase.TeamUseCase{}
+	teamController := rest.NewTeamController(baseController, teamUseCase)
+	teamRouter := router.NewTeamRouter(teamController)
+
+	// User
 	userUseCase := &usecase.UserUseCase{}
+	userController := rest.NewUserController(baseController, userUseCase)
+	userRouter := router.NewUserRouter(userController)
 
-	controller := userRest.NewUserController(baseController, userUseCase)
+	globalRouter := initServices.NewGlobalRouter(server,
+		userRouter,
+		lifecycleRouter,
+		notificationRouter,
+		permissionRouter,
+		projectRouter,
+		reportRouter,
+		roleRouter,
+		ruleRouter,
+		taskRouter,
+		teamRouter)
 
-	router := initservices.NewUserRouter(server, controller)
-
-	router.RegisterRoutes()
+	globalRouter.RegisterAllRoutes()
 
 	server.Start(":8080")
 }
