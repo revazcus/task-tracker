@@ -2,7 +2,7 @@ package router
 
 import (
 	"net/http"
-	userRest "task-tracker/adapters/controllers/rest"
+	userRest "task-tracker/adapters/controllers/rest/user"
 	restServerInterface "task-tracker/infrastructure/restServer/interface"
 )
 

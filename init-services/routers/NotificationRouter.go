@@ -2,7 +2,7 @@ package router
 
 import (
 	"net/http"
-	notificationRest "task-tracker/adapters/controllers/rest"
+	notificationRest "task-tracker/adapters/controllers/rest/notification"
 	restServerInterface "task-tracker/infrastructure/restServer/interface"
 )
 

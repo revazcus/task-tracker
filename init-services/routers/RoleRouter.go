@@ -2,7 +2,7 @@ package router
 
 import (
 	"net/http"
-	roleRest "task-tracker/adapters/controllers/rest"
+	roleRest "task-tracker/adapters/controllers/rest/role"
 	restServerInterface "task-tracker/infrastructure/restServer/interface"
 )
 

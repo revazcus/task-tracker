@@ -2,7 +2,7 @@ package router
 
 import (
 	"net/http"
-	lifecycleRest "task-tracker/adapters/controllers/rest"
+	lifecycleRest "task-tracker/adapters/controllers/rest/lifecycle"
 	restServerInterface "task-tracker/infrastructure/restServer/interface"
 )
 

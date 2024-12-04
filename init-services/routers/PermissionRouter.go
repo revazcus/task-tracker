@@ -2,7 +2,7 @@ package router
 
 import (
 	"net/http"
-	permissionRest "task-tracker/adapters/controllers/rest"
+	permissionRest "task-tracker/adapters/controllers/rest/permission"
 	restServerInterface "task-tracker/infrastructure/restServer/interface"
 )
 
