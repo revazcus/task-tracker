@@ -7,6 +7,7 @@ type UserResponse struct {
 		Attributes struct {
 			Username string `json:"username"`
 			Email    string `json:"email"`
+			Token    string `json:"token"`
 		} `json:"attributes"`
 	} `json:"data"`
 }

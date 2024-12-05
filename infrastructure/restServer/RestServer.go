@@ -6,14 +6,16 @@ import (
 	loggerInterface "task-tracker/infrastructure/logger/interface"
 	restServerInterface "task-tracker/infrastructure/restServer/interface"
 	"task-tracker/infrastructure/restServer/middleware"
+	jwtServiceInterface "task-tracker/infrastructure/security/jwtService/interface"
 )
 
 type GinServer struct {
-	server *gin.Engine
-	logger loggerInterface.Logger
+	server        *gin.Engine
+	logger        loggerInterface.Logger
+	jwtMiddleware gin.HandlerFunc
 }
 
-func NewGinServer(logger loggerInterface.Logger) restServerInterface.Server {
+func NewGinServer(logger loggerInterface.Logger, jwtService jwtServiceInterface.JWTService) restServerInterface.Server {
 	server := gin.New()
 
 	server.Use(
@@ -30,8 +32,9 @@ func NewGinServer(logger loggerInterface.Logger) restServerInterface.Server {
 	})
 
 	return &GinServer{
-		server: server,
-		logger: logger,
+		server:        server,
+		logger:        logger,
+		jwtMiddleware: middleware.NewJWTMiddleware(logger, jwtService).Handler(),
 	}
 }
 
@@ -45,17 +48,27 @@ func (s *GinServer) RegisterPublicRoute(method, path string, handler http.Handle
 	s.registerGinRouts(method, path, ginHandlerFunc)
 }
 
+func (s *GinServer) RegisterPrivateRoute(method, path string, handler http.HandlerFunc) {
+
+	// Обёртка http.HandlerFunc в gin.HandlerFunc
+	ginHandlerFunc := func(c *gin.Context) {
+		handler(c.Writer, c.Request)
+	}
+
+	s.registerGinRouts(method, path, s.jwtMiddleware, ginHandlerFunc)
+}
+
 // Регистрирует маршрут на основе переданного метода и конвертирует в методы Gin
-func (s *GinServer) registerGinRouts(method, path string, handler gin.HandlerFunc) {
+func (s *GinServer) registerGinRouts(method, path string, handlers ...gin.HandlerFunc) {
 	switch method {
 	case http.MethodGet:
-		s.server.GET(path, handler)
+		s.server.GET(path, handlers...)
 	case http.MethodPost:
-		s.server.POST(path, handler)
+		s.server.POST(path, handlers...)
 	case http.MethodPut:
-		s.server.PUT(path, handler)
+		s.server.PUT(path, handlers...)
 	case http.MethodDelete:
-		s.server.DELETE(path, handler)
+		s.server.DELETE(path, handlers...)
 	default:
 		panic("Unsupported method")
 	}

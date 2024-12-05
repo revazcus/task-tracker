@@ -10,8 +10,8 @@ type UserRepo struct {
 }
 
 func (u *UserRepo) Create(userDto *dto.UserDto) error {
-	//TODO implement me
-	panic("implement me")
+	// TODO implement me
+	return nil
 }
 
 func (u *UserRepo) Update(userDto *dto.UserDto) error {

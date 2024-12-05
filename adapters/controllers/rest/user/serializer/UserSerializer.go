@@ -12,15 +12,18 @@ func SerializeUser(user *dto.UserDto) (*response.UserResponse, error) {
 			Attributes struct {
 				Username string `json:"username"`
 				Email    string `json:"email"`
+				Token    string `json:"token"`
 			} `json:"attributes"`
 		}{
 			Id: user.Id,
 			Attributes: struct {
 				Username string `json:"username"`
 				Email    string `json:"email"`
+				Token    string `json:"token"`
 			}{
 				Username: user.Username,
 				Email:    user.Email,
+				Token:    user.Token,
 			},
 		},
 	}, nil

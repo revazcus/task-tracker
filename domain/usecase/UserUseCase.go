@@ -4,11 +4,21 @@ import (
 	"errors"
 	"task-tracker/boundary/dto"
 	"task-tracker/boundary/repository"
+	"task-tracker/infrastructure/security/jwtService"
+	jwtServiceInterface "task-tracker/infrastructure/security/jwtService/interface"
 )
 
 // UserUseCase имплементирует интерфейс UserUseCaseInterface через реализацию методов
 type UserUseCase struct {
-	userRepo repositoryInterface.UserRepository
+	userRepo   repositoryInterface.UserRepository
+	jwtService jwtServiceInterface.JWTService
+}
+
+func NewUserUseCase(userRepo repositoryInterface.UserRepository, jwtService jwtServiceInterface.JWTService) *UserUseCase {
+	return &UserUseCase{
+		userRepo:   userRepo,
+		jwtService: jwtService,
+	}
 }
 
 func (u UserUseCase) GetById(id int) (*dto.UserDto, error) {
@@ -36,6 +46,26 @@ func (u UserUseCase) CreateUser(userDto *dto.UserDto) (*dto.UserDto, error) {
 
 	// заглушка с возвратом входящих данных + id
 	userDto.Id = 1
+
+	// сохраняем пользователя в БД
+	//err := u.userRepo.Create(userDto)
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	token, err := u.jwtService.CreateUserToken(
+		userDto.Id,
+		map[string]string{
+			jwtService.RoleTokenKey: "ADMIN",
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	userDto.Token = token
+
 	return userDto, nil
 }
 

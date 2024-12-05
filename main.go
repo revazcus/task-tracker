@@ -15,6 +15,7 @@ import (
 	"task-tracker/infrastructure/logger"
 	"task-tracker/infrastructure/restServer"
 	"task-tracker/infrastructure/restServer/controller"
+	jwtService "task-tracker/infrastructure/security/jwtService"
 	"task-tracker/init-services"
 	"task-tracker/init-services/routers"
 )
@@ -23,7 +24,9 @@ func main() {
 
 	simpleLogger := logger.NewSimpleLogger()
 
-	server := restServer.NewGinServer(simpleLogger)
+	security, _ := jwtService.NewBuilder().Secret("1").Build()
+
+	server := restServer.NewGinServer(simpleLogger, security)
 
 	baseController := restServerController.NewBaseController()
 
@@ -73,7 +76,7 @@ func main() {
 	teamRouter := router.NewTeamRouter(teamController)
 
 	// User
-	userUseCase := &usecase.UserUseCase{}
+	userUseCase := usecase.NewUserUseCase(nil, security) // TODO переделать на Builder
 	userController, _ := userRest.NewBuilder().
 		BaseController(baseController).
 		UserUseCase(userUseCase).
