@@ -1,4 +1,4 @@
-package main
+package Task_Tracker
 
 // Version текущая версия приложения
-const Version = "v0.0.6"
+const Version = "v0.0.7"
