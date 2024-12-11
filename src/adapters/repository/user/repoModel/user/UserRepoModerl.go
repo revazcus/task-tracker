@@ -1,4 +1,4 @@
-package repoModel
+package userRepoModel
 
 import (
 	emailPrimitive "task-tracker/domain/domainPrimitive/email"
@@ -13,14 +13,9 @@ type UserRepoModel struct {
 	Password string `bson:"password"`
 }
 
-func NewUserRepoModel(user *userEntity.User) *UserRepoModel {
-	// TODO сейчас генерация ID на стороне монги, поэтому добавлена проверка для кейсов с созданием моделей
-	var id string
-	if user.ID() != nil {
-		id = string(*user.ID())
-	}
+func UserToRepoModel(user *userEntity.User) *UserRepoModel {
 	return &UserRepoModel{
-		Id:       id,
+		Id:       string(*user.ID()),
 		Email:    string(*user.Email()),
 		Password: string(*user.Password()),
 	}
@@ -37,13 +32,11 @@ func (m *UserRepoModel) GetEntity() (*userEntity.User, error) {
 		return nil, err
 	}
 
-	password, err := passwordPrimitive.PasswordFrom(m.Password)
-	if err != nil {
-		return nil, err
-	}
+	password := passwordPrimitive.Password(m.Password)
+
 	return userEntity.NewBuilder().
 		Id(&id).
 		Email(&email).
-		Password(password).
+		Password(&password).
 		Build()
 }

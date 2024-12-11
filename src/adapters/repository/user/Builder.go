@@ -17,7 +17,7 @@ func NewBuilder() *Builder {
 }
 
 func (b *Builder) Table(table string) *Builder {
-	b.userRepo.table = table
+	b.userRepo.collection = table
 	return b
 }
 
@@ -40,7 +40,7 @@ func (b *Builder) Build() (*UserRepo, error) {
 }
 
 func (b *Builder) checkRequiredFields() error {
-	if b.userRepo.table == "" {
+	if b.userRepo.collection == "" {
 		return errors.ErrTableIsRequired
 	}
 	if b.userRepo.mongoRepo == nil {

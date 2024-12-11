@@ -18,26 +18,34 @@ func NewMongoRepo(database *mongo.Database) *MongoRepo {
 	}
 }
 
-func (m *MongoRepo) Create(ctx context.Context, collectionName string, document interface{}) (string, error) {
+func (m *MongoRepo) InsertOne(ctx context.Context, collectionName string, document interface{}) error {
 	coll := m.mongoDB.Collection(collectionName)
 	result, err := coll.InsertOne(ctx, document)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	// TODO видится, чтобы сразу приводить к string нужно сгенерировать свои id, а не полагаться на монговское _id
-	id, ok := result.InsertedID.(bson.ObjectID)
-	if !ok {
-		return "", mongo.ErrNilDocument
+	if _, ok := result.InsertedID.(bson.ObjectID); !ok {
+		return mongo.ErrNilDocument
 	}
-	return id.Hex(), nil
+
+	return nil
 }
 
-func (m *MongoRepo) GetByID(ctx context.Context, collectionName string, id string, resultModel interface{}) error {
+func (m *MongoRepo) UpdateOne(ctx context.Context, collectionName string, filter, data interface{}) error {
 	collection := m.mongoDB.Collection(collectionName)
-	filter := bson.M{"_id": id}
-	result := collection.FindOne(ctx, filter)
 
+	if _, err := collection.UpdateOne(ctx, filter, data); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *MongoRepo) FindOne(ctx context.Context, collectionName string, filter, resultModel interface{}) error {
+	collection := m.mongoDB.Collection(collectionName)
+
+	result := collection.FindOne(ctx, filter)
 	err := result.Err()
 	if err != nil {
 		return err
@@ -50,17 +58,17 @@ func (m *MongoRepo) GetByID(ctx context.Context, collectionName string, id strin
 	return nil
 }
 
-func (m *MongoRepo) GetAll(ctx context.Context, collection string) ([]interface{}, error) {
+func (m *MongoRepo) FindAll(ctx context.Context, collection string) ([]interface{}, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (m *MongoRepo) Update(ctx context.Context, collection string, id string, update interface{}) error {
-	//TODO implement me
-	panic("implement me")
-}
+func (m *MongoRepo) DeleteOne(ctx context.Context, collectionName string, filter interface{}) error {
+	collection := m.mongoDB.Collection(collectionName)
 
-func (m *MongoRepo) Delete(ctx context.Context, collection string, id string) error {
-	//TODO implement me
-	panic("implement me")
+	if _, err := collection.DeleteOne(ctx, filter); err != nil {
+		return err
+	}
+
+	return nil
 }

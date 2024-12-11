@@ -23,7 +23,7 @@ func PasswordFrom(password string) (*Password, error) {
 	return &pass, nil
 }
 
-func (p *Password) ChangePassword(oldPassword, newPassword string) (*Password, error) {
+func (p Password) ChangePassword(oldPassword, newPassword string) (*Password, error) {
 	if !p.Verify(oldPassword) {
 		return nil, ErrPasswordIsWrong
 	}
@@ -37,6 +37,10 @@ func (p *Password) ChangePassword(oldPassword, newPassword string) (*Password, e
 }
 
 // Verify проверяет совпадения хешей
-func (p *Password) Verify(password string) bool {
-	return bcrypt.CompareHashAndPassword([]byte(*p), []byte(password)) == nil
+func (p Password) Verify(password string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(p), []byte(password)) == nil
+}
+
+func (p Password) String() string {
+	return string(p)
 }

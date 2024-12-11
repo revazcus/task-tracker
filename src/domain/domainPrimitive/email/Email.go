@@ -30,3 +30,7 @@ func EmailFrom(email string) (Email, error) {
 func (e Email) Verify(email string) bool {
 	return string(e) == email
 }
+
+func (e Email) String() string {
+	return string(e)
+}

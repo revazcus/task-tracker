@@ -26,7 +26,7 @@ func (u *User) Password() *passwordPrimitive.Password {
 }
 
 func (u *User) VerifyEmailAndPassword(email, password string) error {
-	if !u.email.Verify(email) && !u.password.Verify(password) {
+	if !u.email.Verify(email) || !u.password.Verify(password) {
 		return errors.New("неверный email или пароль")
 	}
 	return nil

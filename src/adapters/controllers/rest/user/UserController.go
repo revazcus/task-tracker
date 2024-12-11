@@ -16,31 +16,6 @@ type UserController struct {
 	logger      loggerInterface.Logger
 }
 
-func (c *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
-	// Вытаскиваем id из строки запроса вида v1/foundUser?id=1
-	idStr := r.URL.Query().Get("id")
-
-	if idStr == "" {
-		http.Error(w, `{"error":"Missing id parameter"}`, http.StatusBadRequest)
-		return
-	}
-
-	foundUser, err := c.userUseCase.GetById(r.Context(), idStr)
-	if err != nil {
-		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
-		return
-	}
-
-	response, err := serializer.SerializeUser(foundUser)
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
-}
-
 func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	requestData := &request.UserRequest{}
 
@@ -64,6 +39,121 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(response)
+}
+
+func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.UserRequest{}
+
+	if err := c.FillReqModel(r, requestData); err != nil {
+		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+
+	createdUser, err := c.userUseCase.UpdateUser(r.Context(), requestData.CreateUserDto())
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't update user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+
+	response, err := serializer.SerializeUser(createdUser)
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
+}
+
+func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.UserRequest{}
+
+	if err := c.FillReqModel(r, requestData); err != nil {
+		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+
+	createdUser, err := c.userUseCase.UpdateUserEmail(r.Context(), requestData.CreateUserDto())
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't update user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+
+	response, err := serializer.SerializeUser(createdUser)
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
+}
+
+func (c *UserController) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.UserRequest{}
+
+	if err := c.FillReqModel(r, requestData); err != nil {
+		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+
+	createdUser, err := c.userUseCase.UpdateUserPassword(r.Context(), requestData.CreateUserDto())
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't update user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+
+	response, err := serializer.SerializeUser(createdUser)
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
+}
+
+func (c *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
+	// Вытаскиваем id из строки запроса вида v1/foundUser?id=1
+	idStr := r.URL.Query().Get("id")
+
+	if idStr == "" {
+		http.Error(w, `{"error":"Missing id parameter"}`, http.StatusBadRequest)
+		return
+	}
+
+	foundUser, err := c.userUseCase.GetUserById(r.Context(), idStr)
+	if err != nil {
+		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		return
+	}
+
+	response, err := serializer.SerializeUser(foundUser)
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func (c *UserController) DeleteUserById(w http.ResponseWriter, r *http.Request) {
+	// Вытаскиваем id из строки запроса вида v1/foundUser?id=1
+	idStr := r.URL.Query().Get("id")
+
+	if idStr == "" {
+		http.Error(w, `{"error":"Missing id parameter"}`, http.StatusBadRequest)
+		return
+	}
+
+	if err := c.userUseCase.DeleteUser(r.Context(), idStr); err != nil {
+		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		return
+	}
 }
 
 func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
@@ -95,44 +185,4 @@ func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 
-}
-
-func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	requestData := &request.UserRequest{}
-
-	if err := c.FillReqModel(r, requestData); err != nil {
-		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	createdUser, err := c.userUseCase.UpdateUser(r.Context(), requestData.CreateUserDto())
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't update user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	response, err := serializer.SerializeUser(createdUser)
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
-}
-
-func (c *UserController) DeleteUserById(w http.ResponseWriter, r *http.Request) {
-	// Вытаскиваем id из строки запроса вида v1/foundUser?id=1
-	idStr := r.URL.Query().Get("id")
-
-	if idStr == "" {
-		http.Error(w, `{"error":"Missing id parameter"}`, http.StatusBadRequest)
-		return
-	}
-
-	if err := c.userUseCase.DeleteUser(r.Context(), idStr); err != nil {
-		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
-		return
-	}
 }

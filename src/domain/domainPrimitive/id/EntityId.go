@@ -1,24 +1,26 @@
 package idPrimitive
 
-import (
-	"strconv"
-)
+import "task-tracker/domain/domainPrimitive/generator"
 
 type EntityId string
+
+func NewEntityId() EntityId {
+	return EntityId(generator.GenerateUUID())
+}
 
 func EntityIdFrom(strId string) (EntityId, error) {
 	if strId == "" {
 		return "", ErrEntityIdIsEmpty
 	}
 
-	id, err := strconv.Atoi(strId)
+	id, err := generator.UUIDFrom(strId)
 	if err != nil {
-		return "", ErrEntityIdWrongFormat
-	}
-
-	if id <= 0 {
 		return "", ErrEntityIdIsInvalid
 	}
 
-	return EntityId(strId), nil
+	return EntityId(id), nil
+}
+
+func (e EntityId) String() string {
+	return string(e)
 }

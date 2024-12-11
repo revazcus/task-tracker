@@ -54,7 +54,10 @@ func (b *Builder) checkRequiredFields() error {
 }
 
 func (b *Builder) fillDefaultFields() {
-
+	if b.id == nil {
+		entityId := idPrimitive.NewEntityId()
+		b.id = &entityId
+	}
 }
 
 func (b *Builder) createFromBuilder() *User {

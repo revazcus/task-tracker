@@ -1,11 +1,12 @@
 package mongoInterface
 
-import "context"
+import (
+	"context"
+)
 
 type MongoRepository interface {
-	Create(ctx context.Context, collectionName string, document interface{}) (string, error)
-	GetByID(ctx context.Context, collectionName string, id string, resultModel interface{}) error
-	GetAll(ctx context.Context, collectionName string) ([]interface{}, error)
-	Update(ctx context.Context, collectionName string, id string, update interface{}) error
-	Delete(ctx context.Context, collectionName string, id string) error
+	InsertOne(ctx context.Context, collectionName string, data interface{}) error
+	FindOne(ctx context.Context, collectionName string, filter, resultModel interface{}) error
+	UpdateOne(ctx context.Context, collectionName string, filter, data interface{}) error
+	DeleteOne(ctx context.Context, collectionName string, filter interface{}) error
 }
