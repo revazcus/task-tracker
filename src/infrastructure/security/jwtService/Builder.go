@@ -2,27 +2,27 @@ package jwtService
 
 import "task-tracker/infrastructure/errors"
 
-type JwtServiceBuilder struct {
+type Builder struct {
 	service *JWTService
 }
 
-func NewBuilder() *JwtServiceBuilder {
-	return &JwtServiceBuilder{
+func NewBuilder() *Builder {
+	return &Builder{
 		service: &JWTService{},
 	}
 }
 
-func (b *JwtServiceBuilder) Secret(secret string) *JwtServiceBuilder {
+func (b *Builder) Secret(secret string) *Builder {
 	b.service.secret = secret
 	return b
 }
 
-func (b *JwtServiceBuilder) ValidClaims(validClaims map[string]bool) *JwtServiceBuilder {
+func (b *Builder) ValidClaims(validClaims map[string]bool) *Builder {
 	b.service.validClaims = validClaims
 	return b
 }
 
-func (b *JwtServiceBuilder) Build() (*JWTService, error) {
+func (b *Builder) Build() (*JWTService, error) {
 	err := b.checkRequiredFields()
 	if err != nil {
 		return nil, err
@@ -33,15 +33,15 @@ func (b *JwtServiceBuilder) Build() (*JWTService, error) {
 	return b.service, nil
 }
 
-func (b *JwtServiceBuilder) checkRequiredFields() error {
+func (b *Builder) checkRequiredFields() error {
 	if b.service.secret == "" {
-		return errors.ErrSecretIsRequired
+		return errors.NewError("SYS", "JwtServiceBuilder: Secret is required")
 	}
 	return nil
 }
 
 // Перечисляем валидные ключи
-func (b *JwtServiceBuilder) fillDefaultFields() {
+func (b *Builder) fillDefaultFields() {
 	if b.service.validClaims == nil {
 		b.service.validClaims = map[string]bool{
 			RoleTokenKey:       true,

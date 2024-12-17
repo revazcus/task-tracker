@@ -99,10 +99,14 @@ func main() {
 
 	// User
 	userRepo, _ := userRepo.NewBuilder().
-		Table("User").
+		Collection("User").
 		MongoRepo(mongoRepository).
 		Logger(simpleLogger).
 		Build()
+
+	// Строим индексы
+	userRepo.Init(context.Background())
+
 	userUseCase, _ := userUseCase.NewBuilder().
 		UserRepo(userRepo).
 		JwtService(jwtService).

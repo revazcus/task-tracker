@@ -8,6 +8,7 @@ import (
 	"task-tracker/boundary/domain/usecase"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
 	"task-tracker/infrastructure/restServer/controller"
+	"task-tracker/infrastructure/security/jwtService"
 )
 
 type UserController struct {
@@ -164,11 +165,6 @@ func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if requestData.Data.Id == "" {
-		http.Error(w, `{"error":"Invalid id parameter, "message": "id отсутствует или невалиден"}`, http.StatusBadRequest)
-		return
-	}
-
 	foundUser, err := c.userUseCase.LoginUser(r.Context(), requestData.CreateUserDto())
 	if err != nil {
 		http.Error(w, `{"error":"Couldn't login", "message": "`+err.Error()+`"}`, http.StatusUnauthorized)
@@ -185,4 +181,27 @@ func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 
+}
+
+func (c *UserController) Me(w http.ResponseWriter, r *http.Request) {
+	userId, err := c.GetStrParamFromCtx(r.Context(), jwtService.UserIdKey)
+	if err != nil {
+		http.Error(w, `{"error":"JWT parse exception"}`, http.StatusInternalServerError)
+		return
+	}
+
+	foundUser, err := c.userUseCase.GetUserById(r.Context(), userId)
+	if err != nil {
+		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		return
+	}
+
+	response, err := serializer.SerializeUser(foundUser)
+	if err != nil {
+		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

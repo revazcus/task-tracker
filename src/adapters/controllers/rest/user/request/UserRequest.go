@@ -7,9 +7,11 @@ type UserRequest struct {
 	Data struct {
 		Id         string `json:"id"`
 		Attributes struct {
-			Username string `json:"username"`
-			Email    string `json:"email"`
-			Password string `json:"password"`
+			FirstName string `json:"firstName"`
+			LastName  string `json:"lastName"`
+			Email     string `json:"email"`
+			Username  string `json:"username"`
+			Password  string `json:"password"`
 		} `json:"attributes"`
 	} `json:"data"`
 }
@@ -17,9 +19,11 @@ type UserRequest struct {
 // CreateUserDto маппит данные из UserRequest
 func (r *UserRequest) CreateUserDto() *dto.UserDto {
 	return &dto.UserDto{
-		Id:       r.Data.Id,
-		Username: r.Data.Attributes.Username,
-		Email:    r.Data.Attributes.Email,
-		Password: r.Data.Attributes.Password,
+		Id:        r.Data.Id,
+		FirstName: r.Data.Attributes.FirstName,
+		LastName:  r.Data.Attributes.LastName,
+		Email:     r.Data.Attributes.Email,
+		Username:  r.Data.Attributes.Username,
+		Password:  r.Data.Attributes.Password,
 	}
 }

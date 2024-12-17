@@ -25,7 +25,7 @@ func PasswordFrom(password string) (*Password, error) {
 
 func (p Password) ChangePassword(oldPassword, newPassword string) (*Password, error) {
 	if !p.Verify(oldPassword) {
-		return nil, ErrPasswordIsWrong
+		return nil, ErrWrongPassword
 	}
 
 	updatedPassword, err := PasswordFrom(newPassword)

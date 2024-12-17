@@ -8,15 +8,17 @@ import (
 
 type Builder struct {
 	userRepo *UserRepo
+	errors   *errors.Errors
 }
 
 func NewBuilder() *Builder {
 	return &Builder{
 		userRepo: &UserRepo{},
+		errors:   errors.NewErrors(),
 	}
 }
 
-func (b *Builder) Table(table string) *Builder {
+func (b *Builder) Collection(table string) *Builder {
 	b.userRepo.collection = table
 	return b
 }
@@ -32,22 +34,21 @@ func (b *Builder) Logger(logger loggerInterface.Logger) *Builder {
 }
 
 func (b *Builder) Build() (*UserRepo, error) {
-	err := b.checkRequiredFields()
-	if err != nil {
-		return nil, err
+	b.checkRequiredFields()
+	if b.errors.IsPresent() {
+		return nil, b.errors
 	}
 	return b.userRepo, nil
 }
 
-func (b *Builder) checkRequiredFields() error {
+func (b *Builder) checkRequiredFields() {
 	if b.userRepo.collection == "" {
-		return errors.ErrTableIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserRepoBuilder: Collection is required"))
 	}
 	if b.userRepo.mongoRepo == nil {
-		return errors.ErrRepositoryIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserRepoBuilder: MongoRepository is required"))
 	}
 	if b.userRepo.logger == nil {
-		return errors.ErrLoggerIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserRepoBuilder: Logger is required"))
 	}
-	return nil
 }

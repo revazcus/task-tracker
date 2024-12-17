@@ -1,8 +1,8 @@
 package idPrimitive
 
-import "errors"
+import "task-tracker/infrastructure/errors"
 
 var (
-	ErrEntityIdIsEmpty   = errors.New("id is empty")
-	ErrEntityIdIsInvalid = errors.New("invalid id")
+	ErrEntityIdIsEmpty   = errors.NewError("SYS", "Id is empty")
+	ErrEntityIdIsInvalid = errors.NewError("SYS", "Invalid id")
 )

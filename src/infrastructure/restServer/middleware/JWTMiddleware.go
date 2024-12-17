@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
+	"task-tracker/infrastructure/errors"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
 	jwtServiceInterface "task-tracker/infrastructure/security/jwtService/interface"
 )
@@ -48,7 +48,7 @@ func (r *JWTMiddleware) Handler() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("userContext", userContext)
+		ctx.Request = ctx.Request.WithContext(userContext)
 
 		ctx.Next()
 	}
@@ -57,7 +57,7 @@ func (r *JWTMiddleware) Handler() gin.HandlerFunc {
 func (r *JWTMiddleware) extractAuthToken(ctx *gin.Context) (string, error) {
 	token := ctx.GetHeader("Authorization")
 	if token == "" {
-		return "", errors.New("unauthorized")
+		return "", errors.NewError("SYS", "Unauthorized")
 	}
 
 	if strings.HasPrefix(token, "Bearer ") {

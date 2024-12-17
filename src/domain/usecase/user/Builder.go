@@ -8,11 +8,13 @@ import (
 
 type Builder struct {
 	userUseCase *UserUseCase
+	errors      *errors.Errors
 }
 
 func NewBuilder() *Builder {
 	return &Builder{
 		userUseCase: &UserUseCase{},
+		errors:      errors.NewErrors(),
 	}
 }
 
@@ -27,19 +29,18 @@ func (b *Builder) UserRepo(userRepo repositoryInterface.UserRepository) *Builder
 }
 
 func (b *Builder) Build() (*UserUseCase, error) {
-	err := b.checkRequiredFields()
-	if err != nil {
-		return nil, err
+	b.checkRequiredFields()
+	if b.errors.IsPresent() {
+		return nil, b.errors
 	}
 	return b.userUseCase, nil
 }
 
-func (b *Builder) checkRequiredFields() error {
+func (b *Builder) checkRequiredFields() {
 	if b.userUseCase.jwtService == nil {
-		return errors.ErrJWTServiceIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserUseCaseBuilder: JwtService is required"))
 	}
 	if b.userUseCase.userRepo == nil {
-		return errors.ErrRepositoryIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserUseCaseBuilder: UserRepository is required"))
 	}
-	return nil
 }

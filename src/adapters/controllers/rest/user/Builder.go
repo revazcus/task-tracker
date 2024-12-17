@@ -9,11 +9,13 @@ import (
 
 type UserControllerBuilder struct {
 	controller *UserController
+	errors     *errors.Errors
 }
 
 func NewBuilder() *UserControllerBuilder {
 	return &UserControllerBuilder{
 		controller: &UserController{},
+		errors:     errors.NewErrors(),
 	}
 }
 
@@ -36,25 +38,24 @@ func (b *UserControllerBuilder) UserUseCase(userUseCase usecase.UserUseCaseInter
 }
 
 func (b *UserControllerBuilder) Build() (*UserController, error) {
-	err := b.checkRequiredFields()
-	if err != nil {
-		return nil, err
+	b.checkRequiredFields()
+	if b.errors.IsPresent() {
+		return nil, b.errors
 	}
 	b.fillDefaultFields()
 	return b.controller, nil
 }
 
-func (b *UserControllerBuilder) checkRequiredFields() error {
+func (b *UserControllerBuilder) checkRequiredFields() {
 	if b.controller.logger == nil {
-		return errors.ErrLoggerIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserControllerBuilder: Logger is required"))
 	}
 	if b.controller.BaseController == nil {
-		return errors.ErrBaseControllerIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserControllerBuilder: BaseController is required"))
 	}
 	if b.controller.userUseCase == nil {
-		return errors.ErrUseCaseIsRequired
+		b.errors.AddError(errors.NewError("SYS", "UserControllerBuilder: UserUseCase is required"))
 	}
-	return nil
 }
 
 // Инициализирует дефолтные поля в UserController

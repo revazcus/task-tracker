@@ -4,11 +4,13 @@ import (
 	emailPrimitive "task-tracker/domain/domainPrimitive/email"
 	idPrimitive "task-tracker/domain/domainPrimitive/id"
 	passwordPrimitive "task-tracker/domain/domainPrimitive/password"
+	usernamePrimitive "task-tracker/domain/domainPrimitive/username"
 )
 
 type Builder struct {
 	id       *idPrimitive.EntityId
 	email    *emailPrimitive.Email
+	username *usernamePrimitive.Username
 	password *passwordPrimitive.Password
 }
 
@@ -23,6 +25,11 @@ func (b *Builder) Id(id *idPrimitive.EntityId) *Builder {
 
 func (b *Builder) Email(email *emailPrimitive.Email) *Builder {
 	b.email = email
+	return b
+}
+
+func (b *Builder) Username(username *usernamePrimitive.Username) *Builder {
+	b.username = username
 	return b
 }
 
@@ -47,6 +54,9 @@ func (b *Builder) checkRequiredFields() error {
 	if b.email == nil {
 		return ErrEmailIsRequired
 	}
+	if b.username == nil {
+		return ErrUsernameIsRequired
+	}
 	if b.password == nil {
 		return ErrPasswordIsRequired
 	}
@@ -64,6 +74,7 @@ func (b *Builder) createFromBuilder() *User {
 	return &User{
 		id:       b.id,
 		email:    b.email,
+		username: b.username,
 		password: b.password,
 	}
 }
