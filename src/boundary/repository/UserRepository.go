@@ -14,12 +14,12 @@ type UserRepository interface {
 
 	Create(ctx context.Context, user *userEntity.User) error
 
-	Update(ctx context.Context, user *userEntity.User) error
-	UpdateEmail(ctx context.Context, userId *idPrimitive.EntityId, email *emailPrimitive.Email) error
-	UpdatePassword(ctx context.Context, userId *idPrimitive.EntityId, password *passwordPrimitive.Password) error
-
 	GetById(ctx context.Context, userId *idPrimitive.EntityId) (*userEntity.User, error)
 	GetByUsername(ctx context.Context, username *usernamePrimitive.Username) (*userEntity.User, error)
+
+	Update(ctx context.Context, user *userEntity.User) (*userEntity.User, error)
+	UpdateEmail(ctx context.Context, userId *idPrimitive.EntityId, email *emailPrimitive.Email) (*userEntity.User, error)
+	UpdatePassword(ctx context.Context, userId *idPrimitive.EntityId, password *passwordPrimitive.Password) (*userEntity.User, error)
 
 	DeleteById(ctx context.Context, userId *idPrimitive.EntityId) error
 }

@@ -13,6 +13,7 @@ import (
 	taskRest "task-tracker/adapters/controllers/rest/task"
 	teamRest "task-tracker/adapters/controllers/rest/team"
 	userRest "task-tracker/adapters/controllers/rest/user"
+	"task-tracker/adapters/controllers/rest/user/resolver"
 	userRepo "task-tracker/adapters/repository/user"
 	lifecycleUseCase "task-tracker/domain/usecase/lifecycle"
 	notificationUseCase "task-tracker/domain/usecase/notification"
@@ -28,6 +29,7 @@ import (
 	mongoRepo "task-tracker/infrastructure/mongo"
 	"task-tracker/infrastructure/restServer"
 	restServerController "task-tracker/infrastructure/restServer/controller"
+	"task-tracker/infrastructure/restServer/response"
 	"task-tracker/infrastructure/security/jwtService"
 	initServices "task-tracker/init-services"
 	router "task-tracker/init-services/routers"
@@ -50,7 +52,11 @@ func main() {
 
 	server := restServer.NewGinServer(simpleLogger, jwtService)
 
-	baseController := restServerController.NewBaseController()
+	errResponseService, _ := response.NewErrorResponseService(resolver.NewErrorResolver(), simpleLogger)
+
+	responseService, _ := response.NewResponseService(errResponseService, simpleLogger)
+
+	baseController, _ := restServerController.NewBaseController(responseService, simpleLogger)
 
 	// Lifecycle
 	lifecycleUseCase := &lifecycleUseCase.LifecycleUseCase{}

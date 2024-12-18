@@ -1,11 +1,11 @@
 package userRest
 
 import (
-	"encoding/json"
 	"net/http"
 	"task-tracker/adapters/controllers/rest/user/request"
 	"task-tracker/adapters/controllers/rest/user/serializer"
 	"task-tracker/boundary/domain/usecase"
+	"task-tracker/infrastructure/errors"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
 	"task-tracker/infrastructure/restServer/controller"
 	"task-tracker/infrastructure/security/jwtService"
@@ -18,103 +18,26 @@ type UserController struct {
 }
 
 func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
-	requestData := &request.UserRequest{}
+	requestData := &request.CreateUserRequest{}
 
 	if err := c.FillReqModel(r, requestData); err != nil {
-		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
 	createdUser, err := c.userUseCase.CreateUser(r.Context(), requestData.CreateUserDto())
 	if err != nil {
-		http.Error(w, `{"error":"Couldn't create user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	response, err := serializer.SerializeUser(createdUser)
+	response, err := serializer.SerializeUserResponse(createdUser)
 	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
-}
-
-func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	requestData := &request.UserRequest{}
-
-	if err := c.FillReqModel(r, requestData); err != nil {
-		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	createdUser, err := c.userUseCase.UpdateUser(r.Context(), requestData.CreateUserDto())
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't update user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	response, err := serializer.SerializeUser(createdUser)
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
-}
-
-func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request) {
-	requestData := &request.UserRequest{}
-
-	if err := c.FillReqModel(r, requestData); err != nil {
-		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	createdUser, err := c.userUseCase.UpdateUserEmail(r.Context(), requestData.CreateUserDto())
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't update user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	response, err := serializer.SerializeUser(createdUser)
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
-}
-
-func (c *UserController) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
-	requestData := &request.UserRequest{}
-
-	if err := c.FillReqModel(r, requestData); err != nil {
-		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	createdUser, err := c.userUseCase.UpdateUserPassword(r.Context(), requestData.CreateUserDto())
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't update user", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
-		return
-	}
-
-	response, err := serializer.SerializeUser(createdUser)
-	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
+	c.JsonResponse(w, r, response, http.StatusCreated)
 }
 
 func (c *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
@@ -122,24 +45,92 @@ func (c *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 	idStr := r.URL.Query().Get("id")
 
 	if idStr == "" {
-		http.Error(w, `{"error":"Missing id parameter"}`, http.StatusBadRequest)
+		c.ErrorResponse(w, r, errors.NewError("SYS", "UserId отсутствует"))
 		return
 	}
 
 	foundUser, err := c.userUseCase.GetUserById(r.Context(), idStr)
 	if err != nil {
-		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
 	response, err := serializer.SerializeUser(foundUser)
 	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.CreateUserRequest{}
+
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	createdUser, err := c.userUseCase.UpdateUser(r.Context(), requestData.CreateUserDto())
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := serializer.SerializeUser(createdUser)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.CreateUserRequest{}
+
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	createdUser, err := c.userUseCase.UpdateUserEmail(r.Context(), requestData.CreateUserDto())
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := serializer.SerializeUser(createdUser)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *UserController) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.CreateUserRequest{}
+
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	createdUser, err := c.userUseCase.UpdateUserPassword(r.Context(), requestData.CreateUserDto())
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := serializer.SerializeUser(createdUser)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
 }
 
 func (c *UserController) DeleteUserById(w http.ResponseWriter, r *http.Request) {
@@ -147,61 +138,57 @@ func (c *UserController) DeleteUserById(w http.ResponseWriter, r *http.Request) 
 	idStr := r.URL.Query().Get("id")
 
 	if idStr == "" {
-		http.Error(w, `{"error":"Missing id parameter"}`, http.StatusBadRequest)
+		c.ErrorResponse(w, r, errors.NewError("SYS", "UserId отсутствует"))
 		return
 	}
 
 	if err := c.userUseCase.DeleteUser(r.Context(), idStr); err != nil {
-		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 }
 
 func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
-	requestData := &request.UserRequest{}
+	requestData := &request.CreateUserRequest{}
 
 	if err := c.FillReqModel(r, requestData); err != nil {
-		http.Error(w, `{"error":"Invalid request", "message": "`+err.Error()+`"}`, http.StatusBadRequest)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
 	foundUser, err := c.userUseCase.LoginUser(r.Context(), requestData.CreateUserDto())
 	if err != nil {
-		http.Error(w, `{"error":"Couldn't login", "message": "`+err.Error()+`"}`, http.StatusUnauthorized)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	response, err := serializer.SerializeUser(foundUser)
+	response, err := serializer.SerializeUserResponse(foundUser)
 	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
-
+	c.JsonResponse(w, r, response, http.StatusOK)
 }
 
 func (c *UserController) Me(w http.ResponseWriter, r *http.Request) {
 	userId, err := c.GetStrParamFromCtx(r.Context(), jwtService.UserIdKey)
 	if err != nil {
-		http.Error(w, `{"error":"JWT parse exception"}`, http.StatusInternalServerError)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
 	foundUser, err := c.userUseCase.GetUserById(r.Context(), userId)
 	if err != nil {
-		http.Error(w, `{"error":"User not found"}`, http.StatusNotFound)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
 	response, err := serializer.SerializeUser(foundUser)
 	if err != nil {
-		http.Error(w, `{"error":"Couldn't serialize response", "message": "`+err.Error()+`"}`, http.StatusInternalServerError)
+		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	c.JsonResponse(w, r, response, http.StatusOK)
 }

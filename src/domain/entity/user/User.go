@@ -9,8 +9,8 @@ import (
 
 type User struct {
 	id       *idPrimitive.EntityId
-	email    *emailPrimitive.Email
 	username *usernamePrimitive.Username
+	email    *emailPrimitive.Email
 	password *passwordPrimitive.Password
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"strings"
 	userRepoModel "task-tracker/adapters/repository/user/repoModel/user"
 	emailPrimitive "task-tracker/domain/domainPrimitive/email"
@@ -92,35 +93,6 @@ func (r *UserRepo) Create(ctx context.Context, user *userEntity.User) error {
 	return nil
 }
 
-func (r *UserRepo) Update(ctx context.Context, user *userEntity.User) error {
-	find := bson.D{{"user_id", user.ID().String()}}
-	updatedUserModel := userRepoModel.UserToRepoModel(user)
-
-	if err := r.mongoRepo.UpdateOne(ctx, r.collection, find, updatedUserModel); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *UserRepo) UpdateEmail(ctx context.Context, userId *idPrimitive.EntityId, email *emailPrimitive.Email) error {
-	change := bson.D{
-		{"$set", // указываем, что обновляем по ключам
-			bson.M{"email": email.String()},
-		},
-	}
-	return r.updateUser(ctx, userId, change)
-}
-
-func (r *UserRepo) UpdatePassword(ctx context.Context, userId *idPrimitive.EntityId, password *passwordPrimitive.Password) error {
-	change := bson.D{
-		{"$set",
-			bson.M{"password": password.String()},
-		},
-	}
-	return r.updateUser(ctx, userId, change)
-}
-
 func (r *UserRepo) GetById(ctx context.Context, userId *idPrimitive.EntityId) (*userEntity.User, error) {
 	find := bson.D{{"user_id", userId.String()}}
 	var userModel *userRepoModel.UserRepoModel
@@ -156,6 +128,35 @@ func (r *UserRepo) GetByUsername(ctx context.Context, username *usernamePrimitiv
 	return user, nil
 }
 
+func (r *UserRepo) Update(ctx context.Context, user *userEntity.User) (*userEntity.User, error) {
+	find := bson.D{{"user_id", user.ID().String()}}
+	updatedUserModel := userRepoModel.UserToRepoModel(user)
+
+	if err := r.mongoRepo.UpdateOne(ctx, r.collection, find, updatedUserModel); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (r *UserRepo) UpdateEmail(ctx context.Context, userId *idPrimitive.EntityId, email *emailPrimitive.Email) (*userEntity.User, error) {
+	change := bson.D{
+		{"$set", // указываем, что обновляем по ключам
+			bson.M{"email": email.String()},
+		},
+	}
+	return r.updateUser(ctx, userId, change)
+}
+
+func (r *UserRepo) UpdatePassword(ctx context.Context, userId *idPrimitive.EntityId, password *passwordPrimitive.Password) (*userEntity.User, error) {
+	change := bson.D{
+		{"$set",
+			bson.M{"password": password.String()},
+		},
+	}
+	return r.updateUser(ctx, userId, change)
+}
+
 func (r *UserRepo) DeleteById(ctx context.Context, userId *idPrimitive.EntityId) error {
 	find := bson.D{{"user_id", userId.String()}}
 
@@ -166,12 +167,19 @@ func (r *UserRepo) DeleteById(ctx context.Context, userId *idPrimitive.EntityId)
 	return nil
 }
 
-func (r *UserRepo) updateUser(ctx context.Context, userId *idPrimitive.EntityId, change bson.D) error {
+func (r *UserRepo) updateUser(ctx context.Context, userId *idPrimitive.EntityId, change bson.D) (*userEntity.User, error) {
 	find := bson.D{{"user_id", userId.String()}}
 
-	if err := r.mongoRepo.UpdateOne(ctx, r.collection, find, change); err != nil {
-		return err
+	var userModel *userRepoModel.UserRepoModel
+
+	if err := r.mongoRepo.FindOneAndUpdate(ctx, r.collection, userModel, find, change, options.FindOneAndUpdate().SetReturnDocument(options.After)); err != nil {
+		return nil, err
 	}
 
-	return nil
+	updatedUser, err := userModel.GetEntity()
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, nil
 }

@@ -21,9 +21,9 @@ func NewMongoRepo(database *mongo.Database) *MongoRepo {
 	}
 }
 
-func (r *MongoRepo) InsertOne(ctx context.Context, collectionName string, document interface{}) error {
+func (r *MongoRepo) InsertOne(ctx context.Context, collectionName string, data interface{}) error {
 	coll := r.mongoDB.Collection(collectionName)
-	result, err := coll.InsertOne(ctx, document)
+	result, err := coll.InsertOne(ctx, data)
 	if err != nil {
 		mongoErr, isMongoErr := err.(mongo.WriteException)
 		if isMongoErr {
@@ -43,27 +43,33 @@ func (r *MongoRepo) InsertOne(ctx context.Context, collectionName string, docume
 	return nil
 }
 
-func (r *MongoRepo) UpdateOne(ctx context.Context, collectionName string, filter, data interface{}) error {
+func (r *MongoRepo) FindOne(ctx context.Context, collectionName string, filter, resultModel interface{}) error {
 	collection := r.mongoDB.Collection(collectionName)
-
-	if _, err := collection.UpdateOne(ctx, filter, data); err != nil {
+	result := collection.FindOne(ctx, filter)
+	if err := result.Err(); err != nil {
 		return err
 	}
-
+	if err := result.Decode(resultModel); err != nil {
+		return err
+	}
 	return nil
 }
 
-func (r *MongoRepo) FindOne(ctx context.Context, collectionName string, filter, resultModel interface{}) error {
+func (r *MongoRepo) FindOneAndUpdate(ctx context.Context, collectionName string, resultModel, filter, updateData interface{}, opt *options.FindOneAndUpdateOptionsBuilder) error {
 	collection := r.mongoDB.Collection(collectionName)
-
-	result := collection.FindOne(ctx, filter)
-	err := result.Err()
-	if err != nil {
+	result := collection.FindOneAndUpdate(ctx, filter, updateData, opt)
+	if err := result.Err(); err != nil {
 		return err
 	}
+	if err := result.Decode(resultModel); err != nil {
+		return err
+	}
+	return nil
+}
 
-	err = result.Decode(resultModel)
-	if err != nil {
+func (r *MongoRepo) UpdateOne(ctx context.Context, collectionName string, filter, data interface{}, opts ...*options.UpdateOptions) error {
+	collection := r.mongoDB.Collection(collectionName)
+	if _, err := collection.UpdateOne(ctx, filter, data); err != nil {
 		return err
 	}
 	return nil
@@ -76,11 +82,9 @@ func (r *MongoRepo) FindAll(ctx context.Context, collection string) ([]interface
 
 func (r *MongoRepo) DeleteOne(ctx context.Context, collectionName string, filter interface{}) error {
 	collection := r.mongoDB.Collection(collectionName)
-
 	if _, err := collection.DeleteOne(ctx, filter); err != nil {
 		return err
 	}
-
 	return nil
 }
 

@@ -1,30 +1,25 @@
 package serializer
 
 import (
-	"task-tracker/adapters/controllers/rest/user/response"
-	"task-tracker/boundary/dto"
+	userEntity "task-tracker/domain/entity/user"
+	jsonApiModel "task-tracker/infrastructure/jsonapi/model"
 )
 
-func SerializeUser(user *dto.UserDto) (*response.UserResponse, error) {
-	return &response.UserResponse{
-		Data: struct {
-			Id         string `json:"id"`
-			Attributes struct {
-				Username string `json:"username"`
-				Email    string `json:"email"`
-				Token    string `json:"token"`
-			} `json:"attributes"`
-		}{
-			Id: user.Id,
-			Attributes: struct {
-				Username string `json:"username"`
-				Email    string `json:"email"`
-				Token    string `json:"token"`
-			}{
-				Username: user.Username,
-				Email:    user.Email,
-				Token:    user.Token,
-			},
+func SerializeUser(user *userEntity.User) (jsonApiModel.JsonApiPayload, error) {
+	responseBuilder := jsonApiModel.NewJsonApiPayloadBuilder()
+	responseBuilder.AddData(CreateUserObject(user))
+	return responseBuilder.Build()
+}
+
+func CreateUserObject(user *userEntity.User) *jsonApiModel.JsonApiObject {
+	response := &jsonApiModel.JsonApiObject{
+		Id:   user.ID().String(),
+		Type: ResponseUser,
+		Attributes: map[string]interface{}{
+			"username": user.Username(),
+			"email":    user.Email(),
 		},
-	}, nil
+		Relationships: jsonApiModel.JsonApiObjectRelationships{},
+	}
+	return response
 }

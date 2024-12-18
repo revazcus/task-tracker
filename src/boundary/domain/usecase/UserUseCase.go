@@ -2,20 +2,20 @@ package usecase
 
 import (
 	"context"
-	"task-tracker/boundary/dto"
+	userDto "task-tracker/boundary/dto/user"
+	userEntity "task-tracker/domain/entity/user"
 )
 
-// UserUseCaseInterface в первичной реализации интерфейса методы на вход принимают только dto без контекста
 type UserUseCaseInterface interface {
-	CreateUser(ctx context.Context, dto *dto.UserDto) (*dto.UserDto, error)
+	CreateUser(ctx context.Context, userCreateDto *userDto.UserDto) (*userDto.UserResponseDto, error)
 
-	UpdateUser(ctx context.Context, dto *dto.UserDto) (*dto.UserDto, error)
-	UpdateUserEmail(ctx context.Context, dto *dto.UserDto) (*dto.UserDto, error)
-	UpdateUserPassword(ctx context.Context, dto *dto.UserDto) (*dto.UserDto, error)
+	UpdateUser(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error)
+	UpdateUserEmail(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error)
+	UpdateUserPassword(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error)
 
-	GetUserById(ctx context.Context, id string) (*dto.UserDto, error)
+	GetUserById(ctx context.Context, id string) (*userEntity.User, error)
 
 	DeleteUser(ctx context.Context, id string) error
 
-	LoginUser(ctx context.Context, dto *dto.UserDto) (*dto.UserDto, error)
+	LoginUser(ctx context.Context, dto *userDto.UserDto) (*userDto.UserResponseDto, error)
 }

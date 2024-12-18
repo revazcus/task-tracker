@@ -2,7 +2,7 @@ package userUseCase
 
 import (
 	"context"
-	"task-tracker/boundary/dto"
+	userDto "task-tracker/boundary/dto/user"
 	"task-tracker/boundary/repository"
 	emailPrimitive "task-tracker/domain/domainPrimitive/email"
 	idPrimitive "task-tracker/domain/domainPrimitive/id"
@@ -14,23 +14,22 @@ import (
 	jwtServiceInterface "task-tracker/infrastructure/security/jwtService/interface"
 )
 
-// UserUseCase имплементирует интерфейс UserUseCaseInterface через реализацию методов
 type UserUseCase struct {
 	userRepo   repositoryInterface.UserRepository
 	jwtService jwtServiceInterface.JWTService
 }
 
-func (u UserUseCase) CreateUser(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, error) {
-	emailPrim, err := emailPrimitive.EmailFrom(userDto.Email)
+func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.UserDto) (*userDto.UserResponseDto, error) {
+	emailPrim, err := emailPrimitive.EmailFrom(userCreateDto.Email)
 	if err != nil {
 		return nil, err
 	}
-	passwordPrim, err := passwordPrimitive.PasswordFrom(userDto.Password)
+	passwordPrim, err := passwordPrimitive.PasswordFrom(userCreateDto.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	usernamePrim, err := usernamePrimitive.UsernameFrom(userDto.Username)
+	usernamePrim, err := usernamePrimitive.UsernameFrom(userCreateDto.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -45,88 +44,17 @@ func (u UserUseCase) CreateUser(ctx context.Context, userDto *dto.UserDto) (*dto
 		return nil, err
 	}
 
-	userId := user.ID().String()
-
-	// Наполняем токен при создании пользователя
 	token, err := u.jwtService.CreateUserToken(
-		userId,
-		map[string]string{
-			jwtService.RoleTokenKey: "ADMIN",
-		},
-	)
-
+		user.ID().String(),
+		map[string]string{jwtService.RoleTokenKey: "ADMIN"})
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO переписать
-	responseDto := dto.UserDto{
-		Id:       userId,
-		Username: string(*user.Username()),
-		Email:    string(*user.Email()),
-		Token:    token,
-	}
-
-	return &responseDto, nil
+	return &userDto.UserResponseDto{User: user, Token: token}, nil
 }
 
-func (u UserUseCase) UpdateUser(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (u UserUseCase) UpdateUserEmail(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, error) {
-	if userDto.Id == "" {
-		return nil, errors.NewError("SYS", "Invalid id")
-	}
-	userId := idPrimitive.EntityId(userDto.Id)
-
-	email, err := emailPrimitive.EmailFrom(userDto.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := u.userRepo.UpdateEmail(ctx, &userId, &email); err != nil {
-		return nil, err
-	}
-
-	// TODO переписать
-	updatedDto := dto.UserDto{
-		Id:    userDto.Id,
-		Email: userDto.Email,
-	}
-
-	return &updatedDto, nil
-}
-
-func (u UserUseCase) UpdateUserPassword(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, error) {
-	if userDto.Id == "" {
-		return nil, errors.NewError("SYS", "Invalid id")
-	}
-
-	userId := idPrimitive.EntityId(userDto.Id)
-
-	password, err := passwordPrimitive.PasswordFrom(userDto.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := u.userRepo.UpdatePassword(ctx, &userId, password); err != nil {
-		return nil, err
-	}
-
-	// TODO переписать
-	updatedDto := dto.UserDto{
-		Id:       userDto.Id,
-		Email:    userDto.Email,
-		Username: userDto.Username,
-		Password: "Пароль обновили по кайфу",
-	}
-
-	return &updatedDto, nil
-}
-
-func (u UserUseCase) GetUserById(ctx context.Context, id string) (*dto.UserDto, error) {
+func (u UserUseCase) GetUserById(ctx context.Context, id string) (*userEntity.User, error) {
 	userId := idPrimitive.EntityId(id)
 
 	foundUser, err := u.userRepo.GetById(ctx, &userId)
@@ -134,14 +62,51 @@ func (u UserUseCase) GetUserById(ctx context.Context, id string) (*dto.UserDto, 
 		return nil, err
 	}
 
-	// TODO переписать
-	userDto := dto.UserDto{
-		Id:       string(*foundUser.ID()),
-		Email:    string(*foundUser.Email()),
-		Username: string(*foundUser.Username()),
+	return foundUser, nil
+}
+
+func (u UserUseCase) UpdateUser(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (u UserUseCase) UpdateUserEmail(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
+	if dto.Id == "" {
+		return nil, errors.NewError("SYS", "Invalid id")
+	}
+	userId := idPrimitive.EntityId(dto.Id)
+
+	email, err := emailPrimitive.EmailFrom(dto.Email)
+	if err != nil {
+		return nil, err
 	}
 
-	return &userDto, nil
+	updatedUser, err := u.userRepo.UpdateEmail(ctx, &userId, &email)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, nil
+}
+
+func (u UserUseCase) UpdateUserPassword(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
+	if dto.Id == "" {
+		return nil, errors.NewError("SYS", "Invalid id")
+	}
+
+	userId := idPrimitive.EntityId(dto.Id)
+
+	password, err := passwordPrimitive.PasswordFrom(dto.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedUser, err := u.userRepo.UpdatePassword(ctx, &userId, password)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, nil
 }
 
 func (u UserUseCase) DeleteUser(ctx context.Context, id string) error {
@@ -154,14 +119,14 @@ func (u UserUseCase) DeleteUser(ctx context.Context, id string) error {
 	return nil
 }
 
-func (u UserUseCase) LoginUser(ctx context.Context, reqDto *dto.UserDto) (*dto.UserDto, error) {
-	username := usernamePrimitive.Username(reqDto.Username)
+func (u UserUseCase) LoginUser(ctx context.Context, dto *userDto.UserDto) (*userDto.UserResponseDto, error) {
+	username := usernamePrimitive.Username(dto.Username)
 	foundUser, err := u.userRepo.GetByUsername(ctx, &username)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := foundUser.VerifyUsernameAndPassword(reqDto.Username, reqDto.Password); err != nil {
+	if err := foundUser.VerifyUsernameAndPassword(dto.Username, dto.Password); err != nil {
 		return nil, err
 	}
 
@@ -177,13 +142,5 @@ func (u UserUseCase) LoginUser(ctx context.Context, reqDto *dto.UserDto) (*dto.U
 		return nil, err
 	}
 
-	// TODO переписать
-	userDto := dto.UserDto{
-		Id:       string(*foundUser.ID()),
-		Email:    string(*foundUser.Email()),
-		Username: string(*foundUser.Username()),
-		Token:    token,
-	}
-
-	return &userDto, nil
+	return &userDto.UserResponseDto{User: foundUser, Token: token}, nil
 }

@@ -1,9 +1,12 @@
 package request
 
-import "task-tracker/boundary/dto"
+import (
+	"bytes"
+	"encoding/json"
+	userDto "task-tracker/boundary/dto/user"
+)
 
-// UserRequest структура входящего запроса по стандарту https://jsonapi.org/
-type UserRequest struct {
+type CreateUserRequest struct {
 	Data struct {
 		Id         string `json:"id"`
 		Attributes struct {
@@ -16,14 +19,16 @@ type UserRequest struct {
 	} `json:"data"`
 }
 
-// CreateUserDto маппит данные из UserRequest
-func (r *UserRequest) CreateUserDto() *dto.UserDto {
-	return &dto.UserDto{
-		Id:        r.Data.Id,
-		FirstName: r.Data.Attributes.FirstName,
-		LastName:  r.Data.Attributes.LastName,
-		Email:     r.Data.Attributes.Email,
-		Username:  r.Data.Attributes.Username,
-		Password:  r.Data.Attributes.Password,
+// FillFromBytes создаёт JSON-декодер, который читает данные из преобразованного массива байт в поток (Reader) и распаковывает JSON-данные в структуру CreateUserRequest
+func (r *CreateUserRequest) FillFromBytes(jsonBytes []byte) error {
+	return json.NewDecoder(bytes.NewReader(jsonBytes)).Decode(r)
+}
+
+func (r *CreateUserRequest) CreateUserDto() *userDto.UserDto {
+	return &userDto.UserDto{
+		Id:       r.Data.Id,
+		Email:    r.Data.Attributes.Email,
+		Username: r.Data.Attributes.Username,
+		Password: r.Data.Attributes.Password,
 	}
 }
