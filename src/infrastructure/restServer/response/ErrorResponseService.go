@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"task-tracker/infrastructure/errors"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
@@ -64,7 +65,7 @@ func (s *ErrorResponseService) writeErrorResponse(ctx context.Context, w http.Re
 	body, err := json.Marshal(response)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		s.logger.LogError(err, "json.Marshal", "src/infrastructure/restServer/response/ErrorResponseService.go:57", "JSON marshal failed")
+		s.logger.Error(ctx, fmt.Errorf("%s: %v", "JSON marshal failed", err))
 		return
 	}
 
@@ -74,11 +75,11 @@ func (s *ErrorResponseService) writeErrorResponse(ctx context.Context, w http.Re
 
 	prettyJson, err := s.prettyJson(body)
 	if err != nil {
-		s.logger.LogError(err, "prettyJson", "src/infrastructure/restServer/response/ErrorResponseService.go:69", "Prettify response failed")
+		s.logger.Error(ctx, fmt.Errorf("%s: %v", "Prettify response failed", err))
 	}
 	_, err = w.Write(prettyJson)
 	if err != nil {
-		s.logger.LogError(err, "Write", "src/infrastructure/restServer/response/ErrorResponseService.go:73", "ResponseWriter Error")
+		s.logger.Error(ctx, fmt.Errorf("%s: %v", "ResponseWriter Error", err))
 		return
 	}
 }

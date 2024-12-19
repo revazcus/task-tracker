@@ -25,7 +25,8 @@ import (
 	taskUseCase "task-tracker/domain/usecase/task"
 	teamUseCase "task-tracker/domain/usecase/team"
 	userUseCase "task-tracker/domain/usecase/user"
-	"task-tracker/infrastructure/logger"
+	commonLogger "task-tracker/infrastructure/logger"
+	"task-tracker/infrastructure/logger/zapLogger"
 	mongoRepo "task-tracker/infrastructure/mongo"
 	"task-tracker/infrastructure/restServer"
 	restServerController "task-tracker/infrastructure/restServer/controller"
@@ -34,6 +35,9 @@ import (
 	initServices "task-tracker/init-services"
 	router "task-tracker/init-services/routers"
 )
+
+const AppId = "task_tracker"
+const Environment = "develop"
 
 func main() {
 
@@ -46,17 +50,23 @@ func main() {
 
 	mongoRepository := mongoRepo.NewMongoRepo(mongoDB)
 
-	simpleLogger := logger.NewSimpleLogger()
+	stopChan := make(chan struct{})
+	logService := commonLogger.NewLoggerService(stopChan)
+	zapLogger := zapLogger.NewZapLogger(AppId, Environment)
+	logService.AddLogger("zap", zapLogger)
+	logService.Start()
+
+	logger := commonLogger.NewLogger(logService.GetInputChan())
 
 	jwtService, _ := jwtService.NewBuilder().Secret("1").Build()
 
-	server := restServer.NewGinServer(simpleLogger, jwtService)
+	server := restServer.NewGinServer(logger, jwtService)
 
-	errResponseService, _ := response.NewErrorResponseService(resolver.NewErrorResolver(), simpleLogger)
+	errResponseService, _ := response.NewErrorResponseService(resolver.NewErrorResolver(), logger)
 
-	responseService, _ := response.NewResponseService(errResponseService, simpleLogger)
+	responseService, _ := response.NewResponseService(errResponseService, logger)
 
-	baseController, _ := restServerController.NewBaseController(responseService, simpleLogger)
+	baseController, _ := restServerController.NewBaseController(responseService, logger)
 
 	// Lifecycle
 	lifecycleUseCase := &lifecycleUseCase.LifecycleUseCase{}
@@ -107,7 +117,7 @@ func main() {
 	userRepo, _ := userRepo.NewBuilder().
 		Collection("User").
 		MongoRepo(mongoRepository).
-		Logger(simpleLogger).
+		Logger(logger).
 		Build()
 
 	// Строим индексы
@@ -120,7 +130,7 @@ func main() {
 	userController, _ := userRest.NewBuilder().
 		BaseController(baseController).
 		UserUseCase(userUseCase).
-		Logger(simpleLogger).
+		Logger(logger).
 		Build()
 	userRouter := router.NewUserRouter(userController)
 

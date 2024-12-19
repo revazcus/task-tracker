@@ -98,6 +98,9 @@ func (r *UserRepo) GetById(ctx context.Context, userId *idPrimitive.EntityId) (*
 	var userModel *userRepoModel.UserRepoModel
 
 	if err := r.mongoRepo.FindOne(ctx, r.collection, find, &userModel); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, ErrUserNotFound
+		}
 		return nil, err
 	}
 
@@ -133,6 +136,9 @@ func (r *UserRepo) Update(ctx context.Context, user *userEntity.User) (*userEnti
 	updatedUserModel := userRepoModel.UserToRepoModel(user)
 
 	if err := r.mongoRepo.UpdateOne(ctx, r.collection, find, updatedUserModel); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, ErrUserNotFound
+		}
 		return nil, err
 	}
 
@@ -172,7 +178,10 @@ func (r *UserRepo) updateUser(ctx context.Context, userId *idPrimitive.EntityId,
 
 	var userModel *userRepoModel.UserRepoModel
 
-	if err := r.mongoRepo.FindOneAndUpdate(ctx, r.collection, userModel, find, change, options.FindOneAndUpdate().SetReturnDocument(options.After)); err != nil {
+	if err := r.mongoRepo.FindOneAndUpdate(ctx, r.collection, &userModel, find, change, options.FindOneAndUpdate().SetReturnDocument(options.After)); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, ErrUserNotFound
+		}
 		return nil, err
 	}
 

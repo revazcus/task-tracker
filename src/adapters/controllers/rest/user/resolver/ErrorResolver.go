@@ -2,6 +2,7 @@ package resolver
 
 import (
 	"net/http"
+	userRepo "task-tracker/adapters/repository/user"
 	"task-tracker/infrastructure/errors"
 )
 
@@ -41,6 +42,8 @@ func (er *ErrorResolver) GetHttpCode(err error) int {
 	}
 
 	switch errs.Code() {
+	case userRepo.ErrUserNotFound.Code():
+		return http.StatusNotFound
 	default:
 		return http.StatusBadRequest
 	}

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
@@ -23,7 +24,7 @@ func (r *RequestMiddleware) Handler() gin.HandlerFunc {
 		// Читаем и сохраняем тело запроса для логирования
 		bodyBytes, _ := context.GetRawData()
 
-		r.logger.LogInfo(context.Request.Method, context.Request.URL.Path, string(bodyBytes))
+		r.logger.Info(context, fmt.Sprintf("Request: Path=%s, Method=%s", context.Request.URL.Path, context.Request.Method))
 
 		// Восстанавливаем тело запроса для последующих обработчиков (иначе вернёт EOF (конец файла))
 		context.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))

@@ -2,6 +2,7 @@ package response
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"task-tracker/infrastructure/errors"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
@@ -34,7 +35,7 @@ func NewResponseService(errorResponseService *ErrorResponseService, logger logge
 func (s *ResponseService) JsonResponse(w http.ResponseWriter, r *http.Request, result interface{}, responseCode int) {
 	body, err := s.marshalBody(result)
 	if err != nil {
-		s.logger.LogError(err, "marshalBody", "src/infrastructure/restServer/response/ResponseService.go:36", "Marshal json error")
+		s.logger.Error(r.Context(), fmt.Errorf("%s: %v", "Marshal json error", err))
 		s.errorResponseService.ErrorResponse(w, r, err)
 		return
 	}
@@ -47,7 +48,7 @@ func (s *ResponseService) Response(w http.ResponseWriter, r *http.Request, resul
 	w.WriteHeader(responseCode)
 	if responseCode != http.StatusNoContent {
 		if _, err := w.Write(result); err != nil {
-			s.logger.LogError(err, "Write", "src/infrastructure/restServer/response/ResponseService.go:38", "Response Writer Error")
+			s.logger.Error(r.Context(), fmt.Errorf("%s: %v", "Response Writer Error", err))
 			return
 		}
 	}

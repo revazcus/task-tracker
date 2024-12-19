@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
@@ -29,10 +30,7 @@ func (r *ErrorMiddleware) Handler() gin.HandlerFunc {
 				code = http.StatusBadRequest
 			}
 
-			// Читаем и сохраняем тело запроса для логирования
-			bodyBytes, _ := context.GetRawData()
-
-			r.logger.LogError(err, context.Request.Method, context.Request.URL.Path, string(bodyBytes))
+			r.logger.Error(context, fmt.Errorf("error: %v, Path: %s, Method: %s", err, context.Request.URL.Path, context.Request.Method))
 
 			context.JSON(code, gin.H{
 				"error": err.Error(),
