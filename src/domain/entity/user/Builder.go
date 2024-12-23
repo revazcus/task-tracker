@@ -1,25 +1,42 @@
 package userEntity
 
 import (
-	emailPrimitive "task-tracker/domain/domainPrimitive/email"
 	idPrimitive "task-tracker/domain/domainPrimitive/id"
-	passwordPrimitive "task-tracker/domain/domainPrimitive/password"
-	usernamePrimitive "task-tracker/domain/domainPrimitive/username"
+	agreementPrimitive "task-tracker/domain/entity/user/agreement"
+	emailPrimitive "task-tracker/domain/entity/user/email"
+	passwordPrimitive "task-tracker/domain/entity/user/password"
+	profilePrimitive "task-tracker/domain/entity/user/profile"
+	"task-tracker/domain/entity/user/spec"
+	usernamePrimitive "task-tracker/domain/entity/user/username"
+	"task-tracker/infrastructure/errors"
+	commonTime "task-tracker/infrastructure/tools/time"
 )
 
 type Builder struct {
-	id       *idPrimitive.EntityId
-	email    *emailPrimitive.Email
-	username *usernamePrimitive.Username
-	password *passwordPrimitive.Password
+	id        *idPrimitive.EntityId
+	profile   *profilePrimitive.Profile
+	email     *emailPrimitive.Email
+	username  *usernamePrimitive.Username
+	password  *passwordPrimitive.Password
+	role      spec.Role
+	agreement *agreementPrimitive.Agreement
+	createdAt *commonTime.Time
+	errors    *errors.Errors
 }
 
 func NewBuilder() *Builder {
-	return &Builder{}
+	return &Builder{
+		errors: errors.NewErrors(),
+	}
 }
 
 func (b *Builder) Id(id *idPrimitive.EntityId) *Builder {
 	b.id = id
+	return b
+}
+
+func (b *Builder) Profile(profile *profilePrimitive.Profile) *Builder {
+	b.profile = profile
 	return b
 }
 
@@ -38,10 +55,25 @@ func (b *Builder) Password(password *passwordPrimitive.Password) *Builder {
 	return b
 }
 
+func (b *Builder) Role(role spec.Role) *Builder {
+	b.role = role
+	return b
+}
+
+func (b *Builder) Agreement(agreement *agreementPrimitive.Agreement) *Builder {
+	b.agreement = agreement
+	return b
+}
+
+func (b *Builder) CreatedAt(createdAt *commonTime.Time) *Builder {
+	b.createdAt = createdAt
+	return b
+}
+
 func (b *Builder) Build() (*User, error) {
-	err := b.checkRequiredFields()
-	if err != nil {
-		return nil, err
+	b.checkRequiredFields()
+	if b.errors.IsPresent() {
+		return nil, b.errors
 	}
 
 	b.fillDefaultFields()
@@ -50,17 +82,25 @@ func (b *Builder) Build() (*User, error) {
 
 }
 
-func (b *Builder) checkRequiredFields() error {
+func (b *Builder) checkRequiredFields() {
+	if b.profile == nil {
+		b.errors.AddError(ErrProfileIsRequired)
+	}
 	if b.email == nil {
-		return ErrEmailIsRequired
+		b.errors.AddError(ErrEmailIsRequired)
 	}
 	if b.username == nil {
-		return ErrUsernameIsRequired
+		b.errors.AddError(ErrUsernameIsRequired)
 	}
 	if b.password == nil {
-		return ErrPasswordIsRequired
+		b.errors.AddError(ErrPasswordIsRequired)
 	}
-	return nil
+	if b.role == "" {
+		b.errors.AddError(ErrRoleIsRequired)
+	}
+	if b.agreement == nil {
+		b.errors.AddError(ErrAgreementIsRequired)
+	}
 }
 
 func (b *Builder) fillDefaultFields() {
@@ -68,13 +108,20 @@ func (b *Builder) fillDefaultFields() {
 		entityId := idPrimitive.NewEntityId()
 		b.id = &entityId
 	}
+	if b.createdAt == nil {
+		b.createdAt = commonTime.Now()
+	}
 }
 
 func (b *Builder) createFromBuilder() *User {
 	return &User{
-		id:       b.id,
-		email:    b.email,
-		username: b.username,
-		password: b.password,
+		id:        b.id,
+		profile:   b.profile,
+		email:     b.email,
+		username:  b.username,
+		password:  b.password,
+		role:      b.role,
+		agreement: b.agreement,
+		createdAt: b.createdAt,
 	}
 }

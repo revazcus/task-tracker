@@ -2,11 +2,11 @@ package repositoryInterface
 
 import (
 	"context"
-	emailPrimitive "task-tracker/domain/domainPrimitive/email"
 	idPrimitive "task-tracker/domain/domainPrimitive/id"
-	passwordPrimitive "task-tracker/domain/domainPrimitive/password"
-	usernamePrimitive "task-tracker/domain/domainPrimitive/username"
 	userEntity "task-tracker/domain/entity/user"
+	emailPrimitive "task-tracker/domain/entity/user/email"
+	passwordPrimitive "task-tracker/domain/entity/user/password"
+	usernamePrimitive "task-tracker/domain/entity/user/username"
 )
 
 type UserRepository interface {

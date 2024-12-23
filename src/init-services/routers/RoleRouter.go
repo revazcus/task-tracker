@@ -17,8 +17,8 @@ func NewRoleRouter(controller *roleRest.RoleController) *RoleRouter {
 }
 
 func (r *RoleRouter) RegisterRoutes(server restServerInterface.Server) {
-	server.RegisterPublicRoute(http.MethodGet, "v1/role", r.controller.GetRoleById)
-	server.RegisterPublicRoute(http.MethodPost, "v1/role/create", r.controller.CreateRole)
-	server.RegisterPublicRoute(http.MethodPut, "v1/role/update", r.controller.UpdateRole)
-	server.RegisterPublicRoute(http.MethodDelete, "v1/role", r.controller.DeleteRoleById)
+	server.RegisterPublicRoute(http.MethodGet, "v1/spec", r.controller.GetRoleById)
+	server.RegisterPublicRoute(http.MethodPost, "v1/spec/create", r.controller.CreateRole)
+	server.RegisterPublicRoute(http.MethodPut, "v1/spec/update", r.controller.UpdateRole)
+	server.RegisterPublicRoute(http.MethodDelete, "v1/spec", r.controller.DeleteRoleById)
 }

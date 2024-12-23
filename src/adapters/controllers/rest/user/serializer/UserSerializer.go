@@ -16,8 +16,12 @@ func CreateUserObject(user *userEntity.User) *jsonApiModel.JsonApiObject {
 		Id:   user.ID().String(),
 		Type: ResponseUser,
 		Attributes: map[string]interface{}{
-			"username": user.Username(),
-			"email":    user.Email(),
+			"firstName": user.Profile().FirstName(),
+			"lastName":  user.Profile().LastName(),
+			"email":     user.Email(),
+			"username":  user.Username(),
+			"role":      user.Role(),
+			"createdAt": user.CreatedAt(),
 		},
 		Relationships: jsonApiModel.JsonApiObjectRelationships{},
 	}

@@ -67,6 +67,6 @@ func (bc *BaseController) JsonResponse(w http.ResponseWriter, r *http.Request, r
 	bc.responseService.JsonResponse(w, r, result, responseCode)
 }
 
-func (bc *BaseController) ErrorResponse(w http.ResponseWriter, r *http.Request, errors error) {
-	bc.responseService.ErrorResponse(w, r, errors)
+func (bc *BaseController) ErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	bc.responseService.ErrorResponse(w, r, err)
 }

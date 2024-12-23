@@ -4,14 +4,18 @@ import (
 	"context"
 	userDto "task-tracker/boundary/dto/user"
 	"task-tracker/boundary/repository"
-	emailPrimitive "task-tracker/domain/domainPrimitive/email"
 	idPrimitive "task-tracker/domain/domainPrimitive/id"
-	passwordPrimitive "task-tracker/domain/domainPrimitive/password"
-	usernamePrimitive "task-tracker/domain/domainPrimitive/username"
 	userEntity "task-tracker/domain/entity/user"
+	agreementPrimitive "task-tracker/domain/entity/user/agreement"
+	emailPrimitive "task-tracker/domain/entity/user/email"
+	passwordPrimitive "task-tracker/domain/entity/user/password"
+	profilePrimitive "task-tracker/domain/entity/user/profile"
+	"task-tracker/domain/entity/user/spec"
+	usernamePrimitive "task-tracker/domain/entity/user/username"
 	"task-tracker/infrastructure/errors"
 	"task-tracker/infrastructure/security/jwtService"
 	jwtServiceInterface "task-tracker/infrastructure/security/jwtService/interface"
+	commonTime "task-tracker/infrastructure/tools/time"
 )
 
 type UserUseCase struct {
@@ -20,6 +24,22 @@ type UserUseCase struct {
 }
 
 func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.UserDto) (*userDto.UserResponseDto, error) {
+	agreement, err := agreementPrimitive.NewBuilder().
+		Accepted(userCreateDto.Agreement).
+		AcceptedDate(commonTime.Now()).
+		Build()
+	if err != nil {
+		return nil, err
+	}
+
+	profilePrim, err := profilePrimitive.NewBuilder().
+		FirstName(userCreateDto.FirstName).
+		LastName(userCreateDto.LastName).
+		Build()
+	if err != nil {
+		return nil, err
+	}
+
 	emailPrim, err := emailPrimitive.EmailFrom(userCreateDto.Email)
 	if err != nil {
 		return nil, err
@@ -35,9 +55,12 @@ func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.User
 	}
 
 	user, err := userEntity.NewBuilder().
+		Profile(profilePrim).
 		Email(&emailPrim).
 		Username(&usernamePrim).
 		Password(passwordPrim).
+		Role(spec.Roles.Admin()).
+		Agreement(agreement).
 		Build()
 
 	if err := u.userRepo.Create(ctx, user); err != nil {
@@ -46,7 +69,7 @@ func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.User
 
 	token, err := u.jwtService.CreateUserToken(
 		user.ID().String(),
-		map[string]string{jwtService.RoleTokenKey: "ADMIN"})
+		map[string]string{jwtService.RoleTokenKey: spec.Roles.Admin().String()})
 	if err != nil {
 		return nil, err
 	}

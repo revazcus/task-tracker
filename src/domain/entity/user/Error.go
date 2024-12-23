@@ -3,8 +3,12 @@ package userEntity
 import "task-tracker/infrastructure/errors"
 
 var (
-	ErrEmailIsRequired           = errors.NewError("USE-001", "User email is required")
-	ErrUsernameIsRequired        = errors.NewError("USE-002", "Username is required")
-	ErrPasswordIsRequired        = errors.NewError("USE-003", "User password is required")
-	ErrInvalidUsernameOrPassword = errors.NewError("USE-004", "Неверный логин или пароль")
+	ErrProfileIsRequired   = errors.NewError("USE-001", "Профиль должен быть заполнен")
+	ErrEmailIsRequired     = errors.NewError("USE-002", "Email должен быть заполнен")
+	ErrUsernameIsRequired  = errors.NewError("USE-003", "Логин должен быть заполнен")
+	ErrPasswordIsRequired  = errors.NewError("USE-004", "Пароль должен быть заполнен")
+	ErrRoleIsRequired      = errors.NewError("USE-005", "Роль должна быть заполнена")
+	ErrAgreementIsRequired = errors.NewError("USE_006", "Согласие должно быть заполнено")
+
+	ErrInvalidUsernameOrPassword = errors.NewError("USE-005", "Неверный логин или пароль")
 )

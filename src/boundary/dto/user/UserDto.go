@@ -1,8 +1,11 @@
 package userDto
 
 type UserDto struct {
-	Id       string
-	Email    string
-	Username string
-	Password string
+	Id        string
+	FirstName string
+	LastName  string
+	Email     string
+	Username  string
+	Password  string
+	Agreement bool
 }

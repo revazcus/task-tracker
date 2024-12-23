@@ -21,9 +21,13 @@ func CreateUserResponseObject(responseDto *userDto.UserResponseDto) *jsonApiMode
 		Id:   user.ID().String(),
 		Type: ResponseUser,
 		Attributes: map[string]interface{}{
-			"username": user.Username().String(),
-			"email":    user.Email().String(),
-			"token":    responseDto.Token,
+			"firstName": user.Profile().FirstName(),
+			"lastName":  user.Profile().LastName(),
+			"username":  user.Username().String(),
+			"email":     user.Email().String(),
+			"token":     responseDto.Token,
+			"role":      user.Role(),
+			"createdAt": user.CreatedAt(),
 		},
 		Relationships: jsonApiModel.JsonApiObjectRelationships{},
 	}

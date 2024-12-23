@@ -5,7 +5,7 @@ type ErrorResponse struct {
 }
 
 type ErrorResponseData struct {
-	HttpCode  int    `json:"responseCode"`
+	HttpCode  int    `json:"-"`
 	ErrorCode string `json:"errorCode"`
 	Text      string `json:"text"`
 }

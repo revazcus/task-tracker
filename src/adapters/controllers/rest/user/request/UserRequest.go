@@ -15,6 +15,7 @@ type CreateUserRequest struct {
 			Email     string `json:"email"`
 			Username  string `json:"username"`
 			Password  string `json:"password"`
+			Agreement bool   `json:"agreement"`
 		} `json:"attributes"`
 	} `json:"data"`
 }
@@ -26,9 +27,12 @@ func (r *CreateUserRequest) FillFromBytes(jsonBytes []byte) error {
 
 func (r *CreateUserRequest) CreateUserDto() *userDto.UserDto {
 	return &userDto.UserDto{
-		Id:       r.Data.Id,
-		Email:    r.Data.Attributes.Email,
-		Username: r.Data.Attributes.Username,
-		Password: r.Data.Attributes.Password,
+		Id:        r.Data.Id,
+		FirstName: r.Data.Attributes.FirstName,
+		LastName:  r.Data.Attributes.LastName,
+		Email:     r.Data.Attributes.Email,
+		Username:  r.Data.Attributes.Username,
+		Password:  r.Data.Attributes.Password,
+		Agreement: r.Data.Attributes.Agreement,
 	}
 }
