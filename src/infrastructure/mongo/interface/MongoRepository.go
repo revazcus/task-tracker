@@ -9,6 +9,7 @@ import (
 type MongoRepository interface {
 	InsertOne(ctx context.Context, collectionName string, data interface{}) error
 
+	Find(ctx context.Context, collectionName string, results, find interface{}, opt *options.FindOptionsBuilder) error
 	FindOne(ctx context.Context, collectionName string, filter, resultModel interface{}) error
 	FindOneAndUpdate(ctx context.Context, collectionName string, resultModel, filter, updateData interface{}, opt *options.FindOneAndUpdateOptionsBuilder) error
 

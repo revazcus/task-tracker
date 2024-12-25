@@ -4,7 +4,7 @@ import (
 	"context"
 	userDto "task-tracker/boundary/dto/user"
 	"task-tracker/boundary/repository"
-	idPrimitive "task-tracker/domain/domainPrimitive/id"
+	idPrimitive "task-tracker/common/domainPrimitive/id"
 	userEntity "task-tracker/domain/entity/user"
 	agreementPrimitive "task-tracker/domain/entity/user/agreement"
 	emailPrimitive "task-tracker/domain/entity/user/email"
@@ -62,6 +62,9 @@ func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.User
 		Role(spec.Roles.Admin()).
 		Agreement(agreement).
 		Build()
+	if err != nil {
+		return nil, err
+	}
 
 	if err := u.userRepo.Create(ctx, user); err != nil {
 		return nil, err
@@ -77,14 +80,20 @@ func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.User
 	return &userDto.UserResponseDto{User: user, Token: token}, nil
 }
 
+func (u UserUseCase) GetAllUsers(ctx context.Context) ([]*userEntity.User, error) {
+	foundUsers, err := u.userRepo.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return foundUsers, nil
+}
+
 func (u UserUseCase) GetUserById(ctx context.Context, id string) (*userEntity.User, error) {
 	userId := idPrimitive.EntityId(id)
-
 	foundUser, err := u.userRepo.GetById(ctx, &userId)
 	if err != nil {
 		return nil, err
 	}
-
 	return foundUser, nil
 }
 
@@ -134,9 +143,7 @@ func (u UserUseCase) UpdateUserPassword(ctx context.Context, dto *userDto.UserDt
 
 func (u UserUseCase) DeleteUser(ctx context.Context, id string) error {
 	userId := idPrimitive.EntityId(id)
-
-	err := u.userRepo.DeleteById(ctx, &userId)
-	if err != nil {
+	if err := u.userRepo.DeleteById(ctx, &userId); err != nil {
 		return err
 	}
 	return nil

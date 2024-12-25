@@ -43,6 +43,19 @@ func (r *MongoRepo) InsertOne(ctx context.Context, collectionName string, data i
 	return nil
 }
 
+func (r *MongoRepo) Find(ctx context.Context, collectionName string, results, find interface{}, opt *options.FindOptionsBuilder) error {
+	collection := r.mongoDB.Collection(collectionName)
+	cursor, err := collection.Find(ctx, find, opt)
+	if err != nil {
+		return err
+	}
+	err = cursor.All(ctx, results)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *MongoRepo) FindOne(ctx context.Context, collectionName string, filter, resultModel interface{}) error {
 	collection := r.mongoDB.Collection(collectionName)
 	result := collection.FindOne(ctx, filter)

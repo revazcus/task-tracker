@@ -7,37 +7,34 @@ import (
 	restServerController "task-tracker/infrastructure/restServer/controller"
 )
 
-type UserControllerBuilder struct {
+type Builder struct {
 	controller *UserController
 	errors     *errors.Errors
 }
 
-func NewBuilder() *UserControllerBuilder {
-	return &UserControllerBuilder{
+func NewBuilder() *Builder {
+	return &Builder{
 		controller: &UserController{},
 		errors:     errors.NewErrors(),
 	}
 }
 
-// Logger инициализирует поле logger в UserController
-func (b *UserControllerBuilder) Logger(logger loggerInterface.Logger) *UserControllerBuilder {
+func (b *Builder) Logger(logger loggerInterface.Logger) *Builder {
 	b.controller.logger = logger
 	return b
 }
 
-// BaseController инициализирует поле baseController в UserController
-func (b *UserControllerBuilder) BaseController(baseController *restServerController.BaseController) *UserControllerBuilder {
+func (b *Builder) BaseController(baseController *restServerController.BaseController) *Builder {
 	b.controller.BaseController = baseController
 	return b
 }
 
-// UserUseCase инициализирует поле userUseCase в UserController
-func (b *UserControllerBuilder) UserUseCase(userUseCase usecase.UserUseCaseInterface) *UserControllerBuilder {
+func (b *Builder) UserUseCase(userUseCase usecase.UserUseCaseInterface) *Builder {
 	b.controller.userUseCase = userUseCase
 	return b
 }
 
-func (b *UserControllerBuilder) Build() (*UserController, error) {
+func (b *Builder) Build() (*UserController, error) {
 	b.checkRequiredFields()
 	if b.errors.IsPresent() {
 		return nil, b.errors
@@ -46,7 +43,7 @@ func (b *UserControllerBuilder) Build() (*UserController, error) {
 	return b.controller, nil
 }
 
-func (b *UserControllerBuilder) checkRequiredFields() {
+func (b *Builder) checkRequiredFields() {
 	if b.controller.logger == nil {
 		b.errors.AddError(errors.NewError("SYS", "UserControllerBuilder: Logger is required"))
 	}
@@ -58,7 +55,6 @@ func (b *UserControllerBuilder) checkRequiredFields() {
 	}
 }
 
-// Инициализирует дефолтные поля в UserController
-func (b *UserControllerBuilder) fillDefaultFields() {
+func (b *Builder) fillDefaultFields() {
 
 }

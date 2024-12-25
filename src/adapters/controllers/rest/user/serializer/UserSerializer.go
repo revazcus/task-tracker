@@ -1,13 +1,25 @@
-package serializer
+package userSerializer
 
 import (
 	userEntity "task-tracker/domain/entity/user"
 	jsonApiModel "task-tracker/infrastructure/jsonapi/model"
 )
 
+const (
+	ResponseUser = "user"
+)
+
 func SerializeUser(user *userEntity.User) (jsonApiModel.JsonApiPayload, error) {
 	responseBuilder := jsonApiModel.NewJsonApiPayloadBuilder()
 	responseBuilder.AddData(CreateUserObject(user))
+	return responseBuilder.Build()
+}
+
+func SerializeUsers(users []*userEntity.User) (jsonApiModel.JsonApiPayload, error) {
+	responseBuilder := jsonApiModel.NewJsonApiPayloadBuilder()
+	for _, user := range users {
+		responseBuilder.AddData(CreateUserObject(user))
+	}
 	return responseBuilder.Build()
 }
 

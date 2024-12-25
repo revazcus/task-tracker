@@ -6,14 +6,15 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"strings"
-	userRepoModel "task-tracker/adapters/repository/user/repoModel/user"
-	idPrimitive "task-tracker/domain/domainPrimitive/id"
+	userRepoModel "task-tracker/adapters/repository/user/model/user"
+	idPrimitive "task-tracker/common/domainPrimitive/id"
 	userEntity "task-tracker/domain/entity/user"
 	emailPrimitive "task-tracker/domain/entity/user/email"
 	passwordPrimitive "task-tracker/domain/entity/user/password"
 	usernamePrimitive "task-tracker/domain/entity/user/username"
 	"task-tracker/infrastructure/errors"
 	loggerInterface "task-tracker/infrastructure/logger/interface"
+	logModel "task-tracker/infrastructure/logger/model"
 	mongoInterface "task-tracker/infrastructure/mongo/interface"
 	mongoModel "task-tracker/infrastructure/mongo/model"
 )
@@ -93,6 +94,25 @@ func (r *UserRepo) Create(ctx context.Context, user *userEntity.User) error {
 	return nil
 }
 
+func (r *UserRepo) GetAll(ctx context.Context) ([]*userEntity.User, error) {
+	var userModels []*userRepoModel.UserRepoModel
+	if err := r.mongoRepo.Find(ctx, r.collection, &userModels, bson.D{}, options.Find().SetComment("Get all users")); err != nil {
+		return nil, err
+	}
+
+	var users []*userEntity.User
+	for _, userModel := range userModels {
+		user, err := userModel.GetEntity()
+		if err != nil {
+			r.logger.Error(ctx, err, logModel.WithComponent("Mongo"))
+			continue
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
 func (r *UserRepo) GetById(ctx context.Context, userId *idPrimitive.EntityId) (*userEntity.User, error) {
 	find := bson.D{{"user_id", userId.String()}}
 	var userModel *userRepoModel.UserRepoModel
@@ -165,11 +185,9 @@ func (r *UserRepo) UpdatePassword(ctx context.Context, userId *idPrimitive.Entit
 
 func (r *UserRepo) DeleteById(ctx context.Context, userId *idPrimitive.EntityId) error {
 	find := bson.D{{"user_id", userId.String()}}
-
 	if err := r.mongoRepo.DeleteOne(ctx, r.collection, find); err != nil {
 		return err
 	}
-
 	return nil
 }
 

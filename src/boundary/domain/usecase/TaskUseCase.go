@@ -1,10 +1,18 @@
 package usecase
 
-import "task-tracker/boundary/dto"
+import (
+	"context"
+	taskDto "task-tracker/boundary/dto/task"
+	taskEntity "task-tracker/domain/entity/task"
+)
 
 type TaskUseCaseInterface interface {
-	GetById(id int) (*dto.TaskDto, error)
-	Create(dto *dto.TaskDto) (*dto.TaskDto, error)
-	Update(dto *dto.TaskDto) (*dto.TaskDto, error)
-	Delete(id int) error
+	CreateTask(ctx context.Context, taskCreateDto *taskDto.TaskDto) (*taskEntity.Task, error)
+
+	GetAllTasks(ctx context.Context) ([]*taskEntity.Task, error)
+	GetTaskById(ctx context.Context, id string) (*taskEntity.Task, error)
+
+	UpdateTask(ctx context.Context, dto *taskDto.TaskDto) (*taskEntity.Task, error)
+
+	DeleteTask(ctx context.Context, id string) error
 }

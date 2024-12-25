@@ -1,7 +1,7 @@
 package userEntity
 
 import (
-	idPrimitive "task-tracker/domain/domainPrimitive/id"
+	idPrimitive "task-tracker/common/domainPrimitive/id"
 	agreementPrimitive "task-tracker/domain/entity/user/agreement"
 	emailPrimitive "task-tracker/domain/entity/user/email"
 	passwordPrimitive "task-tracker/domain/entity/user/password"

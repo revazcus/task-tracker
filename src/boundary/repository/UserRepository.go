@@ -2,7 +2,7 @@ package repositoryInterface
 
 import (
 	"context"
-	idPrimitive "task-tracker/domain/domainPrimitive/id"
+	idPrimitive "task-tracker/common/domainPrimitive/id"
 	userEntity "task-tracker/domain/entity/user"
 	emailPrimitive "task-tracker/domain/entity/user/email"
 	passwordPrimitive "task-tracker/domain/entity/user/password"
@@ -14,6 +14,7 @@ type UserRepository interface {
 
 	Create(ctx context.Context, user *userEntity.User) error
 
+	GetAll(ctx context.Context) ([]*userEntity.User, error)
 	GetById(ctx context.Context, userId *idPrimitive.EntityId) (*userEntity.User, error)
 	GetByUsername(ctx context.Context, username *usernamePrimitive.Username) (*userEntity.User, error)
 

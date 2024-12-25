@@ -17,8 +17,9 @@ func NewTaskRouter(controller *taskRest.TaskController) *TaskRouter {
 }
 
 func (r *TaskRouter) RegisterRoutes(server restServerInterface.Server) {
-	server.RegisterPublicRoute(http.MethodGet, "v1/task", r.controller.GetTaskById)
-	server.RegisterPublicRoute(http.MethodPost, "v1/task/create", r.controller.CreateTask)
-	server.RegisterPublicRoute(http.MethodPut, "v1/task/update", r.controller.UpdateTask)
-	server.RegisterPublicRoute(http.MethodDelete, "v1/task", r.controller.DeleteTaskById)
+	server.RegisterPrivateRoute(http.MethodPost, "v1/task/create", r.controller.CreateTask)
+	server.RegisterPrivateRoute(http.MethodGet, "v1/tasks", r.controller.GetAllTasks)
+	server.RegisterPrivateRoute(http.MethodGet, "v1/task", r.controller.GetTaskById)
+	server.RegisterPrivateRoute(http.MethodPut, "v1/task/update", r.controller.UpdateTask)
+	server.RegisterPrivateRoute(http.MethodDelete, "v1/task", r.controller.DeleteTaskById)
 }

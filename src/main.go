@@ -3,27 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	lifecycleRest "task-tracker/adapters/controllers/rest/lifecycle"
-	notificationRest "task-tracker/adapters/controllers/rest/notification"
-	permissionRest "task-tracker/adapters/controllers/rest/permission"
-	projectRest "task-tracker/adapters/controllers/rest/project"
-	reportRest "task-tracker/adapters/controllers/rest/report"
-	roleRest "task-tracker/adapters/controllers/rest/role"
-	ruleRest "task-tracker/adapters/controllers/rest/rule"
 	taskRest "task-tracker/adapters/controllers/rest/task"
-	teamRest "task-tracker/adapters/controllers/rest/team"
 	userRest "task-tracker/adapters/controllers/rest/user"
 	"task-tracker/adapters/controllers/rest/user/resolver"
+	taskRepo "task-tracker/adapters/repository/task"
 	userRepo "task-tracker/adapters/repository/user"
-	lifecycleUseCase "task-tracker/domain/usecase/lifecycle"
-	notificationUseCase "task-tracker/domain/usecase/notification"
-	permissionUseCase "task-tracker/domain/usecase/permission"
-	projectUseCase "task-tracker/domain/usecase/project"
-	reportUseCase "task-tracker/domain/usecase/report"
-	roleUseCase "task-tracker/domain/usecase/role"
-	ruleUseCase "task-tracker/domain/usecase/rule"
 	taskUseCase "task-tracker/domain/usecase/task"
-	teamUseCase "task-tracker/domain/usecase/team"
 	userUseCase "task-tracker/domain/usecase/user"
 	commonLogger "task-tracker/infrastructure/logger"
 	"task-tracker/infrastructure/logger/zapLogger"
@@ -68,50 +53,26 @@ func main() {
 
 	baseController, _ := restServerController.NewBaseController(responseService, logger)
 
-	// Lifecycle
-	lifecycleUseCase := &lifecycleUseCase.LifecycleUseCase{}
-	lifecycleController := lifecycleRest.NewLifeCycleController(baseController, lifecycleUseCase)
-	lifecycleRouter := router.NewLifecycleRouter(lifecycleController)
-
-	// Notification
-	notificationUseCase := &notificationUseCase.NotificationUseCase{}
-	notificationController := notificationRest.NewNotificationController(baseController, notificationUseCase)
-	notificationRouter := router.NewNotificationRouter(notificationController)
-
-	// Permission
-	permissionUseCase := &permissionUseCase.PermissionUseCase{}
-	permissionController := permissionRest.NewPermissionController(baseController, permissionUseCase)
-	permissionRouter := router.NewPermissionRouter(permissionController)
-
-	// Project
-	projectUseCase := &projectUseCase.ProjectUseCase{}
-	projectController := projectRest.NewProjectController(baseController, projectUseCase)
-	projectRouter := router.NewProjectRouter(projectController)
-
-	// Report
-	reportUseCase := &reportUseCase.ReportUseCase{}
-	reportController := reportRest.NewReportController(baseController, reportUseCase)
-	reportRouter := router.NewReportRouter(reportController)
-
-	// Role
-	roleUseCase := &roleUseCase.RoleUseCase{}
-	roleController := roleRest.NewRoleController(baseController, roleUseCase)
-	roleRouter := router.NewRoleRouter(roleController)
-
-	// Rule
-	ruleUseCase := &ruleUseCase.RuleUseCase{}
-	ruleController := ruleRest.NewRuleController(baseController, ruleUseCase)
-	ruleRouter := router.NewRuleRouter(ruleController)
-
 	// Task
-	taskUseCase := &taskUseCase.TaskUseCase{}
-	taskController := taskRest.NewTaskController(baseController, taskUseCase)
-	taskRouter := router.NewTaskRouter(taskController)
+	taskRepo, _ := taskRepo.NewBuilder().
+		Collection("Task").
+		MongoRepo(mongoRepository).
+		Logger(logger).
+		Build()
 
-	// Team
-	teamUseCase := &teamUseCase.TeamUseCase{}
-	teamController := teamRest.NewTeamController(baseController, teamUseCase)
-	teamRouter := router.NewTeamRouter(teamController)
+	taskRepo.Init(context.Background())
+
+	taskUseCase, _ := taskUseCase.NewBuilder().
+		TaskRepo(taskRepo).
+		Build()
+
+	taskController, _ := taskRest.NewBuilder().
+		BaseController(baseController).
+		TaskUseCase(taskUseCase).
+		Logger(logger).
+		Build()
+
+	taskRouter := router.NewTaskRouter(taskController)
 
 	// User
 	userRepo, _ := userRepo.NewBuilder().
@@ -120,31 +81,24 @@ func main() {
 		Logger(logger).
 		Build()
 
-	// Строим индексы
 	userRepo.Init(context.Background())
 
 	userUseCase, _ := userUseCase.NewBuilder().
 		UserRepo(userRepo).
 		JwtService(jwtService).
 		Build()
+
 	userController, _ := userRest.NewBuilder().
 		BaseController(baseController).
 		UserUseCase(userUseCase).
 		Logger(logger).
 		Build()
+
 	userRouter := router.NewUserRouter(userController)
 
 	globalRouter := initServices.NewGlobalRouter(server,
 		userRouter,
-		lifecycleRouter,
-		notificationRouter,
-		permissionRouter,
-		projectRouter,
-		reportRouter,
-		roleRouter,
-		ruleRouter,
-		taskRouter,
-		teamRouter)
+		taskRouter)
 
 	globalRouter.RegisterAllRoutes()
 

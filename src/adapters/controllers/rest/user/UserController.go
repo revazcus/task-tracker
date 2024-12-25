@@ -19,7 +19,6 @@ type UserController struct {
 
 func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	requestData := &request.CreateUserRequest{}
-
 	if err := c.FillReqModel(r, requestData); err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -31,13 +30,29 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := serializer.SerializeUserResponse(createdUser)
+	response, err := userSerializer.SerializeUserResponse(createdUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
 	}
 
 	c.JsonResponse(w, r, response, http.StatusCreated)
+}
+
+func (c *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	foundUsers, err := c.userUseCase.GetAllUsers(r.Context())
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := userSerializer.SerializeUsers(foundUsers)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
 }
 
 func (c *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +70,7 @@ func (c *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := serializer.SerializeUser(foundUser)
+	response, err := userSerializer.SerializeUser(foundUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -78,7 +93,7 @@ func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := serializer.SerializeUser(createdUser)
+	response, err := userSerializer.SerializeUser(createdUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -101,7 +116,7 @@ func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	response, err := serializer.SerializeUser(createdUser)
+	response, err := userSerializer.SerializeUser(createdUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -124,7 +139,7 @@ func (c *UserController) UpdateUserPassword(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	response, err := serializer.SerializeUser(createdUser)
+	response, err := userSerializer.SerializeUser(createdUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -162,7 +177,7 @@ func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := serializer.SerializeUserResponse(foundUser)
+	response, err := userSerializer.SerializeUserResponse(foundUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -184,7 +199,7 @@ func (c *UserController) Me(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := serializer.SerializeUser(foundUser)
+	response, err := userSerializer.SerializeUser(foundUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return

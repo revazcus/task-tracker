@@ -1,12 +1,8 @@
-package serializer
+package userSerializer
 
 import (
 	userDto "task-tracker/boundary/dto/user"
 	jsonApiModel "task-tracker/infrastructure/jsonapi/model"
-)
-
-const (
-	ResponseUser = "user"
 )
 
 func SerializeUserResponse(responseDto *userDto.UserResponseDto) (jsonApiModel.JsonApiPayload, error) {

@@ -20,7 +20,6 @@ type CreateUserRequest struct {
 	} `json:"data"`
 }
 
-// FillFromBytes создаёт JSON-декодер, который читает данные из преобразованного массива байт в поток (Reader) и распаковывает JSON-данные в структуру CreateUserRequest
 func (r *CreateUserRequest) FillFromBytes(jsonBytes []byte) error {
 	return json.NewDecoder(bytes.NewReader(jsonBytes)).Decode(r)
 }
