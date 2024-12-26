@@ -1,0 +1,156 @@
+@font-face {
+    font-family: Core;
+    src: url('../assets/CoreNaraePro.ttf');
+  }
+
+
+* {
+    box-sizing: border-box;
+    font-family: Core;
+    color: rgb(255, 254, 254);
+    font-weight: 100;
+    
+}
+.wrapper {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(../assets/1.jpg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+.slogan {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Чтобы точно центрировать */
+    font-size: 40px;
+    text-align: center; /* Выравнивание текста */
+    z-index: 10;
+}
+.sloganclosed {
+    opacity: 0; 
+    visibility: hidden; 
+}
+
+.startbtn{
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Чтобы точно центрировать */
+    text-align: center; /* Выравнивание текста */
+    z-index: 10;
+    color: #ffff;
+    background-color: black;
+    padding: 10px;
+    width: 200px;
+    font-size: 50px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 1s, color 1s, border 1s;
+    border: 3px #f8f8f8 solid;
+
+}
+.startbtn:hover {
+    background-color: #f8f8f8;
+    color: black;
+    transition: background-color 1s, color 1s, border 1s;
+    border: 3px black solid;
+}
+
+.modalopened{
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 1; 
+    visibility: visible; 
+    transition: opacity 0.5s;
+    z-index: 1;
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+}
+.modalwindow{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #5f564c;
+    border-radius: 40px;
+    width: 300px;
+    height: 300px;
+    align-self: center;
+    justify-self: center;
+    position: relative;
+    z-index: 2;
+    padding-top: 40px;
+    gap: 10px;
+    transition: opacity 1s ease, transform 1s ease;
+
+}
+.logbtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: #5f564c;
+    width: 150px;
+    cursor: pointer;
+}
+.modalwindow2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+    position: absolute;
+    top: 15px;
+    border-radius: 40px;
+    width: 300px;
+    height: 300px;
+    z-index: -1;
+    transition: opacity 1s ease, transform 1s ease;
+}
+.closed{
+    opacity: 0; /* Исчезновение элемента */
+    visibility: hidden; /* Делает элемент невидимым */
+    transform: scale(0.9); /* Можно добавить уменьшение для плавного эффекта */
+    transition: opacity 1s ease, transform 1s ease; 
+}
+.cross{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 35px;
+    left: 255px;
+    z-index: 3;
+    cursor: pointer;
+    transition: opacity 1s ease, transform 1s ease;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #5f564c;
+}
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #5f564c;
+
+}

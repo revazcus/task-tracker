@@ -23,6 +23,18 @@ func NewGinServer(logger loggerInterface.Logger, jwtService jwtServiceInterface.
 		middleware.NewRequestMiddleware(logger).Handler(),
 		middleware.NewErrorMiddleware(logger).Handler())
 
+	// TODO переписать
+	// Работа с фронтом
+	server.Static("/assets", "C:\\Users\\Rezo\\IdeaProjects\\Monetization\\Task-Tracker\\frontend\\assets") // Шрифты и изображения
+	server.Static("/css", "C:\\Users\\Rezo\\IdeaProjects\\Monetization\\Task-Tracker\\frontend\\css")       // Статические CSS файлы
+	server.Static("/js", "C:\\Users\\Rezo\\IdeaProjects\\Monetization\\Task-Tracker\\frontend\\js")         // Статические JS файлы
+
+	// Регистрируем маршрут для главной страницы
+	server.GET("/", func(c *gin.Context) {
+		// Указываем путь к главному файлу start.html
+		c.File("C:\\Users\\Rezo\\IdeaProjects\\Monetization\\Task-Tracker\\frontend\\start.html")
+	})
+
 	// Кастомный обработчик при отсутствии ресурса по переданному маршруту
 	server.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{

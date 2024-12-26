@@ -1,0 +1,125 @@
+@font-face {
+    font-family: Core;
+    src: url('../assets/CoreNaraePro.ttf');
+  }
+
+
+* {
+    box-sizing: border-box;
+    font-family: Core;
+    color: rgb(255, 254, 254);
+    font-weight: 100;
+    
+}
+.wrapper {
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    background-color: #272521;
+}
+.body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 99svh;
+    gap: 40px;
+    padding: 50px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    
+
+
+}
+.filtertype{
+    cursor: pointer;
+    width: 250px;
+    text-align: center;
+    font-size: 45px;
+    padding: 10px;
+    text-wrap: nowrap;
+
+
+
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 99svh;
+    gap: 20px;
+}
+.userbox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 99svh;
+    gap: 20px;
+    padding: 10px;
+}
+.username{
+    width: 400px;
+    text-align: center;
+    font-size: 45px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgb(248, 246, 246);
+}
+.tasksbox {
+    width: 400px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgb(248, 246, 246);
+    display: flex;
+    flex-wrap: wrap;
+}
+.task {
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    height: 180px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.low{
+    background-image: url(../assets/3.png);
+}
+.medium {
+    background-image: url(../assets/4.png);
+}
+.high {
+    background-image: url(../assets/5.png);
+}
+
+
+.taskname, 
+.projectname,
+.deadline,
+.usertodo {
+    text-align: center;
+    color:#272521;
+    font-size: 20px;
+    transform: skewY(-7deg);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.usertodo {
+    margin-left: 30px;
+    background-color: rgb(213, 253, 175);
+}
+.projectname {
+    background-color: rgb(245, 219, 146);
+}
