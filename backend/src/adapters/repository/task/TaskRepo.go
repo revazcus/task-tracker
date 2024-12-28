@@ -68,7 +68,7 @@ func (r TaskRepo) GetAll(ctx context.Context) ([]*taskEntity.Task, error) {
 }
 
 func (r TaskRepo) GetById(ctx context.Context, taskId *idPrimitive.EntityId) (*taskEntity.Task, error) {
-	find := bson.D{{"tst_id", taskId.String()}}
+	find := bson.D{{"task_id", taskId.String()}}
 	var taskModel *taskRepoModel.TaskRepoModel
 
 	if err := r.mongoRepo.FindOne(ctx, r.collection, find, &taskModel); err != nil {

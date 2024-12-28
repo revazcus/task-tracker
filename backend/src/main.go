@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os/exec"
 	taskRest "task-tracker/adapters/controllers/rest/task"
 	userRest "task-tracker/adapters/controllers/rest/user"
 	"task-tracker/adapters/controllers/rest/user/resolver"
@@ -103,10 +102,10 @@ func main() {
 
 	globalRouter.RegisterAllRoutes()
 
-	// Открывает стартовую страницу в браузере (работает только с Windows)
-	if err := exec.Command("explorer", "http://localhost:8080").Run(); err != nil {
-		logger.Error(context.Background(), err)
-	}
+	//// Открывает стартовую страницу в браузере (работает только с Windows)
+	//if err := exec.Command("explorer", "http://localhost:8080").Run(); err != nil {
+	//	logger.Error(context.Background(), err)
+	//}
 
 	server.Start(":8080")
 }

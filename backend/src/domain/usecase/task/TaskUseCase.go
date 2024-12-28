@@ -4,12 +4,17 @@ import (
 	"context"
 	taskDto "task-tracker/boundary/dto/task"
 	repositoryInterface "task-tracker/boundary/repository"
+	commentPrimitive "task-tracker/common/domainPrimitive/comment"
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
 	taskEntity "task-tracker/domain/entity/task"
+	assessmentPrimitive "task-tracker/domain/entity/task/assessment"
+	taskTimeCosts "task-tracker/domain/entity/task/cost"
 	taskPriority "task-tracker/domain/entity/task/spec/priority"
 	taskTag "task-tracker/domain/entity/task/spec/tag"
+	commonTime "task-tracker/infrastructure/tools/time"
+	"time"
 )
 
 type TaskUseCase struct {
@@ -32,19 +37,41 @@ func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.Task
 		return nil, err
 	}
 
-	tag, err := taskTag.Tags.Of(taskCreateDto.Tag)
+	tags, err := taskTag.TagsFrom(taskCreateDto.Tags)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO подумать что делать с deadline / comments / estimation / spentTime
+	deadline, err := commonTime.Parse(time.RFC3339Nano, taskCreateDto.DeadLine)
+	if err != nil {
+		return nil, err
+	}
+
+	assessment, err := assessmentPrimitive.AssessmentFrom(taskCreateDto.Assessment)
+	if err != nil {
+		return nil, err
+	}
+
+	timeCosts := taskTimeCosts.NewTimeCosts()
+	if err := timeCosts.AddEntry(taskCreateDto.TimeCosts, taskCreateDto.CreatorId); err != nil {
+		return nil, err
+	}
+
+	comments, err := commentPrimitive.CommentsFrom(taskCreateDto.Comments)
+	if err != nil {
+		return nil, err
+	}
+
 	task, err := taskEntity.NewBuilder().
 		Title(&title).
 		Description(&description).
 		Priority(priority).
-		Tag(tag).
+		Tags(tags).
 		CreatorId(taskCreateDto.CreatorId).
 		PerformerId(taskCreateDto.PerformerId).
+		Deadline(deadline).
+		Comments(comments).
+		Assessment(assessment).
 		Build()
 	if err != nil {
 		return nil, err

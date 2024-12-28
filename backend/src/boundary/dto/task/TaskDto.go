@@ -6,11 +6,11 @@ type TaskDto struct {
 	Description string
 	Status      string
 	Priority    string
-	Tag         string
+	Tags        []string
 	CreatorId   string
 	PerformerId string
 	DeadLine    string
-	Comments    string
-	Estimation  string
-	SpentTime   string
+	Comments    []string
+	Assessment  int
+	TimeCosts   int
 }

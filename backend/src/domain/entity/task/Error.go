@@ -6,5 +6,4 @@ var (
 	ErrTitleIsRequired       = errors.NewError("TAE-001", "Заголовок должен быть заполнен")
 	ErrDescriptionIsRequired = errors.NewError("TAE-002", "Описание должно быть заполнено")
 	ErrCreatorIdIsRequired   = errors.NewError("TAE-003", "Создатель должен быть заполнен")
-	ErrDeadlineIsRequired    = errors.NewError("TAE-004", "Дедлайн должен быть заполнен")
 )

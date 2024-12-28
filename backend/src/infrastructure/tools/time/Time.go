@@ -34,7 +34,7 @@ func (t *Time) After(time *Time) bool {
 
 func (t *Time) Unix() int64 {
 	var unix int64
-	if !t.IsZero() {
+	if t != nil && !t.IsZero() {
 		unix = t.Time.Unix()
 	}
 	return unix
@@ -42,7 +42,7 @@ func (t *Time) Unix() int64 {
 
 func (t *Time) UnixMilli() int64 {
 	var unixMilli int64
-	if !t.IsZero() {
+	if t != nil && !t.IsZero() {
 		unixMilli = t.Time.UnixMilli()
 	}
 	return unixMilli
@@ -50,7 +50,7 @@ func (t *Time) UnixMilli() int64 {
 
 func (t *Time) UnixNano() int64 {
 	var unixNano int64
-	if !t.IsZero() {
+	if t != nil && !t.IsZero() {
 		unixNano = t.Time.UnixNano()
 	}
 	return unixNano

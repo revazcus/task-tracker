@@ -1,4 +1,4 @@
-package taskTag
+package tag
 
 import (
 	"fmt"

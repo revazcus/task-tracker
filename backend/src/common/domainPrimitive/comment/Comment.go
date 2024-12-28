@@ -9,7 +9,31 @@ const CommentMaxLength = 500
 
 type Comment string
 
-func CommentFrom(comment string) (Comment, error) {
+func (c Comment) String() string {
+	return string(c)
+}
+
+func CommentsFrom(comments []string) ([]*Comment, error) {
+	var result []*Comment
+	for _, str := range comments {
+		comment, err := commentFrom(str)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, &comment)
+	}
+	return result, nil
+}
+
+func CommentsToStrings(comments []*Comment) []string {
+	result := make([]string, len(comments))
+	for i, tag := range comments {
+		result[i] = string(*tag)
+	}
+	return result
+}
+
+func commentFrom(comment string) (Comment, error) {
 	if comment == "" {
 		return "", ErrCommentIsEmpty
 	}
@@ -21,8 +45,4 @@ func CommentFrom(comment string) (Comment, error) {
 	}
 
 	return Comment(comment), nil
-}
-
-func (c Comment) String() string {
-	return string(c)
 }

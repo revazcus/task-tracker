@@ -1,11 +1,12 @@
 package taskRepoModel
 
 import (
+	commentPrimitive "task-tracker/common/domainPrimitive/comment"
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
 	taskEntity "task-tracker/domain/entity/task"
-	taskDuration "task-tracker/domain/entity/task/duration"
+	assessmentPrimitive "task-tracker/domain/entity/task/assessment"
 	taskPriority "task-tracker/domain/entity/task/spec/priority"
 	taskStatus "task-tracker/domain/entity/task/spec/status"
 	taskTag "task-tracker/domain/entity/task/spec/tag"
@@ -13,38 +14,38 @@ import (
 )
 
 type TaskRepoModel struct {
-	Id          string   `bson:"task_id"`
-	Title       string   `bson:"title"`
-	Description string   `bson:"description"`
-	Status      string   `bson:"status"`
-	Priority    string   `bson:"priority"`
-	Tag         string   `bson:"tag"`
-	CreatorId   string   `bson:"creatorId"`
-	PerformerId string   `bson:"performerId"`
-	CreateAt    int64    `bson:"create_at"`
-	UpdateAt    int64    `bson:"update_at"`
-	Deadline    int64    `bson:"deadline"`
-	Comments    []string `bson:"comments"` // TODO подумать как сделать
-	Estimation  string   `bson:"estimation"`
-	SpentTime   string   `bson:"spentTime"`
+	Id          string              `bson:"task_id"`
+	Title       string              `bson:"title"`
+	Description string              `bson:"description"`
+	Status      string              `bson:"status"`
+	Priority    string              `bson:"priority"`
+	Tags        []string            `bson:"tags"`
+	CreatorId   string              `bson:"creatorId"`
+	PerformerId string              `bson:"performerId"`
+	CreateAt    int64               `bson:"create_at"`
+	UpdateAt    int64               `bson:"update_at"`
+	Deadline    int64               `bson:"deadline"`
+	Comments    []string            `bson:"comments"`
+	Assessment  int                 `bson:"assessment"`
+	TimeCosts   *TimeCostsRepoModel `bson:"time_costs"`
 }
 
 func TaskToRepoModel(task *taskEntity.Task) *TaskRepoModel {
 	return &TaskRepoModel{
-		Id:          string(*task.ID()),
-		Title:       string(*task.Title()),
-		Description: string(*task.Description()),
+		Id:          task.ID().String(),
+		Title:       task.Title().String(),
+		Description: task.Description().String(),
 		Status:      task.Status().String(),
 		Priority:    task.Priority().String(),
-		Tag:         task.Tag().String(),
+		Tags:        taskTag.TagsToStrings(task.Tags()),
 		CreatorId:   task.CreatorId(),
 		PerformerId: task.PerformerId(),
 		CreateAt:    task.CreateAt().UnixNano(),
 		UpdateAt:    task.UpdateAt().UnixNano(),
 		Deadline:    task.Deadline().UnixNano(),
-		// TODO подумать, как хранить в БД
-		//Estimation:  task.Estimation().String(),
-		//SpentTime:   task.SpentTime().String(),
+		Comments:    commentPrimitive.CommentsToStrings(task.Comments()),
+		Assessment:  task.Assessment().Int(),
+		TimeCosts:   TimeCostsToRepoModel(task.TimeCosts()),
 	}
 }
 
@@ -74,7 +75,7 @@ func (m *TaskRepoModel) GetEntity() (*taskEntity.Task, error) {
 		return nil, err
 	}
 
-	tag, err := taskTag.Tags.Of(m.Tag)
+	tags, err := taskTag.TagsFrom(m.Tags)
 	if err != nil {
 		return nil, err
 	}
@@ -85,9 +86,20 @@ func (m *TaskRepoModel) GetEntity() (*taskEntity.Task, error) {
 
 	deadline := commonTime.FromUnixNano(m.Deadline)
 
-	estimation := taskDuration.DurationFrom(m.Estimation)
+	assessment, err := assessmentPrimitive.AssessmentFrom(m.Assessment)
+	if err != nil {
+		return nil, err
+	}
 
-	spentTime := taskDuration.DurationFrom(m.SpentTime)
+	timeCosts, err := m.TimeCosts.GetObject()
+	if err != nil {
+		return nil, err
+	}
+
+	comments, err := commentPrimitive.CommentsFrom(m.Comments)
+	if err != nil {
+		return nil, err
+	}
 
 	return taskEntity.NewBuilder().
 		Id(&id).
@@ -95,13 +107,14 @@ func (m *TaskRepoModel) GetEntity() (*taskEntity.Task, error) {
 		Description(&description).
 		Status(status).
 		Priority(priority).
-		Tag(tag).
+		Tags(tags).
 		CreatorId(m.CreatorId).
 		PerformerId(m.PerformerId).
 		CreatedAt(createAt).
 		UpdateAt(updateAt).
 		Deadline(deadline).
-		Estimation(estimation).
-		SpentTime(spentTime).
+		Assessment(assessment).
+		TimeCosts(timeCosts).
+		Comments(comments).
 		Build()
 }

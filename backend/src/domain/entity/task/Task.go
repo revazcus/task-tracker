@@ -5,7 +5,8 @@ import (
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
-	taskDuration "task-tracker/domain/entity/task/duration"
+	assessmentPrimitive "task-tracker/domain/entity/task/assessment"
+	taskTimeCosts "task-tracker/domain/entity/task/cost"
 	taskPriority "task-tracker/domain/entity/task/spec/priority"
 	taskStatus "task-tracker/domain/entity/task/spec/status"
 	taskTag "task-tracker/domain/entity/task/spec/tag"
@@ -18,17 +19,16 @@ type Task struct {
 	description *descriptionPrimitive.Description
 	status      taskStatus.Status
 	priority    taskPriority.Priority
-	tag         taskTag.Tag
-	//severity     string // сложность задачи TODO подумать над целесообразностью
+	tags        []*taskTag.Tag
 	creatorId   string // userId TODO подумать над lite user ver
 	performerId string // userId TODO подумать над lite user ver
 	createAt    *commonTime.Time
 	updateAt    *commonTime.Time
 	deadline    *commonTime.Time
-	comments    []*commentPrimitive.Comment
 	//attachments  string // скрины / видео TODO подумать над реализацией
-	estimation *taskDuration.Duration
-	spentTime  *taskDuration.Duration
+	assessment *assessmentPrimitive.Assessment
+	timeCosts  *taskTimeCosts.TimeCosts
+	comments   []*commentPrimitive.Comment
 }
 
 func (t *Task) ID() *idPrimitive.EntityId {
@@ -51,8 +51,8 @@ func (t *Task) Priority() taskPriority.Priority {
 	return t.priority
 }
 
-func (t *Task) Tag() taskTag.Tag {
-	return t.tag
+func (t *Task) Tags() []*taskTag.Tag {
+	return t.tags
 }
 
 func (t *Task) CreatorId() string {
@@ -79,10 +79,10 @@ func (t *Task) Comments() []*commentPrimitive.Comment {
 	return t.comments
 }
 
-func (t *Task) Estimation() *taskDuration.Duration {
-	return t.estimation
+func (t *Task) Assessment() *assessmentPrimitive.Assessment {
+	return t.assessment
 }
 
-func (t *Task) SpentTime() *taskDuration.Duration {
-	return t.spentTime
+func (t *Task) TimeCosts() *taskTimeCosts.TimeCosts {
+	return t.timeCosts
 }

@@ -5,13 +5,13 @@ import (
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
-	taskDuration "task-tracker/domain/entity/task/duration"
+	assessmentPrimitive "task-tracker/domain/entity/task/assessment"
+	taskTimeCosts "task-tracker/domain/entity/task/cost"
 	taskPriority "task-tracker/domain/entity/task/spec/priority"
 	taskStatus "task-tracker/domain/entity/task/spec/status"
 	taskTag "task-tracker/domain/entity/task/spec/tag"
 	"task-tracker/infrastructure/errors"
 	commonTime "task-tracker/infrastructure/tools/time"
-	"time"
 )
 
 type Builder struct {
@@ -20,16 +20,17 @@ type Builder struct {
 	description *descriptionPrimitive.Description
 	status      taskStatus.Status
 	priority    taskPriority.Priority
-	tag         taskTag.Tag
+	tags        []*taskTag.Tag
 	creatorId   string // userId TODO подумать над lite user ver
 	performerId string // userId TODO подумать над lite user ver
 	createAt    *commonTime.Time
 	updateAt    *commonTime.Time
 	deadline    *commonTime.Time
+	assessment  *assessmentPrimitive.Assessment
+	timeCosts   *taskTimeCosts.TimeCosts
 	comments    []*commentPrimitive.Comment
-	estimation  *taskDuration.Duration
-	spentTime   *taskDuration.Duration
-	errors      *errors.Errors
+
+	errors *errors.Errors
 }
 
 func NewBuilder() *Builder {
@@ -63,8 +64,8 @@ func (b *Builder) Priority(priority taskPriority.Priority) *Builder {
 	return b
 }
 
-func (b *Builder) Tag(tag taskTag.Tag) *Builder {
-	b.tag = tag
+func (b *Builder) Tags(tags []*taskTag.Tag) *Builder {
+	b.tags = tags
 	return b
 }
 
@@ -93,18 +94,18 @@ func (b *Builder) Deadline(deadline *commonTime.Time) *Builder {
 	return b
 }
 
+func (b *Builder) Assessment(assessment *assessmentPrimitive.Assessment) *Builder {
+	b.assessment = assessment
+	return b
+}
+
+func (b *Builder) TimeCosts(timeCosts *taskTimeCosts.TimeCosts) *Builder {
+	b.timeCosts = timeCosts
+	return b
+}
+
 func (b *Builder) Comments(comments []*commentPrimitive.Comment) *Builder {
 	b.comments = comments
-	return b
-}
-
-func (b *Builder) Estimation(estimation *taskDuration.Duration) *Builder {
-	b.estimation = estimation
-	return b
-}
-
-func (b *Builder) SpentTime(spentTime *taskDuration.Duration) *Builder {
-	b.spentTime = spentTime
 	return b
 }
 
@@ -132,9 +133,6 @@ func (b *Builder) checkRequiredFields() {
 	if b.creatorId == "" {
 		b.errors.AddError(ErrCreatorIdIsRequired)
 	}
-	//if b.deadline == nil {
-	//	b.errors.AddError(ErrDeadlineIsRequired)
-	//}
 }
 
 func (b *Builder) fillDefaultFields() {
@@ -142,28 +140,14 @@ func (b *Builder) fillDefaultFields() {
 		entityId := idPrimitive.NewEntityId()
 		b.id = &entityId
 	}
-	// TODO подумать как фронт будет получать доступный список статусов
 	if b.status == "" {
 		b.status = taskStatus.Statuses.New()
 	}
-	// TODO подумать как фронт будет получать доступный список приоритетов
 	if b.priority == "" {
 		b.priority = taskPriority.Priorities.Low()
 	}
-	// TODO подумать как фронт будет получать доступный список тегов
-	if b.tag == "" {
-		b.tag = taskTag.Tags.Quest()
-	}
 	if b.createAt == nil {
 		b.createAt = commonTime.Now()
-	}
-	// TODO подумать что делать с updateAt (сейчас заглушка)
-	if b.updateAt == nil {
-		b.updateAt = commonTime.Now()
-	}
-	// TODO подумать как фронт будет передавать дедлайн (сейчас заглушка)
-	if b.deadline == nil {
-		b.deadline = commonTime.FromTime(time.Time.Add(time.Now(), time.Duration(2)))
 	}
 }
 
@@ -174,14 +158,14 @@ func (b *Builder) createFromBuilder() *Task {
 		description: b.description,
 		status:      b.status,
 		priority:    b.priority,
-		tag:         b.tag,
+		tags:        b.tags,
 		creatorId:   b.creatorId,
 		performerId: b.performerId,
 		createAt:    b.createAt,
 		updateAt:    b.updateAt,
 		deadline:    b.deadline,
+		assessment:  b.assessment,
+		timeCosts:   b.timeCosts,
 		comments:    b.comments,
-		estimation:  b.estimation,
-		spentTime:   b.spentTime,
 	}
 }
