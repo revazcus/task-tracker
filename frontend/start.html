@@ -12,6 +12,7 @@
     <div id="modalopened" class="container">
         <div id="slogan" class="slogan" style="color: black;">Don't be busy, <br>be productive.</div>
         <div id="startbtn" class="startbtn">Start Work</div>
+        <!-- Модальное окно для авторизации -->
         <div id="modalwindow" class="modalwindow closed">
         <img id="cross" src="assets/cross.png" alt="Close" class="cross">
         <div id="modalwindow2" class="modalwindow2"></div>
@@ -21,9 +22,49 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         </form>
-            <div class="logbtn">LOG IN</div>
-            <div class="logbtn">REGISTER</div>
+            <div id="logbtn" class="logbtn">LOG IN</div>
+            <div id="preregbtn" class="logbtn">REGISTER</div>
+            <div id="forgot" class="forgot">Forgot Password?</div>
         </div>
+
+        <!-- Модальное окно для регистрации -->
+
+        <div id="modalwindowReg" class="modalwindowReg closed">
+        <img id="crossReg" src="assets/cross.png" alt="Close" class="cross">
+        <div id="modalwindow3" class="modalwindow3"></div>
+            <form id="register-form">
+                <label for="new-username">Username:</label>
+                <input type="text" id="new-username" name="new-username" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="new-password">Password:</label>
+                <input type="password" id="new-password" name="new-password" required>
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </form>
+            <div id="regbtn" class="logbtn">REGISTER</div>
+        </div>
+
+        <!-- Модальное окно для восстановления пароля -->
+        <div id="modalwindowFog" class="closed modalwindowFog">
+            <img id="crossFog" src="assets/cross.png" alt="Close" class="cross">
+            <div id="modalwindow4" class="modalwindow4"></div>
+                <form id="forgot-form">
+                    <label for="new-username">Email:</label>
+                    <input type="text" id="new-username" name="new-username" required>
+                    <div id="codebtn" class="logbtn">Send CODE</div>
+                    <label for="email">CODE from Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="new-password">New Password:</label>
+                    <input type="password" id="new-password" name="new-password" required>
+                    <label for="confirm-password">Confirm Password:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </form>
+                <div class="logbtn">APPLY</div>
+            </div>
+
+
+
 
         <script src="js/start.js"></script>
 </body>
