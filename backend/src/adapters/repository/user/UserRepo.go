@@ -152,17 +152,10 @@ func (r *UserRepo) GetByUsername(ctx context.Context, username *usernamePrimitiv
 }
 
 func (r *UserRepo) Update(ctx context.Context, user *userEntity.User) (*userEntity.User, error) {
-	find := bson.D{{"user_id", user.ID().String()}}
-	updatedUserModel := userRepoModel.UserToRepoModel(user)
-
-	if err := r.mongoRepo.UpdateOne(ctx, r.collection, find, updatedUserModel); err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, ErrUserNotFound
-		}
-		return nil, err
+	change := bson.D{
+		{"$set", bson.M{"profile": userRepoModel.ProfileToRepoModel(user.Profile())}},
 	}
-
-	return user, nil
+	return r.updateUser(ctx, user.ID(), change)
 }
 
 func (r *UserRepo) UpdateEmail(ctx context.Context, userId *idPrimitive.EntityId, email *emailPrimitive.Email) (*userEntity.User, error) {
@@ -170,6 +163,13 @@ func (r *UserRepo) UpdateEmail(ctx context.Context, userId *idPrimitive.EntityId
 		{"$set", // указываем, что обновляем по ключам
 			bson.M{"email": email.String()},
 		},
+	}
+	return r.updateUser(ctx, userId, change)
+}
+
+func (r *UserRepo) UpdateUsername(ctx context.Context, userId *idPrimitive.EntityId, username *usernamePrimitive.Username) (*userEntity.User, error) {
+	change := bson.D{
+		{"$set", bson.M{"username": username.String()}},
 	}
 	return r.updateUser(ctx, userId, change)
 }

@@ -102,7 +102,7 @@ func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	c.JsonResponse(w, r, response, http.StatusOK)
 }
 
-func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) UpdateEmail(w http.ResponseWriter, r *http.Request) {
 	requestData := &request.CreateUserRequest{}
 
 	if err := c.FillReqModel(r, requestData); err != nil {
@@ -110,7 +110,7 @@ func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	updatedUser, err := c.userUseCase.UpdateUserEmail(r.Context(), requestData.CreateUserDto())
+	updatedUser, err := c.userUseCase.UpdateEmail(r.Context(), requestData.CreateUserDto())
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -125,7 +125,29 @@ func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request)
 	c.JsonResponse(w, r, response, http.StatusOK)
 }
 
-func (c *UserController) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) UpdateUsername(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.CreateUserRequest{}
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	updatedUser, err := c.userUseCase.UpdateUsername(r.Context(), requestData.CreateUserDto())
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := userSerializer.SerializeUser(updatedUser)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *UserController) UpdatePassword(w http.ResponseWriter, r *http.Request) {
 	requestData := &request.CreateUserRequest{}
 
 	if err := c.FillReqModel(r, requestData); err != nil {
@@ -133,7 +155,7 @@ func (c *UserController) UpdateUserPassword(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	updatedUser, err := c.userUseCase.UpdateUserPassword(r.Context(), requestData.CreateUserDto())
+	updatedUser, err := c.userUseCase.UpdatePassword(r.Context(), requestData.CreateUserDto())
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return

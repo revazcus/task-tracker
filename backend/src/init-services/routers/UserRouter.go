@@ -23,7 +23,8 @@ func (r *UserRouter) RegisterRoutes(server restServerInterface.Server) {
 	server.RegisterPrivateRoute(http.MethodGet, "v1/user", r.controller.GetUserById)
 	server.RegisterPrivateRoute(http.MethodGet, "v1/user/me", r.controller.Me)
 	server.RegisterPrivateRoute(http.MethodPut, "v1/user/update", r.controller.UpdateUser)
-	server.RegisterPrivateRoute(http.MethodPut, "v1/user/updateEmail", r.controller.UpdateUserEmail)
-	server.RegisterPrivateRoute(http.MethodPut, "v1/user/updatePassword", r.controller.UpdateUserPassword)
+	server.RegisterPrivateRoute(http.MethodPut, "v1/user/updateEmail", r.controller.UpdateEmail)
+	server.RegisterPrivateRoute(http.MethodPut, "v1/user/updateUsername", r.controller.UpdateUsername)
+	server.RegisterPrivateRoute(http.MethodPut, "v1/user/updatePassword", r.controller.UpdatePassword)
 	server.RegisterPrivateRoute(http.MethodDelete, "v1/user", r.controller.DeleteUserById)
 }

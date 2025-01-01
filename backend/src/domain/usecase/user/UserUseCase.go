@@ -12,7 +12,6 @@ import (
 	profilePrimitive "task-tracker/domain/entity/user/profile"
 	"task-tracker/domain/entity/user/spec"
 	usernamePrimitive "task-tracker/domain/entity/user/username"
-	"task-tracker/infrastructure/errors"
 	"task-tracker/infrastructure/security/jwtService"
 	jwtServiceInterface "task-tracker/infrastructure/security/jwtService/interface"
 	commonTime "task-tracker/infrastructure/tools/time"
@@ -32,7 +31,7 @@ func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.User
 		return nil, err
 	}
 
-	profilePrim, err := profilePrimitive.NewBuilder().
+	profile, err := profilePrimitive.NewBuilder().
 		FirstName(userCreateDto.FirstName).
 		LastName(userCreateDto.LastName).
 		Build()
@@ -40,25 +39,26 @@ func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.User
 		return nil, err
 	}
 
-	emailPrim, err := emailPrimitive.EmailFrom(userCreateDto.Email)
-	if err != nil {
-		return nil, err
-	}
-	passwordPrim, err := passwordPrimitive.PasswordFrom(userCreateDto.Password)
+	email, err := emailPrimitive.EmailFrom(userCreateDto.Email)
 	if err != nil {
 		return nil, err
 	}
 
-	usernamePrim, err := usernamePrimitive.UsernameFrom(userCreateDto.Username)
+	password, err := passwordPrimitive.PasswordFrom(userCreateDto.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	username, err := usernamePrimitive.UsernameFrom(userCreateDto.Username)
 	if err != nil {
 		return nil, err
 	}
 
 	user, err := userEntity.NewBuilder().
-		Profile(profilePrim).
-		Email(&emailPrim).
-		Username(&usernamePrim).
-		Password(passwordPrim).
+		Profile(profile).
+		Email(&email).
+		Username(&username).
+		Password(password).
 		Role(spec.Roles.Admin()).
 		Agreement(agreement).
 		Build()
@@ -98,15 +98,70 @@ func (u UserUseCase) GetUserById(ctx context.Context, id string) (*userEntity.Us
 }
 
 func (u UserUseCase) UpdateUser(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
-	//TODO implement me
-	panic("implement me")
+	userId, err := idPrimitive.EntityIdFrom(dto.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	agreement, err := agreementPrimitive.NewBuilder().
+		Accepted(dto.Agreement).
+		AcceptedDate(commonTime.Now()).
+		Build()
+	if err != nil {
+		return nil, err
+	}
+
+	profile, err := profilePrimitive.NewBuilder().
+		FirstName(dto.FirstName).
+		LastName(dto.LastName).
+		Build()
+	if err != nil {
+		return nil, err
+	}
+
+	email, err := emailPrimitive.EmailFrom(dto.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	password, err := passwordPrimitive.PasswordFrom(dto.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	username, err := usernamePrimitive.UsernameFrom(dto.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO подумать что делать с обязательными полями при обновлении юзера
+	user, err := userEntity.NewBuilder().
+		Id(&userId).
+		Profile(profile).
+		Email(&email).
+		Username(&username).
+		Password(password).
+		Role(spec.Roles.Admin()).
+		Agreement(agreement).
+		Build()
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO по факту мы обновляем только профиль
+	updatedUser, err := u.userRepo.Update(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, nil
 }
 
-func (u UserUseCase) UpdateUserEmail(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
-	if dto.Id == "" {
-		return nil, errors.NewError("SYS", "Invalid id")
+func (u UserUseCase) UpdateEmail(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
+	userId, err := idPrimitive.EntityIdFrom(dto.Id)
+	if err != nil {
+		return nil, err
 	}
-	userId := idPrimitive.EntityId(dto.Id)
 
 	email, err := emailPrimitive.EmailFrom(dto.Email)
 	if err != nil {
@@ -121,7 +176,26 @@ func (u UserUseCase) UpdateUserEmail(ctx context.Context, dto *userDto.UserDto) 
 	return updatedUser, nil
 }
 
-func (u UserUseCase) UpdateUserPassword(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
+func (u UserUseCase) UpdateUsername(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
+	userId, err := idPrimitive.EntityIdFrom(dto.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	username, err := usernamePrimitive.UsernameFrom(dto.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedUser, err := u.userRepo.UpdateUsername(ctx, &userId, &username)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, nil
+}
+
+func (u UserUseCase) UpdatePassword(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
 	userId, err := idPrimitive.EntityIdFrom(dto.Id)
 	if err != nil {
 		return nil, err
