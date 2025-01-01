@@ -6,52 +6,60 @@ import (
 	commonTime "task-tracker/infrastructure/tools/time"
 )
 
-type TimeEntry struct {
+type TimeCost struct {
 	minutes int
 	date    *commonTime.Time
 	userId  *idPrimitive.EntityId
 }
 
-func (e *TimeEntry) Minutes() int {
+func (e *TimeCost) Minutes() int {
 	return e.minutes
 }
 
-func (e *TimeEntry) Date() *commonTime.Time {
+func (e *TimeCost) Date() *commonTime.Time {
 	return e.date
 }
 
-func (e *TimeEntry) UserId() *idPrimitive.EntityId {
+func (e *TimeCost) UserId() *idPrimitive.EntityId {
 	return e.userId
 }
 
 type TimeCosts struct {
 	totalMinutes int
-	timeEntries  []*TimeEntry
+	timeCosts    []*TimeCost
 }
 
 func NewTimeCosts() *TimeCosts {
-	return &TimeCosts{timeEntries: make([]*TimeEntry, 0)}
+	return &TimeCosts{timeCosts: make([]*TimeCost, 0)}
 }
 
-func (c *TimeCosts) AddEntry(minutes int, userIdStr string) error {
-	if minutes <= 0 {
-		return ErrInvalidMinutes
-	}
-
-	userId, err := idPrimitive.EntityIdFrom(userIdStr)
+func (c *TimeCosts) AddTimeCost(userIdStr string, date *commonTime.Time, minutes int) error {
+	timeCost, err := AddTimeCost(userIdStr, date, minutes)
 	if err != nil {
 		return err
 	}
+	c.totalMinutes += minutes
+	c.timeCosts = append(c.timeCosts, timeCost)
+	return nil
+}
 
-	timeEntry := TimeEntry{
+func AddTimeCost(userIdStr string, date *commonTime.Time, minutes int) (*TimeCost, error) {
+	userId, err := idPrimitive.EntityIdFrom(userIdStr)
+	if err != nil {
+		return nil, err
+	}
+
+	if minutes <= 0 {
+		return nil, ErrInvalidMinutes
+	}
+
+	timeCost := TimeCost{
 		minutes: minutes,
-		date:    commonTime.Now(),
+		date:    date,
 		userId:  &userId,
 	}
 
-	c.totalMinutes += minutes
-	c.timeEntries = append(c.timeEntries, &timeEntry)
-	return nil
+	return &timeCost, nil
 }
 
 func (c *TimeCosts) TotalTime() string {
@@ -64,6 +72,6 @@ func (c *TimeCosts) TotalMinutes() int {
 	return c.totalMinutes
 }
 
-func (c *TimeCosts) TimeEntries() []*TimeEntry {
-	return c.timeEntries
+func (c *TimeCosts) TimeCosts() []*TimeCost {
+	return c.timeCosts
 }

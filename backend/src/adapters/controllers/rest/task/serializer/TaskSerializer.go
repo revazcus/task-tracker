@@ -2,6 +2,7 @@ package taskSerializer
 
 import (
 	taskEntity "task-tracker/domain/entity/task"
+	taskComment "task-tracker/domain/entity/task/comment"
 	taskTimeCosts "task-tracker/domain/entity/task/cost"
 	jsonApiModel "task-tracker/infrastructure/jsonapi/model"
 )
@@ -42,7 +43,7 @@ func CreateTaskObject(task *taskEntity.Task) *jsonApiModel.JsonApiObject {
 			"assessment":  task.Assessment(),
 			"timeCosts":   serializeTimeCosts(task.TimeCosts()),
 			"totalTime":   task.TimeCosts().TotalTime(),
-			"comments":    task.Comments(),
+			"comments":    serializeComments(task.Comments()),
 		},
 		Relationships: jsonApiModel.JsonApiObjectRelationships{},
 	}
@@ -55,18 +56,33 @@ func serializeTimeCosts(timeCosts *taskTimeCosts.TimeCosts) interface{} {
 	}
 	return map[string]interface{}{
 		"totalMinutes": timeCosts.TotalMinutes(),
-		"timeEntries":  serializeTimeEntries(timeCosts.TimeEntries()),
+		"timeCosts":    serializeTimeEntries(timeCosts.TimeCosts()),
 	}
 }
 
-func serializeTimeEntries(timeEntries []*taskTimeCosts.TimeEntry) []interface{} {
+func serializeTimeEntries(timeEntries []*taskTimeCosts.TimeCost) []interface{} {
 	serializedEntries := make([]interface{}, len(timeEntries))
 	for i, timeEntry := range timeEntries {
 		serializedEntries[i] = map[string]interface{}{
-			"minutes": timeEntry.Minutes(),
-			"date":    timeEntry.Date(),
 			"userId":  timeEntry.UserId(),
+			"date":    timeEntry.Date(),
+			"minutes": timeEntry.Minutes(),
 		}
 	}
 	return serializedEntries
+}
+
+func serializeComments(comments *taskComment.Comments) interface{} {
+	if comments == nil {
+		return nil
+	}
+	serializedComments := make([]interface{}, len(comments.Comments()))
+	for i, comment := range comments.Comments() {
+		serializedComments[i] = map[string]interface{}{
+			"userId": comment.UserId(),
+			"date":   comment.Date(),
+			"text":   comment.Text(),
+		}
+	}
+	return serializedComments
 }

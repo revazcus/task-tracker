@@ -1,11 +1,11 @@
 package taskEntity
 
 import (
-	commentPrimitive "task-tracker/common/domainPrimitive/comment"
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
 	assessmentPrimitive "task-tracker/domain/entity/task/assessment"
+	taskComment "task-tracker/domain/entity/task/comment"
 	taskTimeCosts "task-tracker/domain/entity/task/cost"
 	taskPriority "task-tracker/domain/entity/task/spec/priority"
 	taskStatus "task-tracker/domain/entity/task/spec/status"
@@ -28,7 +28,7 @@ type Builder struct {
 	deadline    *commonTime.Time
 	assessment  *assessmentPrimitive.Assessment
 	timeCosts   *taskTimeCosts.TimeCosts
-	comments    []*commentPrimitive.Comment
+	comments    *taskComment.Comments
 
 	errors *errors.Errors
 }
@@ -104,7 +104,7 @@ func (b *Builder) TimeCosts(timeCosts *taskTimeCosts.TimeCosts) *Builder {
 	return b
 }
 
-func (b *Builder) Comments(comments []*commentPrimitive.Comment) *Builder {
+func (b *Builder) Comments(comments *taskComment.Comments) *Builder {
 	b.comments = comments
 	return b
 }

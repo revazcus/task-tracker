@@ -1,7 +1,6 @@
 package taskRepoModel
 
 import (
-	commentPrimitive "task-tracker/common/domainPrimitive/comment"
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
@@ -25,9 +24,9 @@ type TaskRepoModel struct {
 	CreateAt    int64               `bson:"create_at"`
 	UpdateAt    int64               `bson:"update_at"`
 	Deadline    int64               `bson:"deadline"`
-	Comments    []string            `bson:"comments"`
 	Assessment  int                 `bson:"assessment"`
 	TimeCosts   *TimeCostsRepoModel `bson:"time_costs"`
+	Comments    *CommentsRepoModel  `bson:"comments"`
 }
 
 func TaskToRepoModel(task *taskEntity.Task) *TaskRepoModel {
@@ -43,9 +42,9 @@ func TaskToRepoModel(task *taskEntity.Task) *TaskRepoModel {
 		CreateAt:    task.CreateAt().UnixNano(),
 		UpdateAt:    task.UpdateAt().UnixNano(),
 		Deadline:    task.Deadline().UnixNano(),
-		Comments:    commentPrimitive.CommentsToStrings(task.Comments()),
 		Assessment:  task.Assessment().Int(),
 		TimeCosts:   TimeCostsToRepoModel(task.TimeCosts()),
+		Comments:    CommentsToRepoModel(task.Comments()),
 	}
 }
 
@@ -82,7 +81,12 @@ func (m *TaskRepoModel) GetEntity() (*taskEntity.Task, error) {
 
 	createAt := commonTime.FromUnixNano(m.CreateAt)
 
-	updateAt := commonTime.FromUnixNano(m.UpdateAt)
+	var updateAt *commonTime.Time
+	if m.UpdateAt == 0 {
+		updateAt = nil
+	} else {
+		updateAt = commonTime.FromUnixNano(m.UpdateAt)
+	}
 
 	deadline := commonTime.FromUnixNano(m.Deadline)
 
@@ -96,7 +100,7 @@ func (m *TaskRepoModel) GetEntity() (*taskEntity.Task, error) {
 		return nil, err
 	}
 
-	comments, err := commentPrimitive.CommentsFrom(m.Comments)
+	comments, err := m.Comments.GetObject()
 	if err != nil {
 		return nil, err
 	}

@@ -110,13 +110,13 @@ func (c *UserController) UpdateUserEmail(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	createdUser, err := c.userUseCase.UpdateUserEmail(r.Context(), requestData.CreateUserDto())
+	updatedUser, err := c.userUseCase.UpdateUserEmail(r.Context(), requestData.CreateUserDto())
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	response, err := userSerializer.SerializeUser(createdUser)
+	response, err := userSerializer.SerializeUser(updatedUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
@@ -133,13 +133,13 @@ func (c *UserController) UpdateUserPassword(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	createdUser, err := c.userUseCase.UpdateUserPassword(r.Context(), requestData.CreateUserDto())
+	updatedUser, err := c.userUseCase.UpdateUserPassword(r.Context(), requestData.CreateUserDto())
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return
 	}
 
-	response, err := userSerializer.SerializeUser(createdUser)
+	response, err := userSerializer.SerializeUser(updatedUser)
 	if err != nil {
 		c.ErrorResponse(w, r, err)
 		return

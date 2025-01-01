@@ -122,11 +122,10 @@ func (u UserUseCase) UpdateUserEmail(ctx context.Context, dto *userDto.UserDto) 
 }
 
 func (u UserUseCase) UpdateUserPassword(ctx context.Context, dto *userDto.UserDto) (*userEntity.User, error) {
-	if dto.Id == "" {
-		return nil, errors.NewError("SYS", "Invalid id")
+	userId, err := idPrimitive.EntityIdFrom(dto.Id)
+	if err != nil {
+		return nil, err
 	}
-
-	userId := idPrimitive.EntityId(dto.Id)
 
 	password, err := passwordPrimitive.PasswordFrom(dto.Password)
 	if err != nil {

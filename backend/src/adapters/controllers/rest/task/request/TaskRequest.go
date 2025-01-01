@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	taskDto "task-tracker/boundary/dto/task"
+	commentDto "task-tracker/boundary/dto/task/comment"
+	timeCostsDto "task-tracker/boundary/dto/task/timeCosts"
 )
 
 type CreateTaskRequest struct {
@@ -20,7 +22,7 @@ type CreateTaskRequest struct {
 			Deadline    string   `json:"deadline"`
 			Assessment  int      `json:"assessment"`
 			TimeCosts   int      `json:"timeCosts"`
-			Comments    []string `json:"comments"`
+			Comment     string   `json:"comments"`
 		} `json:"attributes"`
 	} `json:"data"`
 }
@@ -41,7 +43,7 @@ func (r *CreateTaskRequest) CreateTaskDto() *taskDto.TaskDto {
 		PerformerId: r.Data.Attributes.PerformerId,
 		DeadLine:    r.Data.Attributes.Deadline,
 		Assessment:  r.Data.Attributes.Assessment,
-		TimeCosts:   r.Data.Attributes.TimeCosts,
-		Comments:    r.Data.Attributes.Comments,
+		TimeCosts:   timeCostsDto.TimeCostsDto{Minutes: r.Data.Attributes.TimeCosts},
+		Comments:    commentDto.CommentDto{Text: r.Data.Attributes.Comment},
 	}
 }

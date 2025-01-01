@@ -1,4 +1,4 @@
-package commentPrimitive
+package taskComments
 
 import "task-tracker/infrastructure/errors"
 

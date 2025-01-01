@@ -1,6 +1,7 @@
 package taskRest
 
 import (
+	"fmt"
 	"net/http"
 	"task-tracker/adapters/controllers/rest/task/request"
 	"task-tracker/adapters/controllers/rest/task/serializer"
@@ -89,8 +90,152 @@ func (c *TaskController) GetTaskById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *TaskController) UpdateTask(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	userId, err := c.GetStrParamFromCtx(r.Context(), jwtService.UserIdKey)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	requestData := &request.CreateTaskRequest{}
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	dto := requestData.CreateTaskDto()
+	c.logger.Info(r.Context(), fmt.Sprintf("User %s try to update task %s", userId, dto.Id))
+
+	updatedTask, err := c.taskUseCase.UpdateTask(r.Context(), dto)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := taskSerializer.SerializeTask(updatedTask)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *TaskController) TakeOn(w http.ResponseWriter, r *http.Request) {
+	performerId, err := c.GetStrParamFromCtx(r.Context(), jwtService.UserIdKey)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	requestData := &request.CreateTaskRequest{}
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	// TODO подумать как лучше сделать
+	dto := requestData.CreateTaskDto()
+	dto.PerformerId = performerId
+
+	updatedTask, err := c.taskUseCase.TakeOnTask(r.Context(), dto)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := taskSerializer.SerializeTask(updatedTask)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *TaskController) AddPerformer(w http.ResponseWriter, r *http.Request) {
+	requestData := &request.CreateTaskRequest{}
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	updatedTask, err := c.taskUseCase.AddPerformer(r.Context(), requestData.CreateTaskDto())
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := taskSerializer.SerializeTask(updatedTask)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *TaskController) AddTimeCosts(w http.ResponseWriter, r *http.Request) {
+	userId, err := c.GetStrParamFromCtx(r.Context(), jwtService.UserIdKey)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	requestData := &request.CreateTaskRequest{}
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	// TODO подумать как лучше сделать
+	dto := requestData.CreateTaskDto()
+	dto.TimeCosts.UserId = userId
+
+	updatedTask, err := c.taskUseCase.AddTimeCosts(r.Context(), dto)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := taskSerializer.SerializeTask(updatedTask)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
+}
+
+func (c *TaskController) AddComment(w http.ResponseWriter, r *http.Request) {
+	authorId, err := c.GetStrParamFromCtx(r.Context(), jwtService.UserIdKey)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	requestData := &request.CreateTaskRequest{}
+	if err := c.FillReqModel(r, requestData); err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	// TODO подумать как лучше сделать
+	dto := requestData.CreateTaskDto()
+	dto.Comments.UserId = authorId
+
+	updatedTask, err := c.taskUseCase.AddComment(r.Context(), dto)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	response, err := taskSerializer.SerializeTask(updatedTask)
+	if err != nil {
+		c.ErrorResponse(w, r, err)
+		return
+	}
+
+	c.JsonResponse(w, r, response, http.StatusOK)
 }
 
 func (c *TaskController) DeleteTaskById(w http.ResponseWriter, r *http.Request) {

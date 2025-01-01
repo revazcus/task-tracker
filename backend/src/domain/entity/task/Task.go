@@ -1,11 +1,11 @@
 package taskEntity
 
 import (
-	commentPrimitive "task-tracker/common/domainPrimitive/comment"
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
 	assessmentPrimitive "task-tracker/domain/entity/task/assessment"
+	taskComment "task-tracker/domain/entity/task/comment"
 	taskTimeCosts "task-tracker/domain/entity/task/cost"
 	taskPriority "task-tracker/domain/entity/task/spec/priority"
 	taskStatus "task-tracker/domain/entity/task/spec/status"
@@ -28,7 +28,7 @@ type Task struct {
 	//attachments  string // скрины / видео TODO подумать над реализацией
 	assessment *assessmentPrimitive.Assessment
 	timeCosts  *taskTimeCosts.TimeCosts
-	comments   []*commentPrimitive.Comment
+	comments   *taskComment.Comments
 }
 
 func (t *Task) ID() *idPrimitive.EntityId {
@@ -75,7 +75,7 @@ func (t *Task) Deadline() *commonTime.Time {
 	return t.deadline
 }
 
-func (t *Task) Comments() []*commentPrimitive.Comment {
+func (t *Task) Comments() *taskComment.Comments {
 	return t.comments
 }
 

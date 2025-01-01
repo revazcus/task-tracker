@@ -1,34 +1,40 @@
 package taskRepoModel
 
-import taskTimeCosts "task-tracker/domain/entity/task/cost"
+import (
+	taskTimeCosts "task-tracker/domain/entity/task/cost"
+	commonTime "task-tracker/infrastructure/tools/time"
+)
 
 type TimeCostsRepoModel struct {
-	TotalMinutes int                  `bson:"total_minutes"`
-	Entries      []TimeEntryRepoModel `bson:"entries"`
+	TimeCosts []TimeCostRepoModel `bson:"time_costs"`
 }
 
-type TimeEntryRepoModel struct {
-	Minutes int    `bson:"minutes"`
-	Date    int64  `bson:"date"`
+type TimeCostRepoModel struct {
 	UserId  string `bson:"user_id"`
+	Date    int64  `bson:"date"`
+	Minutes int    `bson:"minutes"`
 }
 
 func TimeCostsToRepoModel(timeCosts *taskTimeCosts.TimeCosts) *TimeCostsRepoModel {
-	timeCostsRepoModel := TimeCostsRepoModel{TotalMinutes: timeCosts.TotalMinutes()}
-	for _, timeEntry := range timeCosts.TimeEntries() {
-		timeCostsRepoModel.Entries = append(timeCostsRepoModel.Entries, TimeEntryRepoModel{
-			Minutes: timeEntry.Minutes(),
-			Date:    timeEntry.Date().UnixNano(),
-			UserId:  timeEntry.UserId().String(),
-		})
+	timeCostsRepoModel := TimeCostsRepoModel{TimeCosts: make([]TimeCostRepoModel, 0)}
+	for _, timeCost := range timeCosts.TimeCosts() {
+		timeCostsRepoModel.TimeCosts = append(timeCostsRepoModel.TimeCosts, *TimeCostToRepoModel(timeCost))
 	}
 	return &timeCostsRepoModel
 }
 
+func TimeCostToRepoModel(timeCost *taskTimeCosts.TimeCost) *TimeCostRepoModel {
+	return &TimeCostRepoModel{
+		UserId:  timeCost.UserId().String(),
+		Date:    timeCost.Date().UnixNano(),
+		Minutes: timeCost.Minutes(),
+	}
+}
+
 func (m *TimeCostsRepoModel) GetObject() (*taskTimeCosts.TimeCosts, error) {
 	timeCosts := taskTimeCosts.NewTimeCosts()
-	for _, timeEntryRepoModel := range m.Entries {
-		if err := timeCosts.AddEntry(timeEntryRepoModel.Minutes, timeEntryRepoModel.UserId); err != nil {
+	for _, timeCostRepoModel := range m.TimeCosts {
+		if err := timeCosts.AddTimeCost(timeCostRepoModel.UserId, commonTime.FromUnixNano(timeCostRepoModel.Date), timeCostRepoModel.Minutes); err != nil {
 			return nil, err
 		}
 	}

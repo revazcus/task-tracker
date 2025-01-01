@@ -13,6 +13,10 @@ type TaskUseCaseInterface interface {
 	GetTaskById(ctx context.Context, id string) (*taskEntity.Task, error)
 
 	UpdateTask(ctx context.Context, dto *taskDto.TaskDto) (*taskEntity.Task, error)
+	TakeOnTask(ctx context.Context, dto *taskDto.TaskDto) (*taskEntity.Task, error)
+	AddPerformer(ctx context.Context, dto *taskDto.TaskDto) (*taskEntity.Task, error)
+	AddTimeCosts(ctx context.Context, dto *taskDto.TaskDto) (*taskEntity.Task, error)
+	AddComment(ctx context.Context, dto *taskDto.TaskDto) (*taskEntity.Task, error)
 
 	DeleteTask(ctx context.Context, id string) error
 }
