@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	taskRepoModel "task-tracker/adapters/repository/task/model"
+	userObject "task-tracker/common/domainObject/shortUser"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	taskEntity "task-tracker/domain/entity/task"
 	taskComment "task-tracker/domain/entity/task/comment"
@@ -105,31 +106,45 @@ func (r *TaskRepo) Update(ctx context.Context, task *taskEntity.Task) (*taskEnti
 	return r.updateTask(ctx, task.ID(), change)
 }
 
-func (r *TaskRepo) UpdatePerformer(ctx context.Context, taskId *idPrimitive.EntityId, performerId *idPrimitive.EntityId) (*taskEntity.Task, error) {
+func (r *TaskRepo) UpdatePerformer(ctx context.Context, taskId *idPrimitive.EntityId, performer *userObject.ShortUser) (*taskEntity.Task, error) {
 	change := bson.D{
 		{"$set", bson.M{
-			"performerId": performerId.String(),
-			"update_at":   commonTime.Now().UnixNano(),
+			"performer": bson.M{
+				"user_id": performer.ID().String(),
+				"email":   performer.Email().String(),
+				"profile": bson.M{
+					"first_name": performer.Profile().FirstName(),
+					"last_name":  performer.Profile().LastName(),
+				},
+			},
+			"update_at": commonTime.Now().UnixNano(),
 		}},
 	}
 	return r.updateTask(ctx, taskId, change)
 }
 
-func (r *TaskRepo) UpdatePerformerAndStatus(ctx context.Context, taskId *idPrimitive.EntityId, performerId *idPrimitive.EntityId, status taskStatus.Status) (*taskEntity.Task, error) {
+func (r *TaskRepo) UpdatePerformerAndStatus(ctx context.Context, taskId *idPrimitive.EntityId, performer *userObject.ShortUser, status taskStatus.Status) (*taskEntity.Task, error) {
 	change := bson.D{
 		{"$set", bson.M{
-			"performerId": performerId.String(),
-			"status":      status.String(),
-			"update_at":   commonTime.Now().UnixNano(),
+			"performer": bson.M{
+				"user_id": performer.ID().String(),
+				"email":   performer.Email().String(),
+				"profile": bson.M{
+					"first_name": performer.Profile().FirstName(),
+					"last_name":  performer.Profile().LastName(),
+				},
+			},
+			"status":    status.String(),
+			"update_at": commonTime.Now().UnixNano(),
 		}},
 	}
 	return r.updateTask(ctx, taskId, change)
 }
 
-func (r *TaskRepo) UpdateTimeCosts(ctx context.Context, taskId *idPrimitive.EntityId, timeCost *taskTimeCosts.TimeCost) (*taskEntity.Task, error) {
-	timeCostRepoModel := taskRepoModel.TimeCostToRepoModel(timeCost)
+func (r *TaskRepo) UpdateTimeCosts(ctx context.Context, taskId *idPrimitive.EntityId, timeCost *taskTimeCosts.TimeInvestment) (*taskEntity.Task, error) {
+	timeCostRepoModel := taskRepoModel.TimeInvestmentToRepoModel(timeCost)
 	change := bson.D{
-		{"$push", bson.M{"time_costs.time_costs": timeCostRepoModel}},
+		{"$push", bson.M{"time_costs.time_investments": timeCostRepoModel}},
 		{"$set", bson.M{"update_at": commonTime.Now().UnixNano()}},
 	}
 	return r.updateTask(ctx, taskId, change)

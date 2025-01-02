@@ -6,19 +6,13 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"task-tracker/infrastructure/errors"
+	loggerInterface "task-tracker/infrastructure/logger/interface"
 	mongoModel "task-tracker/infrastructure/mongo/model"
 )
 
-// MongoRepo Обёртка над монгой
 type MongoRepo struct {
 	mongoDB *mongo.Database
-}
-
-// NewMongoRepo TODO переписать на билдер
-func NewMongoRepo(database *mongo.Database) *MongoRepo {
-	return &MongoRepo{
-		mongoDB: database,
-	}
+	logger  loggerInterface.Logger
 }
 
 func (r *MongoRepo) InsertOne(ctx context.Context, collectionName string, data interface{}) error {

@@ -33,8 +33,6 @@ func main() {
 	}
 	defer mongoDB.Client().Disconnect(context.Background())
 
-	mongoRepository := mongoRepo.NewMongoRepo(mongoDB)
-
 	stopChan := make(chan struct{})
 	logService := commonLogger.NewLoggerService(stopChan)
 	zapLogger := zapLogger.NewZapLogger(AppId, Environment)
@@ -42,6 +40,11 @@ func main() {
 	logService.Start()
 
 	logger := commonLogger.NewLogger(logService.GetInputChan())
+
+	mongoRepository, _ := mongoRepo.NewBuilder().
+		MongoDB(mongoDB).
+		Logger(logger).
+		Build()
 
 	jwtService, _ := jwtService.NewBuilder().Secret("1").Build()
 
@@ -52,27 +55,6 @@ func main() {
 	responseService, _ := response.NewResponseService(errResponseService, logger)
 
 	baseController, _ := restServerController.NewBaseController(responseService, logger)
-
-	// Task
-	taskRepo, _ := taskRepo.NewBuilder().
-		Collection("Task").
-		MongoRepo(mongoRepository).
-		Logger(logger).
-		Build()
-
-	taskRepo.Init(context.Background())
-
-	taskUseCase, _ := taskUseCase.NewBuilder().
-		TaskRepo(taskRepo).
-		Build()
-
-	taskController, _ := taskRest.NewBuilder().
-		BaseController(baseController).
-		TaskUseCase(taskUseCase).
-		Logger(logger).
-		Build()
-
-	taskRouter := router.NewTaskRouter(taskController)
 
 	// User
 	userRepo, _ := userRepo.NewBuilder().
@@ -95,6 +77,28 @@ func main() {
 		Build()
 
 	userRouter := router.NewUserRouter(userController)
+
+	// Task
+	taskRepo, _ := taskRepo.NewBuilder().
+		Collection("Task").
+		MongoRepo(mongoRepository).
+		Logger(logger).
+		Build()
+
+	taskRepo.Init(context.Background())
+
+	taskUseCase, _ := taskUseCase.NewBuilder().
+		TaskRepo(taskRepo).
+		UserUseCase(userUseCase).
+		Build()
+
+	taskController, _ := taskRest.NewBuilder().
+		BaseController(baseController).
+		TaskUseCase(taskUseCase).
+		Logger(logger).
+		Build()
+
+	taskRouter := router.NewTaskRouter(taskController)
 
 	globalRouter := initServices.NewGlobalRouter(server,
 		userRouter,

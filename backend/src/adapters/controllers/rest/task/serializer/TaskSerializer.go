@@ -1,6 +1,7 @@
 package taskSerializer
 
 import (
+	userObject "task-tracker/common/domainObject/shortUser"
 	taskEntity "task-tracker/domain/entity/task"
 	taskComment "task-tracker/domain/entity/task/comment"
 	taskTimeCosts "task-tracker/domain/entity/task/cost"
@@ -35,8 +36,8 @@ func CreateTaskObject(task *taskEntity.Task) *jsonApiModel.JsonApiObject {
 			"status":      task.Status(),
 			"priority":    task.Priority(),
 			"tags":        task.Tags(),
-			"creatorId":   task.CreatorId(),
-			"performerId": task.PerformerId(),
+			"creator":     serializeShortUser(task.Creator()),
+			"performer":   serializeShortUser(task.Performer()),
 			"createAt":    task.CreateAt(),
 			"updateAt":    task.UpdateAt(),
 			"deadline":    task.Deadline(),
@@ -55,21 +56,21 @@ func serializeTimeCosts(timeCosts *taskTimeCosts.TimeCosts) interface{} {
 		return nil
 	}
 	return map[string]interface{}{
-		"totalMinutes": timeCosts.TotalMinutes(),
-		"timeCosts":    serializeTimeEntries(timeCosts.TimeCosts()),
+		"totalMinutes":    timeCosts.TotalMinutes(),
+		"timeInvestments": serializeTimeCost(timeCosts.TimeInvestments()),
 	}
 }
 
-func serializeTimeEntries(timeEntries []*taskTimeCosts.TimeCost) []interface{} {
-	serializedEntries := make([]interface{}, len(timeEntries))
-	for i, timeEntry := range timeEntries {
-		serializedEntries[i] = map[string]interface{}{
-			"userId":  timeEntry.UserId(),
-			"date":    timeEntry.Date(),
-			"minutes": timeEntry.Minutes(),
+func serializeTimeCost(timeCosts []*taskTimeCosts.TimeInvestment) []interface{} {
+	serializedTimeCosts := make([]interface{}, len(timeCosts))
+	for i, timeCost := range timeCosts {
+		serializedTimeCosts[i] = map[string]interface{}{
+			"worker":  serializeShortUser(timeCost.Worker()),
+			"date":    timeCost.Date(),
+			"minutes": timeCost.Minutes(),
 		}
 	}
-	return serializedEntries
+	return serializedTimeCosts
 }
 
 func serializeComments(comments *taskComment.Comments) interface{} {
@@ -79,10 +80,21 @@ func serializeComments(comments *taskComment.Comments) interface{} {
 	serializedComments := make([]interface{}, len(comments.Comments()))
 	for i, comment := range comments.Comments() {
 		serializedComments[i] = map[string]interface{}{
-			"userId": comment.UserId(),
+			"author": serializeShortUser(comment.Author()),
 			"date":   comment.Date(),
 			"text":   comment.Text(),
 		}
 	}
 	return serializedComments
+}
+
+func serializeShortUser(shortUser *userObject.ShortUser) interface{} {
+	if shortUser == nil {
+		return nil
+	}
+	return map[string]interface{}{
+		"userId":   shortUser.ID().String(),
+		"email":    shortUser.Email().String(),
+		"fullName": shortUser.Profile().FullName(),
+	}
 }

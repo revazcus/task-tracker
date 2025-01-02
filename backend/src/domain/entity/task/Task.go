@@ -1,6 +1,7 @@
 package taskEntity
 
 import (
+	userObject "task-tracker/common/domainObject/shortUser"
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
@@ -20,8 +21,8 @@ type Task struct {
 	status      taskStatus.Status
 	priority    taskPriority.Priority
 	tags        []*taskTag.Tag
-	creatorId   string // userId TODO подумать над lite user ver
-	performerId string // userId TODO подумать над lite user ver
+	creator     *userObject.ShortUser
+	performer   *userObject.ShortUser
 	createAt    *commonTime.Time
 	updateAt    *commonTime.Time
 	deadline    *commonTime.Time
@@ -55,12 +56,12 @@ func (t *Task) Tags() []*taskTag.Tag {
 	return t.tags
 }
 
-func (t *Task) CreatorId() string {
-	return t.creatorId
+func (t *Task) Creator() *userObject.ShortUser {
+	return t.creator
 }
 
-func (t *Task) PerformerId() string {
-	return t.performerId
+func (t *Task) Performer() *userObject.ShortUser {
+	return t.performer
 }
 
 func (t *Task) CreateAt() *commonTime.Time {
@@ -75,14 +76,14 @@ func (t *Task) Deadline() *commonTime.Time {
 	return t.deadline
 }
 
-func (t *Task) Comments() *taskComment.Comments {
-	return t.comments
-}
-
 func (t *Task) Assessment() *assessmentPrimitive.Assessment {
 	return t.assessment
 }
 
 func (t *Task) TimeCosts() *taskTimeCosts.TimeCosts {
 	return t.timeCosts
+}
+
+func (t *Task) Comments() *taskComment.Comments {
+	return t.comments
 }

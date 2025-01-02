@@ -31,10 +31,7 @@ func (u UserUseCase) CreateUser(ctx context.Context, userCreateDto *userDto.User
 		return nil, err
 	}
 
-	profile, err := profilePrimitive.NewBuilder().
-		FirstName(userCreateDto.FirstName).
-		LastName(userCreateDto.LastName).
-		Build()
+	profile, err := profilePrimitive.NewProfile(userCreateDto.FirstName, userCreateDto.LastName)
 	if err != nil {
 		return nil, err
 	}
@@ -111,10 +108,7 @@ func (u UserUseCase) UpdateUser(ctx context.Context, dto *userDto.UserDto) (*use
 		return nil, err
 	}
 
-	profile, err := profilePrimitive.NewBuilder().
-		FirstName(dto.FirstName).
-		LastName(dto.LastName).
-		Build()
+	profile, err := profilePrimitive.NewProfile(dto.FirstName, dto.LastName)
 	if err != nil {
 		return nil, err
 	}

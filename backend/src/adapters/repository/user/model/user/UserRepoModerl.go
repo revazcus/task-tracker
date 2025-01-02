@@ -2,6 +2,7 @@ package userRepoModel
 
 import (
 	idPrimitive "task-tracker/common/domainPrimitive/id"
+	profileRepoModel "task-tracker/common/repoModel/profile"
 	userEntity "task-tracker/domain/entity/user"
 	emailPrimitive "task-tracker/domain/entity/user/email"
 	passwordPrimitive "task-tracker/domain/entity/user/password"
@@ -11,20 +12,20 @@ import (
 )
 
 type UserRepoModel struct {
-	Id        string              `bson:"user_id"`
-	Profile   *ProfileRepoModel   `bson:"profile"`
-	Role      string              `bson:"role"`
-	Email     string              `bson:"email"`
-	Username  string              `bson:"username"`
-	Password  string              `bson:"password"`
-	Agreement *AgreementRepoModel `bson:"agreement"`
-	CreatedAt int64               `bson:"created_at"`
+	Id        string                             `bson:"user_id"`
+	Profile   *profileRepoModel.ProfileRepoModel `bson:"profile"`
+	Role      string                             `bson:"role"`
+	Email     string                             `bson:"email"`
+	Username  string                             `bson:"username"`
+	Password  string                             `bson:"password"`
+	Agreement *AgreementRepoModel                `bson:"agreement"`
+	CreatedAt int64                              `bson:"created_at"`
 }
 
 func UserToRepoModel(user *userEntity.User) *UserRepoModel {
 	return &UserRepoModel{
 		Id:        string(*user.ID()),
-		Profile:   ProfileToRepoModel(user.Profile()),
+		Profile:   profileRepoModel.ProfileToRepoModel(user.Profile()),
 		Role:      user.Role().String(),
 		Email:     string(*user.Email()),
 		Username:  string(*user.Username()),

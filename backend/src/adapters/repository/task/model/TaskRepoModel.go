@@ -4,6 +4,7 @@ import (
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
+	shortUserRepoModel "task-tracker/common/repoModel/shortUser"
 	taskEntity "task-tracker/domain/entity/task"
 	assessmentPrimitive "task-tracker/domain/entity/task/assessment"
 	taskPriority "task-tracker/domain/entity/task/spec/priority"
@@ -13,20 +14,20 @@ import (
 )
 
 type TaskRepoModel struct {
-	Id          string              `bson:"task_id"`
-	Title       string              `bson:"title"`
-	Description string              `bson:"description"`
-	Status      string              `bson:"status"`
-	Priority    string              `bson:"priority"`
-	Tags        []string            `bson:"tags"`
-	CreatorId   string              `bson:"creatorId"`
-	PerformerId string              `bson:"performerId"`
-	CreateAt    int64               `bson:"create_at"`
-	UpdateAt    int64               `bson:"update_at"`
-	Deadline    int64               `bson:"deadline"`
-	Assessment  int                 `bson:"assessment"`
-	TimeCosts   *TimeCostsRepoModel `bson:"time_costs"`
-	Comments    *CommentsRepoModel  `bson:"comments"`
+	Id          string                                 `bson:"task_id"`
+	Title       string                                 `bson:"title"`
+	Description string                                 `bson:"description"`
+	Status      string                                 `bson:"status"`
+	Priority    string                                 `bson:"priority"`
+	Tags        []string                               `bson:"tags"`
+	Creator     *shortUserRepoModel.ShortUserRepoModel `bson:"creator"`
+	Performer   *shortUserRepoModel.ShortUserRepoModel `bson:"performer"`
+	CreateAt    int64                                  `bson:"create_at"`
+	UpdateAt    int64                                  `bson:"update_at"`
+	Deadline    int64                                  `bson:"deadline"`
+	Assessment  int                                    `bson:"assessment"`
+	TimeCosts   *TimeCostsRepoModel                    `bson:"time_costs"`
+	Comments    *CommentsRepoModel                     `bson:"comments"`
 }
 
 func TaskToRepoModel(task *taskEntity.Task) *TaskRepoModel {
@@ -37,13 +38,13 @@ func TaskToRepoModel(task *taskEntity.Task) *TaskRepoModel {
 		Status:      task.Status().String(),
 		Priority:    task.Priority().String(),
 		Tags:        taskTag.TagsToStrings(task.Tags()),
-		CreatorId:   task.CreatorId(),
-		PerformerId: task.PerformerId(),
+		Creator:     shortUserRepoModel.ShortUserToRepoModel(task.Creator()),
+		Performer:   shortUserRepoModel.ShortUserToRepoModel(task.Performer()),
 		CreateAt:    task.CreateAt().UnixNano(),
 		UpdateAt:    task.UpdateAt().UnixNano(),
 		Deadline:    task.Deadline().UnixNano(),
 		Assessment:  task.Assessment().Int(),
-		TimeCosts:   TimeCostsToRepoModel(task.TimeCosts()),
+		TimeCosts:   TimeInvestmentsToRepoModels(task.TimeCosts()),
 		Comments:    CommentsToRepoModel(task.Comments()),
 	}
 }
@@ -75,6 +76,16 @@ func (m *TaskRepoModel) GetEntity() (*taskEntity.Task, error) {
 	}
 
 	tags, err := taskTag.TagsFrom(m.Tags)
+	if err != nil {
+		return nil, err
+	}
+
+	creator, err := m.Creator.GetObject()
+	if err != nil {
+		return nil, err
+	}
+
+	performer, err := m.Performer.GetObject()
 	if err != nil {
 		return nil, err
 	}
@@ -112,8 +123,8 @@ func (m *TaskRepoModel) GetEntity() (*taskEntity.Task, error) {
 		Status(status).
 		Priority(priority).
 		Tags(tags).
-		CreatorId(m.CreatorId).
-		PerformerId(m.PerformerId).
+		Creator(creator).
+		Performer(performer).
 		CreatedAt(createAt).
 		UpdateAt(updateAt).
 		Deadline(deadline).

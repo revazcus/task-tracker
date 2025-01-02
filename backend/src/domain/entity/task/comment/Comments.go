@@ -2,7 +2,7 @@ package taskComments
 
 import (
 	"strings"
-	idPrimitive "task-tracker/common/domainPrimitive/id"
+	userObject "task-tracker/common/domainObject/shortUser"
 	commonTime "task-tracker/infrastructure/tools/time"
 	"unicode/utf8"
 )
@@ -10,13 +10,13 @@ import (
 const CommentMaxLength = 500
 
 type Comment struct {
-	userId *idPrimitive.EntityId
+	author *userObject.ShortUser
 	date   *commonTime.Time
 	text   string
 }
 
-func (c *Comment) UserId() *idPrimitive.EntityId {
-	return c.userId
+func (c *Comment) Author() *userObject.ShortUser {
+	return c.author
 }
 
 func (c *Comment) Date() *commonTime.Time {
@@ -35,8 +35,8 @@ func NewComments() *Comments {
 	return &Comments{comments: make([]*Comment, 0)}
 }
 
-func (c *Comments) AddComment(authorIdSts string, date *commonTime.Time, text string) error {
-	comment, err := AddComment(authorIdSts, date, text)
+func (c *Comments) AddComment(author *userObject.ShortUser, date *commonTime.Time, text string) error {
+	comment, err := AddComment(author, date, text)
 	if err != nil {
 		return err
 	}
@@ -44,12 +44,7 @@ func (c *Comments) AddComment(authorIdSts string, date *commonTime.Time, text st
 	return nil
 }
 
-func AddComment(authorIdSts string, date *commonTime.Time, text string) (*Comment, error) {
-	authorId, err := idPrimitive.EntityIdFrom(authorIdSts)
-	if err != nil {
-		return nil, err
-	}
-
+func AddComment(author *userObject.ShortUser, date *commonTime.Time, text string) (*Comment, error) {
 	if text == "" {
 		return nil, ErrCommentIsEmpty
 	}
@@ -61,7 +56,7 @@ func AddComment(authorIdSts string, date *commonTime.Time, text string) (*Commen
 	}
 
 	comment := Comment{
-		userId: &authorId,
+		author: author,
 		date:   date,
 		text:   text,
 	}

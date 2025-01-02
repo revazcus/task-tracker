@@ -1,4 +1,4 @@
-package userRepoModel
+package profileRepoModel
 
 import profilePrimitive "task-tracker/domain/entity/user/profile"
 
@@ -15,10 +15,7 @@ func ProfileToRepoModel(profile *profilePrimitive.Profile) *ProfileRepoModel {
 }
 
 func (m *ProfileRepoModel) GetPrimitive() (*profilePrimitive.Profile, error) {
-	profile, err := profilePrimitive.NewBuilder().
-		FirstName(m.FirstName).
-		LastName(m.LastName).
-		Build()
+	profile, err := profilePrimitive.NewProfile(m.FirstName, m.LastName)
 	if err != nil {
 		return nil, err
 	}

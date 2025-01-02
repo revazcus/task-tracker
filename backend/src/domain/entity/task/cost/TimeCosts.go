@@ -2,61 +2,56 @@ package taskTimeCosts
 
 import (
 	"fmt"
-	idPrimitive "task-tracker/common/domainPrimitive/id"
+	userObject "task-tracker/common/domainObject/shortUser"
 	commonTime "task-tracker/infrastructure/tools/time"
 )
 
-type TimeCost struct {
+type TimeInvestment struct {
 	minutes int
 	date    *commonTime.Time
-	userId  *idPrimitive.EntityId
+	worker  *userObject.ShortUser
 }
 
-func (e *TimeCost) Minutes() int {
+func (e *TimeInvestment) Minutes() int {
 	return e.minutes
 }
 
-func (e *TimeCost) Date() *commonTime.Time {
+func (e *TimeInvestment) Date() *commonTime.Time {
 	return e.date
 }
 
-func (e *TimeCost) UserId() *idPrimitive.EntityId {
-	return e.userId
+func (e *TimeInvestment) Worker() *userObject.ShortUser {
+	return e.worker
 }
 
 type TimeCosts struct {
-	totalMinutes int
-	timeCosts    []*TimeCost
+	totalMinutes    int
+	timeInvestments []*TimeInvestment
 }
 
 func NewTimeCosts() *TimeCosts {
-	return &TimeCosts{timeCosts: make([]*TimeCost, 0)}
+	return &TimeCosts{timeInvestments: make([]*TimeInvestment, 0)}
 }
 
-func (c *TimeCosts) AddTimeCost(userIdStr string, date *commonTime.Time, minutes int) error {
-	timeCost, err := AddTimeCost(userIdStr, date, minutes)
+func (c *TimeCosts) AddTimeCost(worker *userObject.ShortUser, date *commonTime.Time, minutes int) error {
+	timeCost, err := AddTimeCost(worker, date, minutes)
 	if err != nil {
 		return err
 	}
 	c.totalMinutes += minutes
-	c.timeCosts = append(c.timeCosts, timeCost)
+	c.timeInvestments = append(c.timeInvestments, timeCost)
 	return nil
 }
 
-func AddTimeCost(userIdStr string, date *commonTime.Time, minutes int) (*TimeCost, error) {
-	userId, err := idPrimitive.EntityIdFrom(userIdStr)
-	if err != nil {
-		return nil, err
-	}
-
+func AddTimeCost(worker *userObject.ShortUser, date *commonTime.Time, minutes int) (*TimeInvestment, error) {
 	if minutes <= 0 {
 		return nil, ErrInvalidMinutes
 	}
 
-	timeCost := TimeCost{
+	timeCost := TimeInvestment{
 		minutes: minutes,
 		date:    date,
-		userId:  &userId,
+		worker:  worker,
 	}
 
 	return &timeCost, nil
@@ -72,6 +67,6 @@ func (c *TimeCosts) TotalMinutes() int {
 	return c.totalMinutes
 }
 
-func (c *TimeCosts) TimeCosts() []*TimeCost {
-	return c.timeCosts
+func (c *TimeCosts) TimeInvestments() []*TimeInvestment {
+	return c.timeInvestments
 }

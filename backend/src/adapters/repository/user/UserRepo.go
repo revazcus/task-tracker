@@ -8,6 +8,7 @@ import (
 	"strings"
 	userRepoModel "task-tracker/adapters/repository/user/model/user"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
+	profileRepoModel "task-tracker/common/repoModel/profile"
 	userEntity "task-tracker/domain/entity/user"
 	emailPrimitive "task-tracker/domain/entity/user/email"
 	passwordPrimitive "task-tracker/domain/entity/user/password"
@@ -153,7 +154,7 @@ func (r *UserRepo) GetByUsername(ctx context.Context, username *usernamePrimitiv
 
 func (r *UserRepo) Update(ctx context.Context, user *userEntity.User) (*userEntity.User, error) {
 	change := bson.D{
-		{"$set", bson.M{"profile": userRepoModel.ProfileToRepoModel(user.Profile())}},
+		{"$set", bson.M{"profile": profileRepoModel.ProfileToRepoModel(user.Profile())}},
 	}
 	return r.updateUser(ctx, user.ID(), change)
 }

@@ -1,6 +1,7 @@
 package taskRepoModel
 
 import (
+	shortUserRepoModel "task-tracker/common/repoModel/shortUser"
 	taskComment "task-tracker/domain/entity/task/comment"
 	commonTime "task-tracker/infrastructure/tools/time"
 )
@@ -10,9 +11,9 @@ type CommentsRepoModel struct {
 }
 
 type CommentRepoModel struct {
-	AuthorId string `bson:"author_id"`
-	Date     int64  `bson:"date"`
-	Text     string `bson:"text"`
+	Date   int64                                  `bson:"date"`
+	Text   string                                 `bson:"text"`
+	Author *shortUserRepoModel.ShortUserRepoModel `bson:"author"`
 }
 
 func CommentsToRepoModel(comments *taskComment.Comments) *CommentsRepoModel {
@@ -25,16 +26,20 @@ func CommentsToRepoModel(comments *taskComment.Comments) *CommentsRepoModel {
 
 func CommentToRepoModel(comment *taskComment.Comment) *CommentRepoModel {
 	return &CommentRepoModel{
-		AuthorId: comment.UserId().String(),
-		Date:     comment.Date().UnixNano(),
-		Text:     comment.Text(),
+		Date:   comment.Date().UnixNano(),
+		Text:   comment.Text(),
+		Author: shortUserRepoModel.ShortUserToRepoModel(comment.Author()),
 	}
 }
 
 func (m *CommentsRepoModel) GetObject() (*taskComment.Comments, error) {
 	comments := taskComment.NewComments()
 	for _, commentRepoModel := range m.Comments {
-		if err := comments.AddComment(commentRepoModel.AuthorId, commonTime.FromUnixNano(commentRepoModel.Date), commentRepoModel.Text); err != nil {
+		author, err := commentRepoModel.Author.GetObject()
+		if err != nil {
+			return nil, err
+		}
+		if err := comments.AddComment(author, commonTime.FromUnixNano(commentRepoModel.Date), commentRepoModel.Text); err != nil {
 			return nil, err
 		}
 	}

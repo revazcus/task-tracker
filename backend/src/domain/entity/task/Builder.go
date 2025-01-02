@@ -1,6 +1,7 @@
 package taskEntity
 
 import (
+	userObject "task-tracker/common/domainObject/shortUser"
 	descriptionPrimitive "task-tracker/common/domainPrimitive/description"
 	idPrimitive "task-tracker/common/domainPrimitive/id"
 	titlePrimitive "task-tracker/common/domainPrimitive/title"
@@ -21,8 +22,8 @@ type Builder struct {
 	status      taskStatus.Status
 	priority    taskPriority.Priority
 	tags        []*taskTag.Tag
-	creatorId   string // userId TODO подумать над lite user ver
-	performerId string // userId TODO подумать над lite user ver
+	creator     *userObject.ShortUser
+	performer   *userObject.ShortUser
 	createAt    *commonTime.Time
 	updateAt    *commonTime.Time
 	deadline    *commonTime.Time
@@ -69,13 +70,13 @@ func (b *Builder) Tags(tags []*taskTag.Tag) *Builder {
 	return b
 }
 
-func (b *Builder) CreatorId(creatorId string) *Builder {
-	b.creatorId = creatorId
+func (b *Builder) Creator(creator *userObject.ShortUser) *Builder {
+	b.creator = creator
 	return b
 }
 
-func (b *Builder) PerformerId(performerId string) *Builder {
-	b.performerId = performerId
+func (b *Builder) Performer(performer *userObject.ShortUser) *Builder {
+	b.performer = performer
 	return b
 }
 
@@ -130,8 +131,8 @@ func (b *Builder) checkRequiredFields() {
 	if b.description == nil {
 		b.errors.AddError(ErrDescriptionIsRequired)
 	}
-	if b.creatorId == "" {
-		b.errors.AddError(ErrCreatorIdIsRequired)
+	if b.creator == nil {
+		b.errors.AddError(ErrCreatorIsRequired)
 	}
 }
 
@@ -159,8 +160,8 @@ func (b *Builder) createFromBuilder() *Task {
 		status:      b.status,
 		priority:    b.priority,
 		tags:        b.tags,
-		creatorId:   b.creatorId,
-		performerId: b.performerId,
+		creator:     b.creator,
+		performer:   b.performer,
 		createAt:    b.createAt,
 		updateAt:    b.updateAt,
 		deadline:    b.deadline,
