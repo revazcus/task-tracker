@@ -1,13 +1,66 @@
+# Указывает версию синтаксиса Docker Compose.
 version: '3.7'
 
+# Определяет список сервисов (контейнеров), которые будут запущены.
 services:
+
+  # Сервис MongoDB.
   mongodb:
+    # Использует последний доступный образ MongoDB.
     image: mongo:latest
+    # Имя контейнера.
     container_name: mongodb
+    # Пробрасывает порт 27017 контейнера на порт 27017 хоста, позволяя доступ к MongoDB.
     ports:
       - "27017:27017"
+    # Монтирует локальную директорию './data' в директорию '/data/db' контейнера для сохранения данных.
     volumes:
       - ./data:/data/db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_ROOT_USERNAME=root # Пользователь-администратор MongoDB.
+      - MONGO_INITDB_ROOT_PASSWORD=root # Пароль администратора MongoDB.
+
+  # Сервис ZooKeeper.
+  zookeeper:
+    # Образ ZooKeeper от Confluent для совместимости с Kafka.
+    image: confluentinc/cp-zookeeper:latest
+    # Имя контейнера.
+    container_name: zookeeper
+    # Порт клиента ZooKeeper.
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+    # Пробрасывание порта.
+    ports:
+      - "2181:2181"
+    # Общая сеть для Kafka и ZooKeeper.
+    networks:
+      - kafka-net
+
+  # Сервис Kafka.
+  kafka:
+    # Образ Kafka от Confluent.
+    image: confluentinc/cp-kafka:latest
+    # Хостнейм внутри сети.
+    hostname: kafka
+    # Имя контейнера.
+    container_name: kafka
+    # Проброс внешнего порта Kafka.
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092  # Прослушивание только PLAINTEXT на внешнем порту.
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092  # Объявленный слушатель для подключения извне.
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181  # Подключение к ZooKeeper.
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT  # Название протокола для внутреннего общения брокеров.
+    # Гарантирует запуск ZooKeeper до Kafka.
+    depends_on:
+      - zookeeper
+    # Общая сеть для Kafka и ZooKeeper.
+    networks:
+      - kafka-net
+
+networks:
+  # Сеть для взаимодействия сервисов.
+  kafka-net:
+    # Драйвер сети (подходит для локальных окружений).
+    driver: bridge
