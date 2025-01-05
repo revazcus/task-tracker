@@ -14,7 +14,7 @@ require (
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.10.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -51,7 +51,7 @@ require (
 )
 
 // TODO убрать после навешивания тега версии
-replace github.com/revazcus/task-tracker/backend/infrastructure => C:\Users\Rezo\IdeaProjects\Monetization\task-tracker\backend\infrastructure
+replace github.com/revazcus/task-tracker/backend/infrastructure => D:\Development\Monetization\task-tracker\backend\infrastructure
 
 // TODO убрать после навешивания тега версии
-replace github.com/revazcus/task-tracker/backend/common => C:\Users\Rezo\IdeaProjects\Monetization\task-tracker\backend\common
+replace github.com/revazcus/task-tracker/backend/common => D:\Development\Monetization\task-tracker\backend\common

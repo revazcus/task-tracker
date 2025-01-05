@@ -20,4 +20,4 @@ require (
 )
 
 // TODO убрать после навешивания тега версии
-replace github.com/revazcus/task-tracker/backend/infrastructure => C:\Users\Rezo\IdeaProjects\Monetization\task-tracker\backend\infrastructure
+replace github.com/revazcus/task-tracker/backend/infrastructure => D:\Development\Monetization\task-tracker\backend\infrastructure

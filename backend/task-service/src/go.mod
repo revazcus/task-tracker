@@ -9,13 +9,13 @@ require (
 )
 
 require (
-	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.23.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
@@ -24,12 +24,12 @@ require (
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 )
 
 // TODO убрать после навешивания тега версии
-replace github.com/revazcus/task-tracker/backend/infrastructure => C:\Users\Rezo\IdeaProjects\Monetization\task-tracker\backend\infrastructure
+replace github.com/revazcus/task-tracker/backend/infrastructure => D:\Development\Monetization\task-tracker\backend\infrastructure
 
 // TODO убрать после навешивания тега версии
-replace github.com/revazcus/task-tracker/backend/common => C:\Users\Rezo\IdeaProjects\Monetization\task-tracker\backend\common
+replace github.com/revazcus/task-tracker/backend/common => D:\Development\Monetization\task-tracker\backend\common
