@@ -2,28 +2,28 @@ package taskUseCase
 
 import (
 	"context"
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
 	descriptionPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/description"
 	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
 	titlePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/title"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
+	"github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
+	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
 	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
 	taskDto "github.com/revazcus/task-tracker/backend/task-service/boundary/dto/task"
+	repositoryInterface "github.com/revazcus/task-tracker/backend/task-service/boundary/repository"
 	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
 	assessmentPrimitive "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/assessment"
+	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
 	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
 	taskPriority "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/priority"
 	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
-	userUseCase "github.com/revazcus/task-tracker/backend/user-service/domain/usecase/user"
-
+	taskTag "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/tag"
 	"time"
 )
 
 type TaskUseCase struct {
-	taskRepo repositoryInterface.TaskRepository
-
-	// TODO уедет в отдельый микросервис с общением через кафку
-	userUseCase *userUseCase.UserUseCase
+	taskRepo    repositoryInterface.TaskRepository
+	kafkaClient kafkaClientInterface.KafkaClient
 }
 
 func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.TaskDto) (*taskEntity.Task, error) {
@@ -48,14 +48,15 @@ func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.Task
 	}
 
 	// TODO переписать
-	user, err := u.userUseCase.GetUserById(ctx, taskCreateDto.CreatorId)
-	if err != nil {
+	eventType := event.EventType("TaskCreated")
+	eventNotification := event.NewEventNotification(&eventType, "task-service", map[string]interface{}{"userId": taskCreateDto.CreatorId})
+	if err := u.kafkaClient.SendMessage(ctx, "user-info", eventNotification); err != nil {
 		return nil, err
 	}
-	creator, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	if err != nil {
-		return nil, err
-	}
+	//creator, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	// TODO вынести в доменный примитив
 	deadline, err := commonTime.Parse(time.RFC3339Nano, taskCreateDto.DeadLine)
@@ -80,7 +81,7 @@ func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.Task
 		Description(&description).
 		Priority(priority).
 		Tags(tags).
-		Creator(creator).
+		//Creator(creator).
 		Deadline(deadline).
 		Assessment(assessment).
 		TimeCosts(timeCosts).
@@ -154,15 +155,15 @@ func (u TaskUseCase) UpdateTask(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		return nil, errors.NewError("SYS", "Deadline не может быть меньше текущего времени")
 	}
 
-	// TODO переписать
-	user, err := u.userUseCase.GetUserById(ctx, dto.CreatorId)
-	if err != nil {
-		return nil, err
-	}
-	creator, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	if err != nil {
-		return nil, err
-	}
+	//// TODO переписать
+	//user, err := u.userUseCase.GetUserById(ctx, dto.CreatorId)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//creator, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	assessment, err := assessmentPrimitive.AssessmentFrom(dto.Assessment)
 	if err != nil {
@@ -176,7 +177,7 @@ func (u TaskUseCase) UpdateTask(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		Priority(priority).
 		Status(status).
 		Tags(tags).
-		Creator(creator).
+		//Creator(creator).
 		Deadline(deadline).
 		Assessment(assessment).
 		Build()
@@ -198,17 +199,17 @@ func (u TaskUseCase) TakeOnTask(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		return nil, err
 	}
 
-	// TODO переписать
-	user, err := u.userUseCase.GetUserById(ctx, dto.PerformerId)
-	if err != nil {
-		return nil, err
-	}
-	performer, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	if err != nil {
-		return nil, err
-	}
+	//// TODO переписать
+	//user, err := u.userUseCase.GetUserById(ctx, dto.PerformerId)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//performer, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	updatedTask, err := u.taskRepo.UpdatePerformerAndStatus(ctx, &taskId, performer, taskStatus.Statuses.InProgress())
+	updatedTask, err := u.taskRepo.UpdatePerformerAndStatus(ctx, &taskId, nil, taskStatus.Statuses.InProgress())
 	if err != nil {
 		return nil, err
 	}
@@ -222,17 +223,17 @@ func (u TaskUseCase) AddPerformer(ctx context.Context, dto *taskDto.TaskDto) (*t
 		return nil, err
 	}
 
-	// TODO переписать
-	user, err := u.userUseCase.GetUserById(ctx, dto.PerformerId)
-	if err != nil {
-		return nil, err
-	}
-	performer, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	if err != nil {
-		return nil, err
-	}
+	//// TODO переписать
+	//user, err := u.userUseCase.GetUserById(ctx, dto.PerformerId)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//performer, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	updatedTask, err := u.taskRepo.UpdatePerformer(ctx, &taskId, performer)
+	updatedTask, err := u.taskRepo.UpdatePerformer(ctx, &taskId, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -246,17 +247,17 @@ func (u TaskUseCase) AddTimeCosts(ctx context.Context, dto *taskDto.TaskDto) (*t
 		return nil, err
 	}
 
-	// TODO переписать
-	user, err := u.userUseCase.GetUserById(ctx, dto.TimeCosts.UserId)
-	if err != nil {
-		return nil, err
-	}
-	worker, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	if err != nil {
-		return nil, err
-	}
+	//// TODO переписать
+	//user, err := u.userUseCase.GetUserById(ctx, dto.TimeCosts.UserId)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//worker, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	timeCost, err := taskTimeCosts.AddTimeCost(worker, commonTime.Now(), dto.TimeCosts.Minutes)
+	timeCost, err := taskTimeCosts.AddTimeCost(nil, commonTime.Now(), dto.TimeCosts.Minutes)
 	if err != nil {
 		return nil, err
 	}
@@ -275,17 +276,17 @@ func (u TaskUseCase) AddComment(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		return nil, err
 	}
 
-	// TODO переписать
-	user, err := u.userUseCase.GetUserById(ctx, dto.Comments.UserId)
-	if err != nil {
-		return nil, err
-	}
-	author, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	if err != nil {
-		return nil, err
-	}
+	//// TODO переписать
+	//user, err := u.userUseCase.GetUserById(ctx, dto.Comments.UserId)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//author, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	comment, err := taskComment.AddComment(author, commonTime.Now(), dto.Comments.Text)
+	comment, err := taskComment.AddComment(nil, commonTime.Now(), dto.Comments.Text)
 	if err != nil {
 		return nil, err
 	}

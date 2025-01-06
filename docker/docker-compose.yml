@@ -47,15 +47,36 @@ services:
     # Проброс внешнего порта Kafka.
     ports:
       - "9092:9092"
+      - "9093:9093" # Удалить после отладки
     environment:
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092  # Прослушивание только PLAINTEXT на внешнем порту.
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092  # Объявленный слушатель для подключения извне.
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,EXTERNAL://0.0.0.0:9093  # Слушатель для подключения извне.
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9093  # Слушатель для внутреннего общения
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181  # Подключение к ZooKeeper.
-      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT  # Название протокола для внутреннего общения брокеров.
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT  # Имя слушателя для внутреннего общения.
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 # Фактор репликации топика смещений. Лечит проблему 1 брокера https://stackoverflow.com/questions/49490835/kafka-server-offsets-topic-has-not-yet-been-created
     # Гарантирует запуск ZooKeeper до Kafka.
     depends_on:
       - zookeeper
     # Общая сеть для Kafka и ZooKeeper.
+    networks:
+      - kafka-net
+
+  # Сервис Kafdrop для Kafka UI - удалить после отладки
+  kafdrop:
+    # Образ kafdrop от Obsidiandynamics.
+    image: obsidiandynamics/kafdrop:latest
+    # Имя контейнера.
+    container_name: kafdrop
+    # Проброс порта.
+    ports:
+      - "9000:9000"
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:9092 # Подключение к брокеру Kafka.
+    # Гарантирует запуск Kafka до kafdrop.
+    depends_on:
+      - kafka
+    # Общая сеть для Kafka, ZooKeeper И Kafdrop.
     networks:
       - kafka-net
 

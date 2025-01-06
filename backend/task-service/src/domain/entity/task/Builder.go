@@ -8,9 +8,11 @@ import (
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
 	assessmentPrimitive "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/assessment"
+	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
 	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
 	taskPriority "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/priority"
 	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
+	taskTag "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/tag"
 )
 
 type Builder struct {

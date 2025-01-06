@@ -1,4 +1,4 @@
-package taskComments
+package taskComment
 
 import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
 

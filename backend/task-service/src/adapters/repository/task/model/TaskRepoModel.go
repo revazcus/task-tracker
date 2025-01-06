@@ -10,6 +10,7 @@ import (
 	assessmentPrimitive "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/assessment"
 	taskPriority "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/priority"
 	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
+	taskTag "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/tag"
 )
 
 type TaskRepoModel struct {

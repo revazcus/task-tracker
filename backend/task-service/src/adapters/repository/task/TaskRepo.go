@@ -11,8 +11,10 @@ import (
 	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
 	taskRepoModel "github.com/revazcus/task-tracker/backend/task-service/adapters/repository/task/model"
 	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
+	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
 	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
 	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
+	taskTag "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/tag"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )

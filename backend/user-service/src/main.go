@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	saramaClient "github.com/revazcus/task-tracker/backend/infrastructure/kafka"
 	commonLogger "github.com/revazcus/task-tracker/backend/infrastructure/logger"
 	"github.com/revazcus/task-tracker/backend/infrastructure/logger/zapLogger"
 	mongoRepo "github.com/revazcus/task-tracker/backend/infrastructure/mongo"
@@ -12,6 +13,7 @@ import (
 	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
 	userRest "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/user"
 	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/user/resolver"
+	"github.com/revazcus/task-tracker/backend/user-service/adapters/gateways/brokers"
 	userRepo "github.com/revazcus/task-tracker/backend/user-service/adapters/repository/user"
 	userUseCase "github.com/revazcus/task-tracker/backend/user-service/domain/usecase/user"
 	initServices "github.com/revazcus/task-tracker/backend/user-service/init-services"
@@ -75,6 +77,15 @@ func main() {
 
 	userRouter := router.NewUserRouter(userController)
 
+	// Kafka
+	kafkaClient, _ := saramaClient.NewSaramaClient([]string{"localhost:9093"}, "user-service-group", logger)
+	if err := kafkaClient.CreateTopic(context.Background(), "user-info", 3, 1); err != nil {
+		logger.Error(context.Background(), err)
+	}
+	eventListener := brokers.NewEventListener(kafkaClient, userUseCase, logger)
+	go eventListener.Listen(context.Background())
+
+	// Register all routes
 	globalRouter := initServices.NewGlobalRouter(server,
 		userRouter)
 
@@ -85,5 +96,6 @@ func main() {
 	//	logger.Error(context.Background(), err)
 	//}
 
-	server.Start(":8080")
+	server.Start(":8081")
+
 }

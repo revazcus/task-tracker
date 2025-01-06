@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	saramaClient "github.com/revazcus/task-tracker/backend/infrastructure/kafka"
 	commonLogger "github.com/revazcus/task-tracker/backend/infrastructure/logger"
 	"github.com/revazcus/task-tracker/backend/infrastructure/logger/zapLogger"
 	mongoRepo "github.com/revazcus/task-tracker/backend/infrastructure/mongo"
@@ -53,6 +54,12 @@ func main() {
 
 	baseController, _ := restServerController.NewBaseController(responseService, logger)
 
+	// Kafka
+	kafkaClient, _ := saramaClient.NewSaramaClient([]string{"localhost:9093"}, "task-service-group", logger)
+	if err := kafkaClient.CreateTopic(context.Background(), "task-info", 3, 1); err != nil {
+		logger.Error(context.Background(), err)
+	}
+
 	// Task
 	taskRepo, _ := taskRepo.NewBuilder().
 		Collection("Task").
@@ -64,6 +71,7 @@ func main() {
 
 	taskUseCase, _ := taskUseCase.NewBuilder().
 		TaskRepo(taskRepo).
+		KafkaClient(kafkaClient).
 		Build()
 
 	taskController, _ := taskRest.NewBuilder().
@@ -84,5 +92,5 @@ func main() {
 	//	logger.Error(context.Background(), err)
 	//}
 
-	server.Start(":8080")
+	server.Start(":8082")
 }

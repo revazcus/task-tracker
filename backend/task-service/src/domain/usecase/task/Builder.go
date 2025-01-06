@@ -2,7 +2,8 @@ package taskUseCase
 
 import (
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	userUseCase "github.com/revazcus/task-tracker/backend/user-service/domain/usecase/user"
+	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
+	repositoryInterface "github.com/revazcus/task-tracker/backend/task-service/boundary/repository"
 )
 
 type Builder struct {
@@ -22,9 +23,8 @@ func (b *Builder) TaskRepo(taskRepo repositoryInterface.TaskRepository) *Builder
 	return b
 }
 
-// UserUseCase TODO переписать
-func (b *Builder) UserUseCase(userUseCase *userUseCase.UserUseCase) *Builder {
-	b.taskUseCase.userUseCase = userUseCase
+func (b *Builder) KafkaClient(kafkaClient kafkaClientInterface.KafkaClient) *Builder {
+	b.taskUseCase.kafkaClient = kafkaClient
 	return b
 }
 
@@ -40,7 +40,7 @@ func (b *Builder) checkRequiredFields() {
 	if b.taskUseCase.taskRepo == nil {
 		b.errors.AddError(errors.NewError("SYS", "TaskUseCaseBuilder: TaskRepository is required"))
 	}
-	if b.taskUseCase.userUseCase == nil {
-		b.errors.AddError(errors.NewError("SYS", "TaskUseCaseBuilder: UserUseCase is required"))
+	if b.taskUseCase.kafkaClient == nil {
+		b.errors.AddError(errors.NewError("SYS", "TaskUseCaseBuilder: KafkaClient is required"))
 	}
 }

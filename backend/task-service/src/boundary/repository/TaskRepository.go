@@ -1,10 +1,11 @@
-package repository
+package repositoryInterface
 
 import (
 	"context"
 	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
 	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
 	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
+	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
 	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
 	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
 )

@@ -1,4 +1,4 @@
-package taskComments
+package taskComment
 
 import (
 	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"

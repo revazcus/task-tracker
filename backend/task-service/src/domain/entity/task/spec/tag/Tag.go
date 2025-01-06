@@ -1,12 +1,12 @@
-package tag
+package taskTag
 
 type Tag string
-
-type TagEnum map[string]Tag
 
 func (t Tag) String() string {
 	return string(t)
 }
+
+type TagEnum map[string]Tag
 
 func TagsFrom(tags []string) ([]*Tag, error) {
 	var result []*Tag

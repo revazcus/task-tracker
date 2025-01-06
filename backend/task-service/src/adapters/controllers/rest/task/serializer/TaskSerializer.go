@@ -4,6 +4,7 @@ import (
 	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
 	jsonApiModel "github.com/revazcus/task-tracker/backend/infrastructure/jsonapi/model"
 	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
+	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
 	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
 )
 
