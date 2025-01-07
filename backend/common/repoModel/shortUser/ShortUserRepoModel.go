@@ -43,5 +43,5 @@ func (m *ShortUserRepoModel) GetObject() (*userObject.ShortUser, error) {
 		return nil, err
 	}
 
-	return userObject.NewShortUser(&userId, &email, profile)
+	return userObject.NewShortUser(&userId, &email, profile), nil
 }

@@ -12,8 +12,8 @@ type ShortUser struct {
 	profile *profilePrimitive.Profile
 }
 
-func NewShortUser(userId *idPrimitive.EntityId, email *emailPrimitive.Email, profile *profilePrimitive.Profile) (*ShortUser, error) {
-	return &ShortUser{id: userId, email: email, profile: profile}, nil
+func NewShortUser(userId *idPrimitive.EntityId, email *emailPrimitive.Email, profile *profilePrimitive.Profile) *ShortUser {
+	return &ShortUser{id: userId, email: email, profile: profile}
 }
 
 func (u *ShortUser) ID() *idPrimitive.EntityId {

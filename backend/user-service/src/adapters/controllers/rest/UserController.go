@@ -1,12 +1,12 @@
-package userRest
+package rest
 
 import (
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
 	restServerController "github.com/revazcus/task-tracker/backend/infrastructure/restServer/controller"
 	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
-	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/user/request"
-	userSerializer "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/user/serializer"
+	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/request"
+	userSerializer "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/serializer"
 	"github.com/revazcus/task-tracker/backend/user-service/boundary/domain/usecase"
 	"net/http"
 )

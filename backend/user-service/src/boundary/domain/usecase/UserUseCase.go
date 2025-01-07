@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	userDto "github.com/revazcus/task-tracker/backend/user-service/boundary/dto/user"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user"
+	userDto "github.com/revazcus/task-tracker/backend/user-service/boundary/dto"
+	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
 )
 
 type UserUseCaseInterface interface {

@@ -11,11 +11,12 @@ import (
 	restServerController "github.com/revazcus/task-tracker/backend/infrastructure/restServer/controller"
 	"github.com/revazcus/task-tracker/backend/infrastructure/restServer/response"
 	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
-	userRest "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/user"
-	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/user/resolver"
-	"github.com/revazcus/task-tracker/backend/user-service/adapters/gateways/brokers"
+	"github.com/revazcus/task-tracker/backend/user-service/adapters/brokers"
+	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/grpc"
+	userRest "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest"
+	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/resolver"
 	userRepo "github.com/revazcus/task-tracker/backend/user-service/adapters/repository/user"
-	userUseCase "github.com/revazcus/task-tracker/backend/user-service/domain/usecase/user"
+	userUseCase "github.com/revazcus/task-tracker/backend/user-service/domain/usecase"
 	initServices "github.com/revazcus/task-tracker/backend/user-service/init-services"
 	router "github.com/revazcus/task-tracker/backend/user-service/init-services/routers"
 )
@@ -84,6 +85,11 @@ func main() {
 	}
 	eventListener := brokers.NewEventListener(kafkaClient, userUseCase, logger)
 	go eventListener.Listen(context.Background())
+
+	// GRPC
+	grpcController := grpc.NewUserController(userUseCase)
+	grpcServer := grpc.NewUserServer(":50051", grpcController, logger)
+	grpcServer.Start()
 
 	// Register all routes
 	globalRouter := initServices.NewGlobalRouter(server,

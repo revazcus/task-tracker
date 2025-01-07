@@ -3,8 +3,8 @@ module github.com/revazcus/task-tracker/backend/task-service
 go 1.23.2
 
 require (
-	github.com/revazcus/task-tracker/backend/common v0.0.0-00010101000000-000000000000
-	github.com/revazcus/task-tracker/backend/infrastructure v0.0.0-20250105121933-4ec03ae86b19
+	github.com/revazcus/task-tracker/backend/common v0.0.0-20250106154401-b7619cd3532f
+	github.com/revazcus/task-tracker/backend/infrastructure v0.0.0-20250106154401-b7619cd3532f
 	go.mongodb.org/mongo-driver/v2 v2.0.0
 )
 
@@ -61,7 +61,9 @@ require (
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
-	google.golang.org/protobuf v1.34.1 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
+	google.golang.org/grpc v1.69.2 // indirect
+	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 

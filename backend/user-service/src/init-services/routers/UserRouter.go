@@ -2,7 +2,7 @@ package router
 
 import (
 	restServerInterface "github.com/revazcus/task-tracker/backend/infrastructure/restServer/interface"
-	userRest "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/user"
+	userRest "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest"
 	"net/http"
 )
 

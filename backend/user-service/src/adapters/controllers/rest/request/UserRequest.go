@@ -3,7 +3,7 @@ package request
 import (
 	"bytes"
 	"encoding/json"
-	userDto "github.com/revazcus/task-tracker/backend/user-service/boundary/dto/user"
+	userDto "github.com/revazcus/task-tracker/backend/user-service/boundary/dto"
 )
 
 type CreateUserRequest struct {

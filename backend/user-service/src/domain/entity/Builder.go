@@ -6,10 +6,10 @@ import (
 	profilePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/profile"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	agreementPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user/agreement"
-	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user/password"
-	"github.com/revazcus/task-tracker/backend/user-service/domain/entity/user/spec"
-	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user/username"
+	agreementPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/agreement"
+	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/password"
+	"github.com/revazcus/task-tracker/backend/user-service/domain/entity/spec"
+	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/username"
 )
 
 type Builder struct {

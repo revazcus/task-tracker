@@ -1,6 +1,7 @@
 package taskUseCase
 
 import (
+	userGatewayInterface "github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user/interface"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
 	repositoryInterface "github.com/revazcus/task-tracker/backend/task-service/boundary/repository"
@@ -28,6 +29,11 @@ func (b *Builder) KafkaClient(kafkaClient kafkaClientInterface.KafkaClient) *Bui
 	return b
 }
 
+func (b *Builder) UserGateway(userGateway userGatewayInterface.UserGateway) *Builder {
+	b.taskUseCase.userGateway = userGateway
+	return b
+}
+
 func (b *Builder) Build() (*TaskUseCase, error) {
 	b.checkRequiredFields()
 	if b.errors.IsPresent() {
@@ -42,5 +48,8 @@ func (b *Builder) checkRequiredFields() {
 	}
 	if b.taskUseCase.kafkaClient == nil {
 		b.errors.AddError(errors.NewError("SYS", "TaskUseCaseBuilder: KafkaClient is required"))
+	}
+	if b.taskUseCase.userGateway == nil {
+		b.errors.AddError(errors.NewError("SYS", "TaskUseCaseBuilder: UserGateway is required"))
 	}
 }

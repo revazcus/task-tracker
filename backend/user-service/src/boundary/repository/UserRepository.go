@@ -4,9 +4,9 @@ import (
 	"context"
 	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
 	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user"
-	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user/password"
-	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user/username"
+	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
+	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/password"
+	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/username"
 )
 
 type UserRepository interface {

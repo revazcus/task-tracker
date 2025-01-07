@@ -5,6 +5,7 @@ import (
 	descriptionPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/description"
 	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
 	titlePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/title"
+	userGatewayInterface "github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user/interface"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	"github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
 	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
@@ -24,6 +25,7 @@ import (
 type TaskUseCase struct {
 	taskRepo    repositoryInterface.TaskRepository
 	kafkaClient kafkaClientInterface.KafkaClient
+	userGateway userGatewayInterface.UserGateway
 }
 
 func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.TaskDto) (*taskEntity.Task, error) {
@@ -47,16 +49,19 @@ func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.Task
 		return nil, err
 	}
 
+	// Отправляем сообщение в кафку
 	// TODO переписать
 	eventType := event.EventType("TaskCreated")
 	eventNotification := event.NewEventNotification(&eventType, "task-service", map[string]interface{}{"userId": taskCreateDto.CreatorId})
 	if err := u.kafkaClient.SendMessage(ctx, "user-info", eventNotification); err != nil {
 		return nil, err
 	}
-	//creator, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	//if err != nil {
-	//	return nil, err
-	//}
+
+	// Запрашиваем shortUser по grpc
+	creator, err := u.userGateway.GetUserById(ctx, taskCreateDto.CreatorId)
+	if err != nil {
+		return nil, err
+	}
 
 	// TODO вынести в доменный примитив
 	deadline, err := commonTime.Parse(time.RFC3339Nano, taskCreateDto.DeadLine)
@@ -81,7 +86,7 @@ func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.Task
 		Description(&description).
 		Priority(priority).
 		Tags(tags).
-		//Creator(creator).
+		Creator(creator).
 		Deadline(deadline).
 		Assessment(assessment).
 		TimeCosts(timeCosts).

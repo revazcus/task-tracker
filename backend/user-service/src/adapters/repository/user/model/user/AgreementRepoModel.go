@@ -2,7 +2,7 @@ package userRepoModel
 
 import (
 	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	agreementPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/user/agreement"
+	agreementPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/agreement"
 )
 
 type AgreementRepoModel struct {

@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/revazcus/task-tracker/backend/common/gateways/user/gateways"
+	commonUserGateways "github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user"
 	saramaClient "github.com/revazcus/task-tracker/backend/infrastructure/kafka"
 	commonLogger "github.com/revazcus/task-tracker/backend/infrastructure/logger"
 	"github.com/revazcus/task-tracker/backend/infrastructure/logger/zapLogger"
@@ -60,6 +62,11 @@ func main() {
 		logger.Error(context.Background(), err)
 	}
 
+	// GRPS
+	baseGRPCGateway := gateways.NewBaseGRPCGateway("localhost:50051", logger)
+	baseGRPCGateway.Start()
+	userGateway := commonUserGateways.NewUserGateway(baseGRPCGateway, logger)
+
 	// Task
 	taskRepo, _ := taskRepo.NewBuilder().
 		Collection("Task").
@@ -72,6 +79,7 @@ func main() {
 	taskUseCase, _ := taskUseCase.NewBuilder().
 		TaskRepo(taskRepo).
 		KafkaClient(kafkaClient).
+		UserGateway(userGateway).
 		Build()
 
 	taskController, _ := taskRest.NewBuilder().

@@ -1,4 +1,4 @@
-package userUseCase
+package usecase
 
 import (
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"

@@ -2,7 +2,7 @@ package userSerializer
 
 import (
 	jsonApiModel "github.com/revazcus/task-tracker/backend/infrastructure/jsonapi/model"
-	userDto "github.com/revazcus/task-tracker/backend/user-service/boundary/dto/user"
+	userDto "github.com/revazcus/task-tracker/backend/user-service/boundary/dto"
 )
 
 func SerializeUserResponse(responseDto *userDto.UserResponseDto) (jsonApiModel.JsonApiPayload, error) {
