@@ -11,7 +11,7 @@ import (
 	restServerController "github.com/revazcus/task-tracker/backend/infrastructure/restServer/controller"
 	"github.com/revazcus/task-tracker/backend/infrastructure/restServer/response"
 	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
-	"github.com/revazcus/task-tracker/backend/user-service/adapters/brokers"
+	"github.com/revazcus/task-tracker/backend/user-service/adapters/broker"
 	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/grpc"
 	userRest "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest"
 	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/resolver"
@@ -83,7 +83,7 @@ func main() {
 	if err := kafkaClient.CreateTopic(context.Background(), "user-info", 3, 1); err != nil {
 		logger.Error(context.Background(), err)
 	}
-	eventListener := brokers.NewEventListener(kafkaClient, userUseCase, logger)
+	eventListener := broker.NewEventListener(kafkaClient, userUseCase, logger)
 	go eventListener.Listen(context.Background())
 
 	// GRPC

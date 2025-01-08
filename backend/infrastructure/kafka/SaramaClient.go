@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/IBM/sarama"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	"github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
+	kafkaEvent "github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
 	groupHenler "github.com/revazcus/task-tracker/backend/infrastructure/kafka/handler"
 	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
 	"time"
@@ -97,10 +97,10 @@ func (c *SaramaClient) DeleteTopic(ctx context.Context, name string) error {
 	return nil
 }
 
-func (c *SaramaClient) SendMessage(ctx context.Context, topic string, eventNotification *event.EventNotification) error {
+func (c *SaramaClient) SendMessage(ctx context.Context, topic string, eventNotification *kafkaEvent.EventNotification) error {
 	msgBytes, err := eventNotification.ToBytes()
 	if err != nil {
-		c.logger.Error(ctx, fmt.Errorf("failed to convert event notification to bytes: %w", err))
+		c.logger.Error(ctx, fmt.Errorf("failed to convert kafkaEvent notification to bytes: %w", err))
 	}
 
 	select {
@@ -127,7 +127,7 @@ func (c *SaramaClient) SendMessage(ctx context.Context, topic string, eventNotif
 	return nil
 }
 
-func (c *SaramaClient) ReadMessage(ctx context.Context, topic string) (*event.EventNotification, error) {
+func (c *SaramaClient) ReadMessage(ctx context.Context, topic string) (*kafkaEvent.EventNotification, error) {
 
 	// Создаём и инициализируем обработчик
 	handler := &groupHenler.ConsumerGroupHandler{
@@ -157,9 +157,9 @@ func (c *SaramaClient) ReadMessage(ctx context.Context, topic string) (*event.Ev
 	case msg := <-handler.MessageChan:
 		// Если сообщение получено, конвертируем его в EventNotification
 		c.logger.Info(ctx, fmt.Sprintf("message read from topic %s", topic))
-		var eventNotification event.EventNotification
+		var eventNotification kafkaEvent.EventNotification
 		if err := eventNotification.FromBytes(msg.Value); err != nil {
-			c.logger.Error(ctx, fmt.Errorf("failed to convert message to event notification: %w", err))
+			c.logger.Error(ctx, fmt.Errorf("failed to convert message to kafkaEvent notification: %w", err))
 			return nil, err
 		}
 

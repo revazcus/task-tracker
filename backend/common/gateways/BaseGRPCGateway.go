@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
+
 	"google.golang.org/grpc"
 )
 

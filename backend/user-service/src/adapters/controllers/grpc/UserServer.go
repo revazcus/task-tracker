@@ -3,7 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user/protoModel"
+	"github.com/revazcus/task-tracker/backend/common/gateways/user1/gateways/user/protoModel"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
 	"google.golang.org/grpc"

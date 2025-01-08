@@ -1,4 +1,4 @@
-package event
+package kafkaEvent
 
 import (
 	"encoding/json"
@@ -30,5 +30,4 @@ func (n *EventNotification) ToBytes() ([]byte, error) {
 
 func (n *EventNotification) FromBytes(bytes []byte) error {
 	return json.Unmarshal(bytes, n)
-
 }

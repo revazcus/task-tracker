@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/common/gateways/user/gateways"
-	commonUserGateways "github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user"
+	"github.com/revazcus/task-tracker/backend/common/gateways"
+	commonUserGateways "github.com/revazcus/task-tracker/backend/common/gateways/user"
 	saramaClient "github.com/revazcus/task-tracker/backend/infrastructure/kafka"
 	commonLogger "github.com/revazcus/task-tracker/backend/infrastructure/logger"
 	"github.com/revazcus/task-tracker/backend/infrastructure/logger/zapLogger"

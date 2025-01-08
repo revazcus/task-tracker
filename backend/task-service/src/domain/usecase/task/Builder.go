@@ -1,7 +1,7 @@
 package taskUseCase
 
 import (
-	userGatewayInterface "github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user/interface"
+	userGatewayInterface "github.com/revazcus/task-tracker/backend/common/gateways/user/interface"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
 	repositoryInterface "github.com/revazcus/task-tracker/backend/task-service/boundary/repository"

@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user/protoModel"
+	"github.com/revazcus/task-tracker/backend/common/gateways/user1/gateways/user/protoModel"
 	"github.com/revazcus/task-tracker/backend/user-service/boundary/domain/usecase"
 	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
 )

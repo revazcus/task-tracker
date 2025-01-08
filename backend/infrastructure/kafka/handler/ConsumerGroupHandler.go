@@ -24,7 +24,6 @@ func (h *ConsumerGroupHandler) Cleanup(sess sarama.ConsumerGroupSession) error {
 
 // ConsumeClaim основная логика обработки сообщений
 func (h *ConsumerGroupHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-	// Логируем начало потребления
 	// Читаем сообщения из claim
 	for msg := range claim.Messages() {
 		// Отправляем сообщение в канал

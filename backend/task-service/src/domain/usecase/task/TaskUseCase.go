@@ -5,9 +5,9 @@ import (
 	descriptionPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/description"
 	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
 	titlePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/title"
-	userGatewayInterface "github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user/interface"
+	userGatewayInterface "github.com/revazcus/task-tracker/backend/common/gateways/user/interface"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	"github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
+	kafkaEvent "github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
 	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
 	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
 	taskDto "github.com/revazcus/task-tracker/backend/task-service/boundary/dto/task"
@@ -51,8 +51,8 @@ func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.Task
 
 	// Отправляем сообщение в кафку
 	// TODO переписать
-	eventType := event.EventType("TaskCreated")
-	eventNotification := event.NewEventNotification(&eventType, "task-service", map[string]interface{}{"userId": taskCreateDto.CreatorId})
+	eventType := kafkaEvent.EventType("TaskCreated")
+	eventNotification := kafkaEvent.NewEventNotification(&eventType, "task-service", map[string]interface{}{"userId": taskCreateDto.CreatorId})
 	if err := u.kafkaClient.SendMessage(ctx, "user-info", eventNotification); err != nil {
 		return nil, err
 	}

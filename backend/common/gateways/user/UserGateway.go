@@ -7,8 +7,8 @@ import (
 	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
 	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
 	profilePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/profile"
-	"github.com/revazcus/task-tracker/backend/common/gateways/user/gateways"
-	"github.com/revazcus/task-tracker/backend/common/gateways/user/gateways/user/protoModel"
+	"github.com/revazcus/task-tracker/backend/common/gateways"
+	"github.com/revazcus/task-tracker/backend/common/gateways/user/protoModel"
 	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	"google.golang.org/grpc/status"
 
