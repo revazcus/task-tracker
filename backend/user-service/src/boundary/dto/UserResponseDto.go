@@ -1,6 +1,6 @@
 package userDto
 
-import userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
+import userEntity "user-service/src/domain/entity"
 
 type UserResponseDto struct {
 	User  *userEntity.User

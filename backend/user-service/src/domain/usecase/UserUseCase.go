@@ -1,20 +1,20 @@
-package usecase
+package userUseCase
 
 import (
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
+	profilePrimitive "common/domainPrimitive/profile"
 	"context"
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	profilePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/profile"
-	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
-	jwtServiceInterface "github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService/interface"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	userDto "github.com/revazcus/task-tracker/backend/user-service/boundary/dto"
-	repositoryInterface "github.com/revazcus/task-tracker/backend/user-service/boundary/repository"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
-	agreementPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/agreement"
-	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/password"
-	"github.com/revazcus/task-tracker/backend/user-service/domain/entity/spec"
-	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/username"
+	"infrastructure/security/jwtService"
+	jwtServiceInterface "infrastructure/security/jwtService/interface"
+	commonTime "infrastructure/tools/time"
+	userDto "user-service/src/boundary/dto"
+	repositoryInterface "user-service/src/boundary/repository"
+	userEntity "user-service/src/domain/entity"
+	agreementPrimitive "user-service/src/domain/entity/agreement"
+	passwordPrimitive "user-service/src/domain/entity/password"
+	"user-service/src/domain/entity/spec"
+	usernamePrimitive "user-service/src/domain/entity/username"
 )
 
 type UserUseCase struct {

@@ -1,8 +1,8 @@
 package userSerializer
 
 import (
-	jsonApiModel "github.com/revazcus/task-tracker/backend/infrastructure/jsonapi/model"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
+	jsonApiModel "infrastructure/jsonapi/model"
+	userEntity "user-service/src/domain/entity"
 )
 
 const (

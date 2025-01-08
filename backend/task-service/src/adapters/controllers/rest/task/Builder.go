@@ -1,10 +1,10 @@
 package taskRest
 
 import (
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	restServerController "github.com/revazcus/task-tracker/backend/infrastructure/restServer/controller"
-	"github.com/revazcus/task-tracker/backend/task-service/boundary/domain/usecase"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
+	restServerController "infrastructure/restServer/controller"
+	"task-service/src/boundary/domain/usecase"
 )
 
 type Builder struct {

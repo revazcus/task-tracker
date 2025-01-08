@@ -1,6 +1,6 @@
 package jwtService
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 type Builder struct {
 	service *JWTService

@@ -1,6 +1,6 @@
 package userRepo
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrEmailAlreadyExist         = errors.NewError("USR-001", "Email уже существует")

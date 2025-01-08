@@ -1,13 +1,13 @@
 package repositoryInterface
 
 import (
+	userObject "common/domainObject/shortUser"
+	idPrimitive "common/domainPrimitive/id"
 	"context"
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
-	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
-	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
-	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
+	taskEntity "task-service/src/domain/entity/task"
+	taskComment "task-service/src/domain/entity/task/comment"
+	taskTimeCosts "task-service/src/domain/entity/task/cost"
+	taskStatus "task-service/src/domain/entity/task/spec/status"
 )
 
 type TaskRepository interface {

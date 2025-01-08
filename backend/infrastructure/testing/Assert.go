@@ -2,9 +2,9 @@ package commonTesting
 
 import (
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"infrastructure/errors"
 	"testing"
 )
 

@@ -2,9 +2,9 @@ package mongoMock
 
 import (
 	"context"
-	mongoModel "github.com/revazcus/task-tracker/backend/infrastructure/mongo/model"
-	commonMock "github.com/revazcus/task-tracker/backend/infrastructure/testing/mock"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	mongoModel "infrastructure/mongo/model"
+	commonMock "infrastructure/testing/mock"
 )
 
 type MongoRepoMock struct {
@@ -35,7 +35,7 @@ func (m *MongoRepoMock) FindOneAndUpdate(ctx context.Context, collectionName str
 	return err
 }
 
-func (m *MongoRepoMock) UpdateOne(ctx context.Context, collectionName string, filter, data interface{}, opts ...*options.UpdateOptions) error {
+func (m *MongoRepoMock) UpdateOne(ctx context.Context, collectionName string, filter, data interface{}, opts ...*options.UpdateOneOptions) error {
 	//TODO implement me
 	panic("implement me")
 }

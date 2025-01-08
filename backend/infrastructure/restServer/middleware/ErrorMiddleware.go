@@ -3,7 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
+	loggerInterface "infrastructure/logger/interface"
 	"net/http"
 )
 

@@ -1,13 +1,13 @@
 package kafkaBroker
 
 import (
+	userEventTypes "common/broker/user/event"
+	userTopicNames "common/broker/user/topic"
 	"context"
 	"fmt"
-	userEventTypes "github.com/revazcus/task-tracker/backend/common/broker/user/event"
-	userTopicNames "github.com/revazcus/task-tracker/backend/common/broker/user/topic"
-	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	"github.com/revazcus/task-tracker/backend/task-service/boundary/domain/usecase"
+	kafkaClientInterface "infrastructure/kafka/interface"
+	loggerInterface "infrastructure/logger/interface"
+	"task-service/src/boundary/domain/usecase"
 )
 
 type EventListener struct {

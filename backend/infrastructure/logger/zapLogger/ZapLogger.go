@@ -2,9 +2,9 @@ package zapLogger
 
 import (
 	"context"
-	logModel "github.com/revazcus/task-tracker/backend/infrastructure/logger/model"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	logModel "infrastructure/logger/model"
 	"os"
 )
 

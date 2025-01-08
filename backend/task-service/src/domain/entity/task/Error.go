@@ -1,6 +1,6 @@
 package taskEntity
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrTitleIsRequired       = errors.NewError("TAE-001", "Заголовок должен быть заполнен")

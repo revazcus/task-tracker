@@ -3,6 +3,6 @@ go 1.23.2
 use (
 	./backend/common
 	./backend/infrastructure
-	./backend/task-service/src
-	./backend/user-service/src
+	./backend/task-service
+	./backend/user-service
 )

@@ -1,23 +1,23 @@
 package userRepo
 
 import (
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
+	profileRepoModel "common/repoModel/profile"
 	"context"
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	profileRepoModel "github.com/revazcus/task-tracker/backend/common/repoModel/profile"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	logModel "github.com/revazcus/task-tracker/backend/infrastructure/logger/model"
-	mongoInterface "github.com/revazcus/task-tracker/backend/infrastructure/mongo/interface"
-	mongoModel "github.com/revazcus/task-tracker/backend/infrastructure/mongo/model"
-	userRepoModel "github.com/revazcus/task-tracker/backend/user-service/adapters/repository/user/model/user"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
-	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/password"
-	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/username"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
+	logModel "infrastructure/logger/model"
+	mongoInterface "infrastructure/mongo/interface"
+	mongoModel "infrastructure/mongo/model"
 	"strings"
+	userRepoModel "user-service/src/adapters/repository/user/model/user"
+	userEntity "user-service/src/domain/entity"
+	passwordPrimitive "user-service/src/domain/entity/password"
+	usernamePrimitive "user-service/src/domain/entity/username"
 )
 
 const (

@@ -1,4 +1,4 @@
-module github.com/revazcus/task-tracker/backend/infrastructure
+module infrastructure
 
 go 1.23.2
 

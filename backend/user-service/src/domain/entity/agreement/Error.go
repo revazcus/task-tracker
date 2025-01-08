@@ -1,6 +1,6 @@
 package agreementPrimitive
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrNotAcceptedAgreement   = errors.NewError("AGP-001", "Требуется согласие с пользовательским соглашением")

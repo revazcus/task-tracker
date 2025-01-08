@@ -1,9 +1,9 @@
 package userObject
 
 import (
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	profilePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/profile"
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
+	profilePrimitive "common/domainPrimitive/profile"
 )
 
 type ShortUser struct {

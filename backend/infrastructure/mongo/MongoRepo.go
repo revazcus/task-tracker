@@ -2,12 +2,12 @@ package mongoRepo
 
 import (
 	"context"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	mongoModel "github.com/revazcus/task-tracker/backend/infrastructure/mongo/model"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
+	mongoModel "infrastructure/mongo/model"
 )
 
 type MongoRepo struct {

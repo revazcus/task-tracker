@@ -3,7 +3,7 @@ package kafkaEvent
 import (
 	"encoding/json"
 	"github.com/google/uuid"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
+	commonTime "infrastructure/tools/time"
 )
 
 type EventNotification struct {

@@ -1,6 +1,6 @@
 package emailPrimitive
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrEmailIsEmpty   = errors.NewError("EMP-001", "Email пустой")

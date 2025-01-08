@@ -1,6 +1,6 @@
 package idPrimitive
 
-import "github.com/revazcus/task-tracker/backend/common/domainPrimitive/generator"
+import "common/domainPrimitive/generator"
 
 type EntityId string
 

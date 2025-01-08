@@ -1,22 +1,22 @@
 package taskRepo
 
 import (
+	userObject "common/domainObject/shortUser"
+	idPrimitive "common/domainPrimitive/id"
 	"context"
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	logModel "github.com/revazcus/task-tracker/backend/infrastructure/logger/model"
-	mongoInterface "github.com/revazcus/task-tracker/backend/infrastructure/mongo/interface"
-	mongoModel "github.com/revazcus/task-tracker/backend/infrastructure/mongo/model"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	taskRepoModel "github.com/revazcus/task-tracker/backend/task-service/adapters/repository/task/model"
-	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
-	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
-	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
-	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
-	taskTag "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/tag"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	loggerInterface "infrastructure/logger/interface"
+	logModel "infrastructure/logger/model"
+	mongoInterface "infrastructure/mongo/interface"
+	mongoModel "infrastructure/mongo/model"
+	commonTime "infrastructure/tools/time"
+	taskRepoModel "task-service/src/adapters/repository/task/model"
+	taskEntity "task-service/src/domain/entity/task"
+	taskComment "task-service/src/domain/entity/task/comment"
+	taskTimeCosts "task-service/src/domain/entity/task/cost"
+	taskStatus "task-service/src/domain/entity/task/spec/status"
+	taskTag "task-service/src/domain/entity/task/spec/tag"
 )
 
 const (

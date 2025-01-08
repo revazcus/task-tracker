@@ -2,7 +2,7 @@ package loggerInterface
 
 import (
 	"context"
-	logModel "github.com/revazcus/task-tracker/backend/infrastructure/logger/model"
+	logModel "infrastructure/logger/model"
 )
 
 type Logger interface {

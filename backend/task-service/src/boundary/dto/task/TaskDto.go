@@ -1,8 +1,8 @@
 package taskDto
 
 import (
-	commentDto "github.com/revazcus/task-tracker/backend/task-service/boundary/dto/task/comment"
-	timeCostsDto "github.com/revazcus/task-tracker/backend/task-service/boundary/dto/task/timeCosts"
+	commentDto "task-service/src/boundary/dto/task/comment"
+	timeCostsDto "task-service/src/boundary/dto/task/timeCosts"
 )
 
 type TaskDto struct {

@@ -1,17 +1,17 @@
 package taskEntity
 
 import (
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	descriptionPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/description"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	titlePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/title"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	assessmentPrimitive "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/assessment"
-	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
-	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
-	taskPriority "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/priority"
-	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
-	taskTag "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/tag"
+	userObject "common/domainObject/shortUser"
+	descriptionPrimitive "common/domainPrimitive/description"
+	idPrimitive "common/domainPrimitive/id"
+	titlePrimitive "common/domainPrimitive/title"
+	commonTime "infrastructure/tools/time"
+	assessmentPrimitive "task-service/src/domain/entity/task/assessment"
+	taskComment "task-service/src/domain/entity/task/comment"
+	taskTimeCosts "task-service/src/domain/entity/task/cost"
+	taskPriority "task-service/src/domain/entity/task/spec/priority"
+	taskStatus "task-service/src/domain/entity/task/spec/status"
+	taskTag "task-service/src/domain/entity/task/spec/tag"
 )
 
 type Task struct {

@@ -2,10 +2,10 @@ package restServer
 
 import (
 	"github.com/gin-gonic/gin"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	restServerInterface "github.com/revazcus/task-tracker/backend/infrastructure/restServer/interface"
-	"github.com/revazcus/task-tracker/backend/infrastructure/restServer/middleware"
-	jwtServiceInterface "github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService/interface"
+	loggerInterface "infrastructure/logger/interface"
+	restServerInterface "infrastructure/restServer/interface"
+	"infrastructure/restServer/middleware"
+	jwtServiceInterface "infrastructure/security/jwtService/interface"
 	"net/http"
 )
 

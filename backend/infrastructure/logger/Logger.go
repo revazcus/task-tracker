@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	logModel "github.com/revazcus/task-tracker/backend/infrastructure/logger/model"
+	loggerInterface "infrastructure/logger/interface"
+	logModel "infrastructure/logger/model"
 	"strings"
 )
 

@@ -1,4 +1,4 @@
-module github.com/revazcus/task-tracker/backend/common
+module common
 
 go 1.23.2
 

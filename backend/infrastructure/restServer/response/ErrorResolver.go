@@ -1,7 +1,7 @@
 package response
 
 import (
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
+	"infrastructure/errors"
 	"net/http"
 )
 

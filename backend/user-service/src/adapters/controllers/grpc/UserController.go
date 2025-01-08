@@ -1,10 +1,10 @@
 package grpc
 
 import (
+	"common/gateways/user/protoModel"
 	"context"
-	"github.com/revazcus/task-tracker/backend/common/gateways/user1/gateways/user/protoModel"
-	"github.com/revazcus/task-tracker/backend/user-service/boundary/domain/usecase"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
+	"user-service/src/boundary/domain/usecase"
+	userEntity "user-service/src/domain/entity"
 )
 
 type UserController struct {

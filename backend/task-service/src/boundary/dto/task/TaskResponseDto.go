@@ -1,6 +1,6 @@
 package taskDto
 
-import taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
+import taskEntity "task-service/src/domain/entity/task"
 
 type TaskResponseDto struct {
 	Task *taskEntity.Task

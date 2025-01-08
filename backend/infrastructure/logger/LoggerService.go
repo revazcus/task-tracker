@@ -2,8 +2,8 @@ package commonLogger
 
 import (
 	"fmt"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	logModel "github.com/revazcus/task-tracker/backend/infrastructure/logger/model"
+	loggerInterface "infrastructure/logger/interface"
+	logModel "infrastructure/logger/model"
 	"sync"
 	"time"
 )

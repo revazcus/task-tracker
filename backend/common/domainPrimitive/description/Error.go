@@ -1,6 +1,6 @@
 package descriptionPrimitive
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrDescriptionIsEmpty = errors.NewError("DPR-001", "Описание пустое")

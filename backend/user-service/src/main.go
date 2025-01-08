@@ -3,22 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
-	saramaClient "github.com/revazcus/task-tracker/backend/infrastructure/kafka"
-	commonLogger "github.com/revazcus/task-tracker/backend/infrastructure/logger"
-	"github.com/revazcus/task-tracker/backend/infrastructure/logger/zapLogger"
-	mongoRepo "github.com/revazcus/task-tracker/backend/infrastructure/mongo"
-	"github.com/revazcus/task-tracker/backend/infrastructure/restServer"
-	restServerController "github.com/revazcus/task-tracker/backend/infrastructure/restServer/controller"
-	"github.com/revazcus/task-tracker/backend/infrastructure/restServer/response"
-	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
-	"github.com/revazcus/task-tracker/backend/user-service/adapters/broker"
-	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/grpc"
-	userRest "github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest"
-	"github.com/revazcus/task-tracker/backend/user-service/adapters/controllers/rest/resolver"
-	userRepo "github.com/revazcus/task-tracker/backend/user-service/adapters/repository/user"
-	userUseCase "github.com/revazcus/task-tracker/backend/user-service/domain/usecase"
-	initServices "github.com/revazcus/task-tracker/backend/user-service/init-services"
-	router "github.com/revazcus/task-tracker/backend/user-service/init-services/routers"
+	saramaClient "infrastructure/kafka"
+	commonLogger "infrastructure/logger"
+	"infrastructure/logger/zapLogger"
+	mongoRepo "infrastructure/mongo"
+	"infrastructure/restServer"
+	restServerController "infrastructure/restServer/controller"
+	"infrastructure/restServer/response"
+	"infrastructure/security/jwtService"
+	"user-service/src/adapters/controllers/grpc"
+	userRest "user-service/src/adapters/controllers/rest"
+	"user-service/src/adapters/controllers/rest/resolver"
+	userRepo "user-service/src/adapters/repository/user"
+	userUseCase "user-service/src/domain/usecase"
+	initServices "user-service/src/init-services"
+	router "user-service/src/init-services/routers"
 )
 
 const AppId = "user-service"
@@ -83,8 +82,6 @@ func main() {
 	if err := kafkaClient.CreateTopic(context.Background(), "user-info", 3, 1); err != nil {
 		logger.Error(context.Background(), err)
 	}
-	eventListener := broker.NewEventListener(kafkaClient, userUseCase, logger)
-	go eventListener.Listen(context.Background())
 
 	// GRPC
 	grpcController := grpc.NewUserController(userUseCase)

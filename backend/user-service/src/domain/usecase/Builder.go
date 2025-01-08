@@ -1,9 +1,9 @@
-package usecase
+package userUseCase
 
 import (
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	jwtServiceInterface "github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService/interface"
-	repositoryInterface "github.com/revazcus/task-tracker/backend/user-service/boundary/repository"
+	"infrastructure/errors"
+	jwtServiceInterface "infrastructure/security/jwtService/interface"
+	repositoryInterface "user-service/src/boundary/repository"
 )
 
 type Builder struct {

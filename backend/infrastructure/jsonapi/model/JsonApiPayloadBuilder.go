@@ -1,6 +1,6 @@
 package jsonApiModel
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 const (
 	LimitMetaKey      = "limit"

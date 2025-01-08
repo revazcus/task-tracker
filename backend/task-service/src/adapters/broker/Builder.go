@@ -1,10 +1,10 @@
 package kafkaBroker
 
 import (
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	"github.com/revazcus/task-tracker/backend/task-service/boundary/domain/usecase"
+	"infrastructure/errors"
+	kafkaClientInterface "infrastructure/kafka/interface"
+	loggerInterface "infrastructure/logger/interface"
+	"task-service/src/boundary/domain/usecase"
 )
 
 type Builder struct {

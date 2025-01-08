@@ -2,14 +2,14 @@ package taskRest
 
 import (
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	restServerController "github.com/revazcus/task-tracker/backend/infrastructure/restServer/controller"
-	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
-	"github.com/revazcus/task-tracker/backend/task-service/adapters/controllers/rest/task/request"
-	taskSerializer "github.com/revazcus/task-tracker/backend/task-service/adapters/controllers/rest/task/serializer"
-	"github.com/revazcus/task-tracker/backend/task-service/boundary/domain/usecase"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
+	restServerController "infrastructure/restServer/controller"
+	"infrastructure/security/jwtService"
 	"net/http"
+	"task-service/src/adapters/controllers/rest/task/request"
+	taskSerializer "task-service/src/adapters/controllers/rest/task/serializer"
+	"task-service/src/boundary/domain/usecase"
 )
 
 type TaskController struct {

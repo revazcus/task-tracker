@@ -1,15 +1,15 @@
 package userEntity
 
 import (
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	profilePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/profile"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	agreementPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/agreement"
-	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/password"
-	"github.com/revazcus/task-tracker/backend/user-service/domain/entity/spec"
-	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/username"
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
+	profilePrimitive "common/domainPrimitive/profile"
+	"infrastructure/errors"
+	commonTime "infrastructure/tools/time"
+	agreementPrimitive "user-service/src/domain/entity/agreement"
+	passwordPrimitive "user-service/src/domain/entity/password"
+	"user-service/src/domain/entity/spec"
+	usernamePrimitive "user-service/src/domain/entity/username"
 )
 
 type Builder struct {

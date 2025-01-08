@@ -1,8 +1,8 @@
 package taskComment
 
 import (
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
+	userObject "common/domainObject/shortUser"
+	commonTime "infrastructure/tools/time"
 	"strings"
 	"unicode/utf8"
 )

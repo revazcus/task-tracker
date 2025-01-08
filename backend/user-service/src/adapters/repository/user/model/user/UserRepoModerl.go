@@ -1,14 +1,14 @@
 package userRepoModel
 
 import (
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	profileRepoModel "github.com/revazcus/task-tracker/backend/common/repoModel/profile"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
-	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/password"
-	"github.com/revazcus/task-tracker/backend/user-service/domain/entity/spec"
-	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/username"
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
+	profileRepoModel "common/repoModel/profile"
+	commonTime "infrastructure/tools/time"
+	userEntity "user-service/src/domain/entity"
+	passwordPrimitive "user-service/src/domain/entity/password"
+	"user-service/src/domain/entity/spec"
+	usernamePrimitive "user-service/src/domain/entity/username"
 )
 
 type UserRepoModel struct {

@@ -1,12 +1,12 @@
 package repositoryInterface
 
 import (
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
 	"context"
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	userEntity "github.com/revazcus/task-tracker/backend/user-service/domain/entity"
-	passwordPrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/password"
-	usernamePrimitive "github.com/revazcus/task-tracker/backend/user-service/domain/entity/username"
+	userEntity "user-service/src/domain/entity"
+	passwordPrimitive "user-service/src/domain/entity/password"
+	usernamePrimitive "user-service/src/domain/entity/username"
 )
 
 type UserRepository interface {

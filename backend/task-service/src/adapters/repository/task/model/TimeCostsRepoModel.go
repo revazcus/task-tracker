@@ -1,9 +1,9 @@
 package taskRepoModel
 
 import (
-	shortUserRepoModel "github.com/revazcus/task-tracker/backend/common/repoModel/shortUser"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
+	shortUserRepoModel "common/repoModel/shortUser"
+	commonTime "infrastructure/tools/time"
+	taskTimeCosts "task-service/src/domain/entity/task/cost"
 )
 
 type TimeCostsRepoModel struct {

@@ -1,6 +1,6 @@
 package profilePrimitive
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrFirstNameIsRequired = errors.NewError("PRP-001", "Имя должно быть заполнено")

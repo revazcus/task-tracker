@@ -1,18 +1,17 @@
 package commonUserGateways
 
 import (
+	userObject "common/domainObject/shortUser"
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
+	profilePrimitive "common/domainPrimitive/profile"
+	"common/gateways"
+	"common/gateways/user/protoModel"
 	"context"
 	"fmt"
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	profilePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/profile"
-	"github.com/revazcus/task-tracker/backend/common/gateways"
-	"github.com/revazcus/task-tracker/backend/common/gateways/user/protoModel"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
 	"google.golang.org/grpc/status"
-
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
 )
 
 type UserGateway struct {
@@ -63,5 +62,4 @@ func (g *UserGateway) getUserClient() protoModel.UserServiceClient {
 		g.userClient = protoModel.NewUserServiceClient(g.baseGRPC.Connection())
 	}
 	return g.userClient
-
 }

@@ -1,9 +1,9 @@
 package taskTimeCosts
 
 import (
+	userObject "common/domainObject/shortUser"
 	"fmt"
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
+	commonTime "infrastructure/tools/time"
 )
 
 type TimeInvestment struct {

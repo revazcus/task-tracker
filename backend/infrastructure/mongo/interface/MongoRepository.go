@@ -2,8 +2,8 @@ package mongoInterface
 
 import (
 	"context"
-	mongoModel "github.com/revazcus/task-tracker/backend/infrastructure/mongo/model"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	mongoModel "infrastructure/mongo/model"
 )
 
 type MongoRepository interface {

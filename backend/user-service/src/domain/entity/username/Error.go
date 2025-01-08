@@ -1,6 +1,6 @@
 package usernamePrimitive
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrUsernameIsEmpty   = errors.NewError("SYS", "Username пустой")

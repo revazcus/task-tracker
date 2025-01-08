@@ -2,7 +2,7 @@ package commonTesting
 
 import (
 	"crypto/rand"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
+	"infrastructure/errors"
 	"math/big"
 	"strconv"
 )

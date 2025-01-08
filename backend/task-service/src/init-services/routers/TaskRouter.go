@@ -1,9 +1,9 @@
 package router
 
 import (
-	restServerInterface "github.com/revazcus/task-tracker/backend/infrastructure/restServer/interface"
-	taskRest "github.com/revazcus/task-tracker/backend/task-service/adapters/controllers/rest/task"
+	restServerInterface "infrastructure/restServer/interface"
 	"net/http"
+	taskRest "task-service/src/adapters/controllers/rest/task"
 )
 
 type TaskRouter struct {

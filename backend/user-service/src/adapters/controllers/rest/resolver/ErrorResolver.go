@@ -1,9 +1,9 @@
 package resolver
 
 import (
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	userRepo "github.com/revazcus/task-tracker/backend/user-service/adapters/repository/user"
+	"infrastructure/errors"
 	"net/http"
+	userRepo "user-service/src/adapters/repository/user"
 )
 
 const (

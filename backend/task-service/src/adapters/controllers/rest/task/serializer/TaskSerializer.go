@@ -1,11 +1,11 @@
 package taskSerializer
 
 import (
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	jsonApiModel "github.com/revazcus/task-tracker/backend/infrastructure/jsonapi/model"
-	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
-	taskComment "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/comment"
-	taskTimeCosts "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/cost"
+	userObject "common/domainObject/shortUser"
+	jsonApiModel "infrastructure/jsonapi/model"
+	taskEntity "task-service/src/domain/entity/task"
+	taskComment "task-service/src/domain/entity/task/comment"
+	taskTimeCosts "task-service/src/domain/entity/task/cost"
 )
 
 const (

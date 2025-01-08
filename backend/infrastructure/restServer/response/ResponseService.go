@@ -3,8 +3,8 @@ package response
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
 	"net/http"
 )
 

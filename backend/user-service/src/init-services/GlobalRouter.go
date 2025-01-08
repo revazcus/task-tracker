@@ -1,8 +1,8 @@
 package initServices
 
 import (
-	restServerInterface "github.com/revazcus/task-tracker/backend/infrastructure/restServer/interface"
-	routerInterface "github.com/revazcus/task-tracker/backend/user-service/init-services/routers/interface"
+	restServerInterface "infrastructure/restServer/interface"
+	routerInterface "user-service/src/init-services/routers/interface"
 )
 
 type GlobalRouter struct {

@@ -3,10 +3,9 @@ package gateways
 import (
 	"context"
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-
 	"google.golang.org/grpc"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
 )
 
 type BaseGRPCGateway struct {

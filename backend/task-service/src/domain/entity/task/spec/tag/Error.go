@@ -2,7 +2,7 @@ package taskTag
 
 import (
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
+	"infrastructure/errors"
 )
 
 func ErrUnsupportedTag(unsupportedTag string) *errors.Error {

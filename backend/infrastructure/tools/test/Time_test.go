@@ -1,10 +1,10 @@
 package commonTimeTest
 
 import (
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	commonTime "infrastructure/tools/time"
 	"testing"
 	"time"
 )

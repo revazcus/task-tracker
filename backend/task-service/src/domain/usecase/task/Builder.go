@@ -1,10 +1,10 @@
 package taskUseCase
 
 import (
-	userGatewayInterface "github.com/revazcus/task-tracker/backend/common/gateways/user/interface"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	kafkaClientInterface "github.com/revazcus/task-tracker/backend/infrastructure/kafka/interface"
-	repositoryInterface "github.com/revazcus/task-tracker/backend/task-service/boundary/repository"
+	userGatewayInterface "common/gateways/user/interface"
+	"infrastructure/errors"
+	kafkaClientInterface "infrastructure/kafka/interface"
+	repositoryInterface "task-service/src/boundary/repository"
 )
 
 type Builder struct {

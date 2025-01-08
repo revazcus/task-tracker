@@ -1,6 +1,6 @@
 package titlePrimitive
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrTitleIsEmpty  = errors.NewError("TPR-001", "Заголовок пустой")

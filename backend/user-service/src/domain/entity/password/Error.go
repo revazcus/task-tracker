@@ -1,6 +1,6 @@
 package passwordPrimitive
 
-import "github.com/revazcus/task-tracker/backend/infrastructure/errors"
+import "infrastructure/errors"
 
 var (
 	ErrPasswordLength = errors.NewError("SYS", "Пароль меньше 8 символов")

@@ -1,16 +1,16 @@
 package taskRepoModel
 
 import (
-	descriptionPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/description"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	titlePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/title"
-	shortUserRepoModel "github.com/revazcus/task-tracker/backend/common/repoModel/shortUser"
-	commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
-	taskEntity "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task"
-	assessmentPrimitive "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/assessment"
-	taskPriority "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/priority"
-	taskStatus "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/status"
-	taskTag "github.com/revazcus/task-tracker/backend/task-service/domain/entity/task/spec/tag"
+	descriptionPrimitive "common/domainPrimitive/description"
+	idPrimitive "common/domainPrimitive/id"
+	titlePrimitive "common/domainPrimitive/title"
+	shortUserRepoModel "common/repoModel/shortUser"
+	commonTime "infrastructure/tools/time"
+	taskEntity "task-service/src/domain/entity/task"
+	assessmentPrimitive "task-service/src/domain/entity/task/assessment"
+	taskPriority "task-service/src/domain/entity/task/spec/priority"
+	taskStatus "task-service/src/domain/entity/task/spec/status"
+	taskTag "task-service/src/domain/entity/task/spec/tag"
 )
 
 type TaskRepoModel struct {

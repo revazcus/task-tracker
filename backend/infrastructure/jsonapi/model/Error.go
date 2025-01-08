@@ -2,7 +2,7 @@ package jsonApiModel
 
 import (
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
+	"infrastructure/errors"
 )
 
 func ErrRelationshipByKeyNotFound(relationshipKey, objectId, objectType string) error {

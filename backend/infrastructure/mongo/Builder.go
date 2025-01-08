@@ -1,9 +1,9 @@
 package mongoRepo
 
 import (
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
 )
 
 type Builder struct {

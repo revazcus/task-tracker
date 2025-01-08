@@ -1,10 +1,10 @@
 package shortUserRepoModel
 
 import (
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
-	emailPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/email"
-	idPrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/id"
-	profileRepoModel "github.com/revazcus/task-tracker/backend/common/repoModel/profile"
+	userObject "common/domainObject/shortUser"
+	emailPrimitive "common/domainPrimitive/email"
+	idPrimitive "common/domainPrimitive/id"
+	profileRepoModel "common/repoModel/profile"
 )
 
 type ShortUserRepoModel struct {

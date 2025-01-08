@@ -1,4 +1,4 @@
-module github.com/revazcus/task-tracker/backend/task-service
+module task-service
 
 go 1.23.2
 

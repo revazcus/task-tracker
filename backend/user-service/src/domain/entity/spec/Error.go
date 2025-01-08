@@ -2,7 +2,7 @@ package spec
 
 import (
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
+	"infrastructure/errors"
 )
 
 func ErrUnsupportedRole(unsupportedRole string) *errors.Error {

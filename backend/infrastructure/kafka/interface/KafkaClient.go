@@ -2,7 +2,7 @@ package kafkaClientInterface
 
 import (
 	"context"
-	kafkaEvent "github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
+	kafkaEvent "infrastructure/kafka/event"
 )
 
 type KafkaClient interface {

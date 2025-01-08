@@ -3,9 +3,9 @@ package request
 import (
 	"bytes"
 	"encoding/json"
-	taskDto "github.com/revazcus/task-tracker/backend/task-service/boundary/dto/task"
-	commentDto "github.com/revazcus/task-tracker/backend/task-service/boundary/dto/task/comment"
-	timeCostsDto "github.com/revazcus/task-tracker/backend/task-service/boundary/dto/task/timeCosts"
+	taskDto "task-service/src/boundary/dto/task"
+	commentDto "task-service/src/boundary/dto/task/comment"
+	timeCostsDto "task-service/src/boundary/dto/task/timeCosts"
 )
 
 type CreateTaskRequest struct {

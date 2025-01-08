@@ -2,11 +2,11 @@ package restServerController
 
 import (
 	"context"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	restServerInterface "github.com/revazcus/task-tracker/backend/infrastructure/restServer/interface"
-	"github.com/revazcus/task-tracker/backend/infrastructure/restServer/response"
-	"github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
+	restServerInterface "infrastructure/restServer/interface"
+	"infrastructure/restServer/response"
+	"infrastructure/security/jwtService"
 	"io"
 	"net/http"
 )

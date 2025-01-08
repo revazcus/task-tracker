@@ -1,8 +1,8 @@
 package userGatewayInterface
 
 import (
+	userObject "common/domainObject/shortUser"
 	"context"
-	userObject "github.com/revazcus/task-tracker/backend/common/domainObject/shortUser"
 )
 
 type UserGateway interface {

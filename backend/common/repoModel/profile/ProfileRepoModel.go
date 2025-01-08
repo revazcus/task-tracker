@@ -1,6 +1,6 @@
 package profileRepoModel
 
-import profilePrimitive "github.com/revazcus/task-tracker/backend/common/domainPrimitive/profile"
+import profilePrimitive "common/domainPrimitive/profile"
 
 type ProfileRepoModel struct {
 	FirstName string `bson:"first_name"`

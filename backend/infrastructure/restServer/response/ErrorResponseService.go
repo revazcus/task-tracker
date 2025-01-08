@@ -5,9 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	restServerInterface "github.com/revazcus/task-tracker/backend/infrastructure/restServer/interface"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
+	restServerInterface "infrastructure/restServer/interface"
 	"net/http"
 )
 

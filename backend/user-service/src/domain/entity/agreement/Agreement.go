@@ -1,6 +1,6 @@
 package agreementPrimitive
 
-import commonTime "github.com/revazcus/task-tracker/backend/infrastructure/tools/time"
+import commonTime "infrastructure/tools/time"
 
 type Agreement struct {
 	accepted     bool

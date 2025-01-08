@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/IBM/sarama"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	kafkaEvent "github.com/revazcus/task-tracker/backend/infrastructure/kafka/event"
-	groupHenler "github.com/revazcus/task-tracker/backend/infrastructure/kafka/handler"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
+	"infrastructure/errors"
+	kafkaEvent "infrastructure/kafka/event"
+	groupHenler "infrastructure/kafka/handler"
+	loggerInterface "infrastructure/logger/interface"
 	"time"
 )
 

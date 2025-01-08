@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/revazcus/task-tracker/backend/infrastructure/errors"
-	loggerInterface "github.com/revazcus/task-tracker/backend/infrastructure/logger/interface"
-	jwtServiceInterface "github.com/revazcus/task-tracker/backend/infrastructure/security/jwtService/interface"
+	"infrastructure/errors"
+	loggerInterface "infrastructure/logger/interface"
+	jwtServiceInterface "infrastructure/security/jwtService/interface"
 	"net/http"
 	"strings"
 )
