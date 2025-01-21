@@ -1,21 +1,26 @@
 package restServer
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	loggerInterface "infrastructure/logger/interface"
 	restServerInterface "infrastructure/restServer/interface"
 	"infrastructure/restServer/middleware"
+	restModel "infrastructure/restServer/model"
 	jwtServiceInterface "infrastructure/security/jwtService/interface"
 	"net/http"
+	"strconv"
 )
 
 type GinServer struct {
 	server        *gin.Engine
+	serverConfig  *restModel.RestServerConfig
 	logger        loggerInterface.Logger
 	jwtMiddleware gin.HandlerFunc
 }
 
-func NewGinServer(logger loggerInterface.Logger, jwtService jwtServiceInterface.JWTService) restServerInterface.Server {
+// NewGinServer TODO переписать на Builder
+func NewGinServer(logger loggerInterface.Logger, jwtService jwtServiceInterface.JWTService, serverConfig *restModel.RestServerConfig) restServerInterface.Server {
 	server := gin.New()
 
 	server.Use(
@@ -44,6 +49,7 @@ func NewGinServer(logger loggerInterface.Logger, jwtService jwtServiceInterface.
 	})
 
 	return &GinServer{
+		serverConfig:  serverConfig,
 		server:        server,
 		logger:        logger,
 		jwtMiddleware: middleware.NewJWTMiddleware(logger, jwtService).Handler(),
@@ -86,6 +92,11 @@ func (s *GinServer) registerGinRouts(method, path string, handlers ...gin.Handle
 	}
 }
 
-func (s *GinServer) Start(address string) error {
+func (s *GinServer) Start() error {
+	return s.startWorker()
+}
+
+func (s *GinServer) startWorker() error {
+	address := fmt.Sprintf(":%s", strconv.Itoa(s.serverConfig.Port()))
 	return s.server.Run(address)
 }

@@ -13,5 +13,5 @@ type Server interface {
 	RegisterPrivateRoute(method, path string, handler http.HandlerFunc)
 
 	// Start производит запуск сервера на определённом адресе
-	Start(address string) error
+	Start() error
 }
