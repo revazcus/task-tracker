@@ -7,7 +7,6 @@ import (
 	userGatewayInterface "common/gateways/user/interface"
 	"context"
 	"infrastructure/errors"
-	kafkaEvent "infrastructure/kafka/event"
 	kafkaClientInterface "infrastructure/kafka/interface"
 	commonTime "infrastructure/tools/time"
 	taskDto "task-service/boundary/dto/task"
@@ -50,12 +49,11 @@ func (u TaskUseCase) CreateTask(ctx context.Context, taskCreateDto *taskDto.Task
 	}
 
 	// Отправляем сообщение в кафку
-	// TODO переписать
-	eventType := kafkaEvent.EventType("TaskCreated")
-	eventNotification := kafkaEvent.NewEventNotification(&eventType, "task-service", map[string]interface{}{"userId": taskCreateDto.CreatorId})
-	if err := u.kafkaClient.SendMessage(ctx, "user-info", eventNotification); err != nil {
-		return nil, err
-	}
+	//eventType := kafkaEvent.EventType("TaskCreated")
+	//eventNotification := kafkaEvent.NewEventNotification(&eventType, "task-service", map[string]interface{}{"userId": taskCreateDto.CreatorId})
+	//if err := u.kafkaClient.SendMessage(ctx, "user-info", eventNotification); err != nil {
+	//	return nil, err
+	//}
 
 	// Запрашиваем shortUser по grpc
 	creator, err := u.userGateway.GetUserById(ctx, taskCreateDto.CreatorId)
@@ -160,15 +158,13 @@ func (u TaskUseCase) UpdateTask(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		return nil, errors.NewError("SYS", "Deadline не может быть меньше текущего времени")
 	}
 
-	//// TODO переписать
-	//user, err := u.userUseCase.GetUserById(ctx, dto.CreatorId)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//creator, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	//if err != nil {
-	//	return nil, err
-	//}
+	// TODO переписать
+	// Запрашиваем shortUser по grpc
+	creator, err := u.userGateway.GetUserById(ctx, dto.CreatorId)
+	if err != nil {
+		// TODO добавить кастомную ошибку, если юзер не найден
+		return nil, err
+	}
 
 	assessment, err := assessmentPrimitive.AssessmentFrom(dto.Assessment)
 	if err != nil {
@@ -182,7 +178,7 @@ func (u TaskUseCase) UpdateTask(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		Priority(priority).
 		Status(status).
 		Tags(tags).
-		//Creator(creator).
+		Creator(creator).
 		Deadline(deadline).
 		Assessment(assessment).
 		Build()
@@ -204,17 +200,14 @@ func (u TaskUseCase) TakeOnTask(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		return nil, err
 	}
 
-	//// TODO переписать
-	//user, err := u.userUseCase.GetUserById(ctx, dto.PerformerId)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//performer, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	//if err != nil {
-	//	return nil, err
-	//}
+	// Запрашиваем shortUser по grpc
+	performer, err := u.userGateway.GetUserById(ctx, dto.PerformerId)
+	if err != nil {
+		// TODO добавить кастомную ошибку, если юзер не найден
+		return nil, err
+	}
 
-	updatedTask, err := u.taskRepo.UpdatePerformerAndStatus(ctx, &taskId, nil, taskStatus.Statuses.InProgress())
+	updatedTask, err := u.taskRepo.UpdatePerformerAndStatus(ctx, &taskId, performer, taskStatus.Statuses.InProgress())
 	if err != nil {
 		return nil, err
 	}
@@ -228,17 +221,14 @@ func (u TaskUseCase) AddPerformer(ctx context.Context, dto *taskDto.TaskDto) (*t
 		return nil, err
 	}
 
-	//// TODO переписать
-	//user, err := u.userUseCase.GetUserById(ctx, dto.PerformerId)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//performer, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	//if err != nil {
-	//	return nil, err
-	//}
+	// Запрашиваем shortUser по grpc
+	performer, err := u.userGateway.GetUserById(ctx, dto.PerformerId)
+	if err != nil {
+		// TODO добавить кастомную ошибку, если юзер не найден
+		return nil, err
+	}
 
-	updatedTask, err := u.taskRepo.UpdatePerformer(ctx, &taskId, nil)
+	updatedTask, err := u.taskRepo.UpdatePerformer(ctx, &taskId, performer)
 	if err != nil {
 		return nil, err
 	}
@@ -252,17 +242,14 @@ func (u TaskUseCase) AddTimeCosts(ctx context.Context, dto *taskDto.TaskDto) (*t
 		return nil, err
 	}
 
-	//// TODO переписать
-	//user, err := u.userUseCase.GetUserById(ctx, dto.TimeCosts.UserId)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//worker, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	//if err != nil {
-	//	return nil, err
-	//}
+	// Запрашиваем shortUser по grpc
+	worker, err := u.userGateway.GetUserById(ctx, dto.TimeCosts.UserId)
+	if err != nil {
+		// TODO добавить кастомную ошибку, если юзер не найден
+		return nil, err
+	}
 
-	timeCost, err := taskTimeCosts.AddTimeCost(nil, commonTime.Now(), dto.TimeCosts.Minutes)
+	timeCost, err := taskTimeCosts.AddTimeCost(worker, commonTime.Now(), dto.TimeCosts.Minutes)
 	if err != nil {
 		return nil, err
 	}
@@ -281,17 +268,14 @@ func (u TaskUseCase) AddComment(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		return nil, err
 	}
 
-	//// TODO переписать
-	//user, err := u.userUseCase.GetUserById(ctx, dto.Comments.UserId)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//author, err := userObject.NewShortUser(user.ID(), user.Email(), user.Profile())
-	//if err != nil {
-	//	return nil, err
-	//}
+	// Запрашиваем shortUser по grpc
+	author, err := u.userGateway.GetUserById(ctx, dto.Comments.UserId)
+	if err != nil {
+		// TODO добавить кастомную ошибку, если юзер не найден
+		return nil, err
+	}
 
-	comment, err := taskComment.AddComment(nil, commonTime.Now(), dto.Comments.Text)
+	comment, err := taskComment.AddComment(author, commonTime.Now(), dto.Comments.Text)
 	if err != nil {
 		return nil, err
 	}

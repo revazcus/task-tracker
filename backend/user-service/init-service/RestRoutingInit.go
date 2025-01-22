@@ -1,6 +1,10 @@
 package initService
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+	"os/exec"
+)
 
 type RestRoutingInit struct {
 	dc *DependencyContainer
@@ -18,6 +22,12 @@ func (i *RestRoutingInit) InitServices() error {
 }
 
 func (i *RestRoutingInit) StartServices() error {
+	// TODO убрать хардкод url
+	// Открывает стартовую страницу в браузере (работает только с Windows)
+	if err := exec.Command("explorer", "http://localhost:8081").Run(); err != nil {
+		i.dc.Logger.Error(context.Background(), err)
+	}
+
 	if err := i.dc.RestServer.Start(); err != nil {
 		return err
 	}

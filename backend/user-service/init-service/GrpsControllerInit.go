@@ -54,6 +54,5 @@ func (i *GrpcServer) initUserServer(dc *DependencyContainer) error {
 	userServer := grpc.NewUserServer(address, grpcController, dc.Logger)
 
 	i.UserServer = userServer
-
 	return nil
 }

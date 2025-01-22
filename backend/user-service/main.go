@@ -18,7 +18,6 @@ func main() {
 	}
 
 	dc := &initService.DependencyContainer{}
-
 	err := initInfra.NewDependenciesInitializer().
 		AppId(AppId).
 		InfraInitChain(initService.GetInfraInitChains()).
@@ -31,10 +30,5 @@ func main() {
 	}
 
 	<-dc.StopChan()
-
-	//// Открывает стартовую страницу в браузере (работает только с Windows)
-	//if err := exec.Command("explorer", "http://localhost:8081").Run(); err != nil {
-	//	dc.Logger.Error(context.Background(), err)
-	//}
 
 }
