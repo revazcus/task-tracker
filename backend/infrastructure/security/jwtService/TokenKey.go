@@ -1,5 +1,6 @@
 package jwtService
 
+// TODO переписать на ENUM
 // Ключи, лежащие внутри токена
 const (
 	RoleTokenKey       string = "spec"  // Роль пользователя

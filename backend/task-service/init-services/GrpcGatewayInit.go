@@ -2,12 +2,12 @@ package initService
 
 import (
 	"common/gateways"
-	commonUserGateways "common/gateways/user"
+	commonUserGateway "common/gateways/user"
 )
 
 type GrpcGateways struct {
 	BaseGrpcGateway *gateways.BaseGRPCGateway
-	UserGrpcGateway *commonUserGateways.UserGateway
+	UserGrpcGateway *commonUserGateway.UserGateway
 }
 
 type GrpcGatewayInit struct {
@@ -51,14 +51,29 @@ func (i *GrpcGateways) initBaseGrpcGateway(dc *DependencyContainer) error {
 		return err
 	}
 
-	baseGRPCGateway := gateways.NewBaseGRPCGateway(userServiceUrl, dc.Logger)
+	baseGRPCGateway, err := gateways.NewBuilder().
+		Url(userServiceUrl).
+		Logger(dc.Logger).
+		Build()
+	if err != nil {
+		dc.LogError(err)
+		return err
+	}
 
 	i.BaseGrpcGateway = baseGRPCGateway
 	return nil
 }
 
 func (i *GrpcGateways) initUserGrpcGateway(dc *DependencyContainer) error {
-	userGateway := commonUserGateways.NewUserGateway(i.BaseGrpcGateway, dc.Logger)
+	userGateway, err := commonUserGateway.NewBuilder().
+		BaseGrpcGateway(i.BaseGrpcGateway).
+		Logger(dc.Logger).
+		Build()
+	if err != nil {
+		dc.LogError(err)
+		return err
+	}
+
 	i.UserGrpcGateway = userGateway
 	return nil
 }

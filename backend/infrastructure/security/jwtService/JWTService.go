@@ -31,7 +31,7 @@ func (j *JWTService) FillCtxWithParams(ctx context.Context, tokenStr string) (co
 		return ctx, ErrJWTWrongClaims
 	}
 
-	// TODO подумать об извлечении и инициализации параметров для контекста в цикле
+	// TODO подумать об извлечении и инициализации параметров для контекста в цикле // доработать после переписания ключей на Enum
 	userId, err := j.extractClaimAsString(claims, userIdTokenKey)
 	if err != nil {
 		return ctx, err

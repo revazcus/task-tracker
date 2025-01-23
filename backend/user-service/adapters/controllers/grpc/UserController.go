@@ -12,7 +12,6 @@ type UserController struct {
 	protoModel.UnimplementedUserServiceServer // Позволяет реализовать не весь интерфейс UserServiceServer
 }
 
-// NewUserController TODO переписать на билдер
 func NewUserController(userUseCase usecase.UserUseCaseInterface) *UserController {
 	return &UserController{
 		userUseCase: userUseCase,

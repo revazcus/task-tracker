@@ -29,7 +29,11 @@ func (i *RestServerInit) InitInfra(ic *InfraContainer) error {
 
 	restConfig := restModel.NewDefaultRestConfig(port)
 
-	ginServer := restServer.NewGinServer(ic.Logger, ic.JWTService, restConfig)
+	ginServer, err := restServer.NewRestServerBuilder().
+		ServerConfig(restConfig).
+		Logger(ic.Logger).
+		JwtService(ic.JWTService).
+		Build()
 
 	ic.RestServer = ginServer
 

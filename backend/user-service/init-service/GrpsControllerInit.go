@@ -49,9 +49,17 @@ func (i *GrpcServer) initUserServer(dc *DependencyContainer) error {
 		return err
 	}
 
-	address := fmt.Sprintf(":%s", portStr)
-	grpcController := grpc.NewUserController(dc.UseCases.UserUseCase)
-	userServer := grpc.NewUserServer(address, grpcController, dc.Logger)
+	port := fmt.Sprintf(":%s", portStr)
+	userController := grpc.NewUserController(dc.UseCases.UserUseCase)
+	userServer, err := grpc.NewUserServerBuilder().
+		Port(port).
+		UserController(userController).
+		Logger(dc.Logger).
+		Build()
+	if err != nil {
+		dc.LogError(err)
+		return err
+	}
 
 	i.UserServer = userServer
 	return nil

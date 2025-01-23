@@ -1,4 +1,4 @@
-package response
+package restResponse
 
 import (
 	"infrastructure/errors"

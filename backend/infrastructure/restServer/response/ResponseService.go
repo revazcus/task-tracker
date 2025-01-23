@@ -1,9 +1,8 @@
-package response
+package restResponse
 
 import (
 	"encoding/json"
 	"fmt"
-	"infrastructure/errors"
 	loggerInterface "infrastructure/logger/interface"
 	"net/http"
 )
@@ -19,17 +18,6 @@ const (
 type ResponseService struct {
 	errorResponseService *ErrorResponseService
 	logger               loggerInterface.Logger
-}
-
-// NewResponseService TODO переписать на билдер
-func NewResponseService(errorResponseService *ErrorResponseService, logger loggerInterface.Logger) (*ResponseService, error) {
-	if logger == nil {
-		return nil, errors.NewError("SYS", "Logger is required")
-	}
-	if errorResponseService == nil {
-		return nil, errors.NewError("SYS", "ErrorResponseService is required")
-	}
-	return &ResponseService{errorResponseService: errorResponseService, logger: logger}, nil
 }
 
 func (s *ResponseService) JsonResponse(w http.ResponseWriter, r *http.Request, result interface{}, responseCode int) {

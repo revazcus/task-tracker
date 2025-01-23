@@ -39,7 +39,6 @@ func (b *Builder) Build() (*UserController, error) {
 	if b.errors.IsPresent() {
 		return nil, b.errors
 	}
-	b.fillDefaultFields()
 	return b.controller, nil
 }
 
@@ -53,8 +52,4 @@ func (b *Builder) checkRequiredFields() {
 	if b.controller.userUseCase == nil {
 		b.errors.AddError(errors.NewError("SYS", "UserControllerBuilder: UserUseCase is required"))
 	}
-}
-
-func (b *Builder) fillDefaultFields() {
-
 }

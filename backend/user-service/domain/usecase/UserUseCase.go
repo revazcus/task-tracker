@@ -135,7 +135,7 @@ func (u UserUseCase) UpdateUser(ctx context.Context, dto *userDto.UserDto) (*use
 		Email(&email).
 		Username(&username).
 		Password(password).
-		Role(spec.Roles.Admin()).
+		Role(spec.Roles.Admin()). // TODO убрать заглушку
 		Agreement(agreement).
 		Build()
 	if err != nil {

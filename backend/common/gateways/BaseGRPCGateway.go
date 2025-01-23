@@ -14,14 +14,6 @@ type BaseGRPCGateway struct {
 	logger     loggerInterface.Logger
 }
 
-// NewBaseGRPCGateway TODO переписать на билдер
-func NewBaseGRPCGateway(url string, logger loggerInterface.Logger) *BaseGRPCGateway {
-	return &BaseGRPCGateway{
-		url:    url,
-		logger: logger,
-	}
-}
-
 func (b *BaseGRPCGateway) Connection() *grpc.ClientConn {
 	return b.connection
 }

@@ -1,4 +1,4 @@
-package response
+package restResponse
 
 type ErrorResponse struct {
 	Errors []ErrorResponseData `json:"errors"`

@@ -5,26 +5,15 @@ import (
 	"infrastructure/errors"
 	loggerInterface "infrastructure/logger/interface"
 	restServerInterface "infrastructure/restServer/interface"
-	"infrastructure/restServer/response"
+	restResponse "infrastructure/restServer/response"
 	"infrastructure/security/jwtService"
 	"io"
 	"net/http"
 )
 
 type BaseController struct {
-	responseService *response.ResponseService
+	responseService *restResponse.ResponseService
 	logger          loggerInterface.Logger
-}
-
-// NewBaseController TODO переписать на билдер
-func NewBaseController(responseService *response.ResponseService, logger loggerInterface.Logger) (*BaseController, error) {
-	if responseService == nil {
-		return nil, errors.NewError("SYS", "ResponseService is required")
-	}
-	if logger == nil {
-		return nil, errors.NewError("SYS", "Logger is required")
-	}
-	return &BaseController{responseService: responseService, logger: logger}, nil
 }
 
 func (bc *BaseController) FillReqModel(r *http.Request, reqModel restServerInterface.RequestModel) error {
@@ -35,14 +24,14 @@ func (bc *BaseController) FillReqModel(r *http.Request, reqModel restServerInter
 
 	err = reqModel.FillFromBytes(requestBody)
 	if err != nil {
-		return response.ErrUnmarshalRequest(err.Error())
+		return restResponse.ErrUnmarshalRequest(err.Error())
 	}
 	return err
 }
 
 func (bc *BaseController) GetRequestBody(r *http.Request) ([]byte, error) {
 	if r.Body == nil {
-		return nil, response.ErrUnmarshalRequest("Request body is nil")
+		return nil, restResponse.ErrUnmarshalRequest("Request body is nil")
 	}
 	return io.ReadAll(r.Body)
 }

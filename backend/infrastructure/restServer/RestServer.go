@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	loggerInterface "infrastructure/logger/interface"
-	restServerInterface "infrastructure/restServer/interface"
 	"infrastructure/restServer/middleware"
 	restModel "infrastructure/restServer/model"
 	jwtServiceInterface "infrastructure/security/jwtService/interface"
@@ -12,34 +11,42 @@ import (
 	"strconv"
 )
 
-type GinServer struct {
-	server        *gin.Engine
-	serverConfig  *restModel.RestServerConfig
-	logger        loggerInterface.Logger
-	jwtMiddleware gin.HandlerFunc
+type RestServer struct {
+	server       *gin.Engine
+	serverConfig *restModel.RestServerConfig
+	logger       loggerInterface.Logger
+	jwtService   jwtServiceInterface.JWTService
 }
 
-// NewGinServer TODO переписать на Builder
-func NewGinServer(logger loggerInterface.Logger, jwtService jwtServiceInterface.JWTService, serverConfig *restModel.RestServerConfig) restServerInterface.Server {
+func (s *RestServer) RegisterPublicRoute(method, path string, handler http.HandlerFunc) {
+
+	// Обёртка http.HandlerFunc в gin.HandlerFunc
+	ginHandlerFunc := func(c *gin.Context) {
+		handler(c.Writer, c.Request)
+	}
+
+	s.registerGinRouts(method, path, ginHandlerFunc)
+}
+
+func (s *RestServer) RegisterPrivateRoute(method, path string, handler http.HandlerFunc) {
+
+	// Обёртка http.HandlerFunc в gin.HandlerFunc
+	ginHandlerFunc := func(c *gin.Context) {
+		handler(c.Writer, c.Request)
+	}
+
+	// TODO вынести
+	jwtMiddleware := middleware.NewJWTMiddleware(s.logger, s.jwtService).Handler()
+
+	s.registerGinRouts(method, path, jwtMiddleware, ginHandlerFunc)
+}
+
+func (s *RestServer) Start() error {
+	return s.startWorker()
+}
+
+func (s *RestServer) createHttpServer() {
 	server := gin.New()
-
-	server.Use(
-		gin.Recovery(),
-		middleware.NewRequestMiddleware(logger).Handler(),
-		middleware.NewErrorMiddleware(logger).Handler())
-
-	// TODO переписать
-	// Работа с фронтом
-	server.Static("/assets", "D:\\Development\\Monetization\\task-tracker\\frontend\\assets") // Шрифты и изображения
-	server.Static("/css", "D:\\Development\\Monetization\\task-tracker\\frontend\\css")       // Статические CSS файлы
-	server.Static("/js", "D:\\Development\\Monetization\\task-tracker\\frontend\\js")         // Статические JS файлы
-
-	// TODO переписать
-	// Регистрируем маршрут для главной страницы
-	server.GET("/", func(c *gin.Context) {
-		// Указываем путь к главному файлу start.html
-		c.File("D:\\Development\\Monetization\\task-tracker\\frontend\\start.html")
-	})
 
 	// TODO переписать
 	// Кастомный обработчик при отсутствии ресурса по переданному маршруту
@@ -50,36 +57,37 @@ func NewGinServer(logger loggerInterface.Logger, jwtService jwtServiceInterface.
 		})
 	})
 
-	return &GinServer{
-		serverConfig:  serverConfig,
-		server:        server,
-		logger:        logger,
-		jwtMiddleware: middleware.NewJWTMiddleware(logger, jwtService).Handler(),
-	}
+	s.server = server
+
+	s.initMiddlewares()
+	s.initFront()
 }
 
-func (s *GinServer) RegisterPublicRoute(method, path string, handler http.HandlerFunc) {
-
-	// Обёртка http.HandlerFunc в gin.HandlerFunc
-	ginHandlerFunc := func(c *gin.Context) {
-		handler(c.Writer, c.Request)
-	}
-
-	s.registerGinRouts(method, path, ginHandlerFunc)
+func (s *RestServer) initMiddlewares() {
+	s.server.Use(
+		gin.Recovery(),
+		middleware.NewRequestMiddleware(s.logger).Handler(),
+		middleware.NewErrorMiddleware(s.logger).Handler())
 }
 
-func (s *GinServer) RegisterPrivateRoute(method, path string, handler http.HandlerFunc) {
+// TODO переписать
+func (s *RestServer) initFront() {
+	// Шрифты и изображения
+	s.server.Static("/assets", "D:\\Development\\Monetization\\task-tracker\\frontend\\assets")
+	// Статические CSS файлы
+	s.server.Static("/css", "D:\\Development\\Monetization\\task-tracker\\frontend\\css")
+	// Статические JS файлы
+	s.server.Static("/js", "D:\\Development\\Monetization\\task-tracker\\frontend\\js")
 
-	// Обёртка http.HandlerFunc в gin.HandlerFunc
-	ginHandlerFunc := func(c *gin.Context) {
-		handler(c.Writer, c.Request)
-	}
-
-	s.registerGinRouts(method, path, s.jwtMiddleware, ginHandlerFunc)
+	// Регистрируем маршрут для главной страницы
+	s.server.GET("/", func(c *gin.Context) {
+		// Указываем путь к главному файлу start.html
+		c.File("D:\\Development\\Monetization\\task-tracker\\frontend\\start.html")
+	})
 }
 
 // Регистрирует маршрут на основе переданного метода и конвертирует в методы Gin
-func (s *GinServer) registerGinRouts(method, path string, handlers ...gin.HandlerFunc) {
+func (s *RestServer) registerGinRouts(method, path string, handlers ...gin.HandlerFunc) {
 	switch method {
 	case http.MethodGet:
 		s.server.GET(path, handlers...)
@@ -94,11 +102,7 @@ func (s *GinServer) registerGinRouts(method, path string, handlers ...gin.Handle
 	}
 }
 
-func (s *GinServer) Start() error {
-	return s.startWorker()
-}
-
-func (s *GinServer) startWorker() error {
+func (s *RestServer) startWorker() error {
 	address := fmt.Sprintf(":%s", strconv.Itoa(s.serverConfig.Port()))
 	return s.server.Run(address)
 }

@@ -158,7 +158,7 @@ func (u TaskUseCase) UpdateTask(ctx context.Context, dto *taskDto.TaskDto) (*tas
 		return nil, errors.NewError("SYS", "Deadline не может быть меньше текущего времени")
 	}
 
-	// TODO переписать
+	// TODO переписать и добавить кастомную ошибку если не нашли пользака
 	// Запрашиваем shortUser по grpc
 	creator, err := u.userGateway.GetUserById(ctx, dto.CreatorId)
 	if err != nil {

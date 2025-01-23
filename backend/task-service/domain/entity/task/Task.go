@@ -26,7 +26,7 @@ type Task struct {
 	createAt    *commonTime.Time
 	updateAt    *commonTime.Time
 	deadline    *commonTime.Time
-	//attachments  string // скрины / видео TODO подумать над реализацией
+	//attachments скрины / видео TODO подумать над реализацией
 	assessment *assessmentPrimitive.Assessment
 	timeCosts  *taskTimeCosts.TimeCosts
 	comments   *taskComment.Comments

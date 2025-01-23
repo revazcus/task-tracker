@@ -47,19 +47,28 @@ func (i *RestControllersInit) StartServices() error {
 }
 
 func (i *RestControllers) initBaseController(dc *DependencyContainer) error {
-	errResponseService, err := response.NewErrorResponseService(resolver.NewErrorResolver(), dc.Logger)
+	errResponseService, err := restResponse.NewErrorResponseServiceBuilder().
+		ErrorResolver(resolver.NewErrorResolver()).
+		Logger(dc.Logger).
+		Build()
 	if err != nil {
 		dc.LogError(err)
 		return err
 	}
 
-	responseService, err := response.NewResponseService(errResponseService, dc.Logger)
+	responseService, err := restResponse.NewResponseServiceBuilder().
+		ErrorResponseService(errResponseService).
+		Logger(dc.Logger).
+		Build()
 	if err != nil {
 		dc.LogError(err)
 		return err
 	}
 
-	baseController, err := restServerController.NewBaseController(responseService, dc.Logger)
+	baseController, err := restServerController.NewBaseControllerBuilder().
+		ResponseService(responseService).
+		Logger(dc.Logger).
+		Build()
 	if err != nil {
 		dc.LogError(err)
 		return err

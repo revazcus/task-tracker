@@ -1,4 +1,4 @@
-package commonUserGateways
+package commonUserGateway
 
 import (
 	userObject "common/domainObject/shortUser"
@@ -18,14 +18,6 @@ type UserGateway struct {
 	baseGRPC   *gateways.BaseGRPCGateway
 	userClient protoModel.UserServiceClient
 	logger     loggerInterface.Logger
-}
-
-// NewUserGateway TODO переписать на билдер
-func NewUserGateway(baseGRPC *gateways.BaseGRPCGateway, logger loggerInterface.Logger) *UserGateway {
-	return &UserGateway{
-		baseGRPC: baseGRPC,
-		logger:   logger,
-	}
 }
 
 func (g *UserGateway) GetUserById(ctx context.Context, Id string) (*userObject.ShortUser, error) {

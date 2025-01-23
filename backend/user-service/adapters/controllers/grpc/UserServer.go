@@ -11,24 +11,15 @@ import (
 )
 
 type UserServer struct {
-	Port           string
+	port           string
 	listener       net.Listener
 	userController *UserController
 	logger         loggerInterface.Logger
 }
 
-// NewUserServer TODO переписать на билдер
-func NewUserServer(port string, userController *UserController, logger loggerInterface.Logger) *UserServer {
-	return &UserServer{
-		Port:           port,
-		userController: userController,
-		logger:         logger,
-	}
-}
-
 func (s *UserServer) Start() error {
 	var err error
-	if s.listener, err = net.Listen("tcp", s.Port); err != nil {
+	if s.listener, err = net.Listen("tcp", s.port); err != nil {
 		return errors.NewError("SYS", fmt.Sprintf("failed to listen: %e", err))
 	}
 	go s.worker()

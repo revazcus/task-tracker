@@ -22,7 +22,7 @@ func (i *LoggerInit) InitInfra(ic *InfraContainer) error {
 
 	loggerService := commonLogger.NewLoggerService(ic.stopChan)
 
-	// TODO переписать второй параметр NewZapLogger на securityContext
+	// TODO переписать второй параметр NewZapLogger на securityContext // разобраться
 	zap := zapLogger.NewZapLogger(ic.appID, securityContextStr)
 	loggerService.AddLogger("zap", zap)
 

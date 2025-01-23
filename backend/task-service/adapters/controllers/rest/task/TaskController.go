@@ -31,7 +31,6 @@ func (c *TaskController) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO подумать как лучше сделать
 	requestData.Data.Attributes.CreatorId = creatorId
 
 	createdTask, err := c.taskUseCase.CreateTask(r.Context(), requestData.CreateTaskDto())
@@ -133,7 +132,6 @@ func (c *TaskController) TakeOn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO подумать как лучше сделать
 	dto := requestData.CreateTaskDto()
 	dto.PerformerId = performerId
 
@@ -187,7 +185,6 @@ func (c *TaskController) AddTimeCosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO подумать как лучше сделать
 	dto := requestData.CreateTaskDto()
 	dto.TimeCosts.UserId = userId
 
@@ -219,7 +216,6 @@ func (c *TaskController) AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO подумать как лучше сделать
 	dto := requestData.CreateTaskDto()
 	dto.Comments.UserId = authorId
 

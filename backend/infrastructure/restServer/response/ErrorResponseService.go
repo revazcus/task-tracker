@@ -1,4 +1,4 @@
-package response
+package restResponse
 
 import (
 	"bytes"
@@ -14,17 +14,6 @@ import (
 type ErrorResponseService struct {
 	errorResolver restServerInterface.ErrorResolver
 	logger        loggerInterface.Logger
-}
-
-// NewErrorResponseService TODO переписать на билдер
-func NewErrorResponseService(errorResolver restServerInterface.ErrorResolver, logger loggerInterface.Logger) (*ErrorResponseService, error) {
-	if errorResolver == nil {
-		return nil, errors.NewError("SYS", "ErrorResolver is required")
-	}
-	if logger == nil {
-		return nil, errors.NewError("SYS", "Logger is required")
-	}
-	return &ErrorResponseService{logger: logger, errorResolver: errorResolver}, nil
 }
 
 func (s *ErrorResponseService) ErrorResponse(w http.ResponseWriter, r *http.Request, err error) {

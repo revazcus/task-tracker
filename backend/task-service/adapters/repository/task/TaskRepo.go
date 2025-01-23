@@ -5,6 +5,7 @@ import (
 	idPrimitive "common/domainPrimitive/id"
 	"context"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	loggerInterface "infrastructure/logger/interface"
 	logModel "infrastructure/logger/model"
@@ -78,7 +79,9 @@ func (r *TaskRepo) GetById(ctx context.Context, taskId *idPrimitive.EntityId) (*
 	var taskModel *taskRepoModel.TaskRepoModel
 
 	if err := r.mongoRepo.FindOne(ctx, r.collection, find, &taskModel); err != nil {
-		// TODO добавить кастомную ошибку
+		if err == mongo.ErrNoDocuments {
+			return nil, ErrTaskNotFound
+		}
 		return nil, err
 	}
 
